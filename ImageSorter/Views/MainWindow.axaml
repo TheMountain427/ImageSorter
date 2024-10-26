@@ -10,20 +10,27 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="ImageSorter.Views"
 		x:DataType="vm:MainWindowViewModel">
-	
-	
+
+
 	<Grid RowDefinitions="*">
-		<rxui:RoutedViewHost Grid.Row="0" Router="{Binding Router}">
+		<rxui:RoutedViewHost Grid.Row="0" Router="{ Binding Router }">
 			<rxui:RoutedViewHost.DefaultContent>
-				<TextBlock Text="Default content"
+				<TextBlock Text="Main Window"
 						   HorizontalAlignment="Center"
 						   VerticalAlignment="Center" />
 			</rxui:RoutedViewHost.DefaultContent>
+
 			
-			<rxui:RoutedViewHost.ViewLocator>
-				<app:AppViewLocator />
-			</rxui:RoutedViewHost.ViewLocator>
+			
+				<rxui:RoutedViewHost.ViewLocator>
+					<app:AppViewLocator />
+				</rxui:RoutedViewHost.ViewLocator>
+			<rxui:RoutedViewHost.Transitions>
+				<Transitions>
+					<DoubleTransition Property="Opacity" Duration="0:0:2"/>
+				</Transitions>
+			</rxui:RoutedViewHost.Transitions>
 		</rxui:RoutedViewHost>
-		
+
 	</Grid>
 </Window>

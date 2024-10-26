@@ -11,12 +11,8 @@ public class ProjectSelectionViewModel : ReactiveObject, IRoutableViewModel
 
     public string UrlPathSegment { get; } = "ProjectSelection";
 
-    public RoutingState Router { get; set; }
+    public RoutingState MainRouter { get; set; }
 
-    public void SelectProject()
-    {
-        ProjectSelected = true;
-    }
 
     private bool _projectSelected = false;
 
@@ -26,21 +22,33 @@ public class ProjectSelectionViewModel : ReactiveObject, IRoutableViewModel
         protected set { this.RaiseAndSetIfChanged(ref _projectSelected, value); }
     }
 
-    private void GoToMain()
+    public void SelectProject()
     {
-        Router.NavigateAndReset.Execute(new MainViewModel(this.HostScreen));
+        ProjectSelected = true;
     }
 
-    public ICommand GoNext { get; }
+    
+
+    public ICommand GoToWorkspace { get; }
+
+    private void _goToWorkspace()
+    {
+        MainRouter.Navigate.Execute(new WorkspaceViewModel(this.HostScreen, this.MainRouter));
+    }
+
+
 
     public ProjectSelectionViewModel(IScreen screen, RoutingState router)
     {
-        Router = router;
+        MainRouter = router;
         HostScreen = screen;
 
         var CanContinue = this.WhenAnyValue(x => x.ProjectSelected);
 
-        GoNext = ReactiveCommand.Create(GoToMain, CanContinue);
+        GoToWorkspace = ReactiveCommand.Create(_goToWorkspace, CanContinue);
+
+
+
 
     }
 

@@ -11,7 +11,7 @@
 	<Grid>
 		<StackPanel>
 			<Button Content="SelectProject" Command="{ Binding SelectProject }"/>
-			<Button Content="Go to main" Command="{ Binding GoNext }"/>
+			<Button Content="Go to main" Command="{ Binding GoToWorkspace }"/>
 		</StackPanel>
 	</Grid>
 </UserControl>
