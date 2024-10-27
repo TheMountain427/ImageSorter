@@ -7,11 +7,117 @@
              x:Class="ImageSorter.Views.ProjectSelectionView"
 			 x:DataType="vm:ProjectSelectionViewModel">
 
-
 	<Grid>
 		<StackPanel>
-			<Button Content="SelectProject" Command="{ Binding SelectProject }"/>
-			<Button Content="Go to main" Command="{ Binding GoToWorkspace }"/>
+			<TextBlock Text="{ Binding ProjectNameErrorText }"
+					   Foreground="Red"/>
+			<TextBlock Text="{ Binding ImgErrorText }"
+					   Foreground="Red"/>
+			<TextBlock Text="{ Binding OutErrorText }"
+					   Foreground="Red"/>
+			<Border HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					Width="400"
+					BorderBrush="Black"
+					BorderThickness="5"
+					Padding="10"
+					CornerRadius="2">
+				<StackPanel Spacing="5">
+					<Grid Name="ProjectSelection_ProjectName_Grid"
+						  ColumnDefinitions="Auto,*">
+						<Image Name="ProjectSelection_ProjectName_Help"
+							   Source="/Assets/question_mark_icon_195110.ico"
+							   Grid.Column="0"
+							   Height="12"
+							   Margin="0,0,10,0"
+							   ToolTip.Tip="{ Binding ProjectNameHelp }"/>
+						<TextBox Grid.Column="1"
+								 HorizontalAlignment="Stretch"
+								 Watermark="Project Name"
+								 Text="{ Binding ProjectNameText }"
+								 ToolTip.Tip="{ Binding ProjectNameBoxHelp }"/>
+					</Grid>
+					<Grid Name="ProjectSelection_ImgPath_Grid"
+						  ColumnDefinitions="Auto,8*,2*">
+						<Image Name="ProjectSelection_ImgPath_Help"
+							   Source="/Assets/question_mark_icon_195110.ico"
+							   Grid.Column="0"
+							   Height="12"
+							   Margin="0,0,10,0"
+							   ToolTip.Tip="{ Binding ImgPathHelp }"/>
+						<TextBox Name="ProjectSelection_ImgPath_TextBox"
+								 Grid.Column="1"
+								 Watermark="Path\To\Images"
+								 Text="{ Binding ImgPathText }"
+								 ToolTip.Tip="{ Binding ImgPathBoxHelp }"
+								 LostFocus="ProjectSelection_ImgPath_TextBox_LostFocus"
+								 GotFocus="ProjectSelection_ImgPath_TextBox_GotFocus"/>
+						<Button Name="ProjectSelection_ImgPath_BrowseButton"
+								Grid.Column="2"
+								HorizontalAlignment="Right"
+								Height="32"
+								Content="Browse"
+								Command="{ Binding BrowseFiles }"
+								CommandParameter="ImgPath"
+								ToolTip.Tip="{ Binding BrowseButtonHelp }"/>
+					</Grid>
+					<Grid Name="ProjectSelection_OutPath_Grid"
+						  ColumnDefinitions="Auto,8*,2*">
+						<Image Name="ProjectSelection_OutPath_Help"
+							   Source="/Assets/question_mark_icon_195110.ico"
+							   Grid.Column="0"
+							   Height="12"
+							   Margin="0,0,10,0"
+							   ToolTip.Tip="{ Binding OutPathHelp }"/>
+						<TextBox Name="ProjectSelection_OutPath_TextBox"
+								 Grid.Column="1"
+								 Watermark="Path\To\Output"
+								 Text="{ Binding OutPathText }"
+								 ToolTip.Tip="{ Binding OutPathBoxHelp }"
+								 LostFocus="ProjectSelection_OutPath_TextBox_LostFocus"
+								 GotFocus="ProjectSelection_OutPath_TextBox_GotFocus"/>
+						<Button Name="ProjectSelection_OutPath_BrowseButton"
+								Grid.Column="2"
+								HorizontalAlignment="Right"
+								Height="32"
+								Content="Browse"
+								Command="{ Binding BrowseFiles }"
+								CommandParameter="OutPath"
+								ToolTip.Tip="{ Binding BrowseButtonHelp }"/>
+					</Grid>
+					<Grid Name="ProjectSelection_Control_Grid"
+						  ColumnDefinitions="Auto,*"
+						  Margin="0,20,0,0">
+						<StackPanel Name="ProjectSelection_Control_StackPanel"
+									Orientation="Horizontal"
+									Spacing="5">
+							<Button Name="ProjectSelection_Control_LoadConfigButton"
+									Height="32"
+									Content="Load Config"
+									ToolTip.Tip="{ Binding LoadConfigHelp }"/>
+							<DropDownButton Name="ProjectSelection_Control_RecentProjects_DropDown"
+											Content="Recent Projects"
+											ToolTip.Tip="{ Binding RecentProjectsHelp }"/>
+						</StackPanel>
+						<Button Name="ProjectSelection_Control_BeginButton"
+								Grid.Column="1"
+								HorizontalAlignment="Right"
+								HorizontalContentAlignment="Center"
+								Height="32"
+								Width="80"
+								IsEnabled="{ Binding ProjectSettingsSet }"
+								Content="Begin"
+								Command="{ Binding GoToWorkspace }"
+								ToolTip.Tip="{ Binding BeginHelp }"/>
+					</Grid>
+				</StackPanel>
+
+			</Border>
+
+			<StackPanel IsEnabled="{ Binding IsDebug }" IsVisible="{ Binding IsDebug }">
+				<Button Content="Debug: SelectProject" Command="{ Binding dbgSetProjectSettings }"/>
+				<Button Content="Debug: GoToWorkspace" Command="{ Binding dbgGoToWorkspace }"/>
+			</StackPanel>
 		</StackPanel>
 	</Grid>
 </UserControl>

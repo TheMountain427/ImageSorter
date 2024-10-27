@@ -4,21 +4,15 @@ using System.Windows.Input;
 
 namespace ImageSorter.ViewModels;
 
-public class WorkspaceViewModel : ReactiveObject, IRoutableViewModel
+public class WorkspaceViewModel : ViewModelBase
 {
 
-    public IScreen HostScreen { get; }
-
-    public string UrlPathSegment { get; } = "WorkspaceView";
-
-    public RoutingState MainRouter { get; set; }
-
-    private bool _isDebug { get; } = true;
+    public override string UrlPathSegment { get; } = "WorkspaceView";
 
 
     public void Dbg_GoToProjectSelection()
     {
-        if (_isDebug)
+        if (IsDebug)
         {
             _goToProjectSelectionByName();
         }
@@ -34,7 +28,7 @@ public class WorkspaceViewModel : ReactiveObject, IRoutableViewModel
         var routableViewModel = MainRouter.NavigationStack.FirstOrDefault(x => x.UrlPathSegment == "ProjectSelection");
         MainRouter.Navigate.Execute(routableViewModel);
     }
-    
+
 
     private string _greeting = "Welcome to Avalonia!";
     public string Greeting

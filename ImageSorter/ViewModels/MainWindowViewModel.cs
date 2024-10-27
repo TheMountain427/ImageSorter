@@ -1,6 +1,9 @@
-﻿using DynamicData;
+﻿using Avalonia;
+using DynamicData;
 using ReactiveUI;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ImageSorter.ViewModels;
@@ -14,8 +17,10 @@ public class MainWindowViewModel : ReactiveObject, IScreen
 
     public ReactiveCommand<Unit, IRoutableViewModel> GoBack => Router.NavigateBack;
 
+    
     public MainWindowViewModel()
     {
+        
         Router.Navigate.Execute(new ProjectSelectionViewModel(this, Router));
     }
 }

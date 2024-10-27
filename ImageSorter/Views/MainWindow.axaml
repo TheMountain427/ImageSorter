@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:ImageSorter.ViewModels"
         xmlns:app="clr-namespace:ImageSorter"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="300"
+		Height="500" Width="500"
         x:Class="ImageSorter.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="ImageSorter.Views"
@@ -14,22 +15,29 @@
 
 	<Grid RowDefinitions="*">
 		<rxui:RoutedViewHost Grid.Row="0" Router="{ Binding Router }">
+			
+			<!--Change the animation for page transitions-->
+			<!--https://reference.avaloniaui.net/api/Avalonia.Animation/-->
+			<rxui:RoutedViewHost.PageTransition>
+				
+				<!--<PageSlide>
+					<PageSlide.Duration> 0:0:.2 --><!--Hours:Minutes:Seconds--><!--</PageSlide.Duration>
+					<PageSlide.Orientation>0 --><!--0 = Horizontal, 1 = Vertical--><!-- </PageSlide.Orientation>
+					<PageSlide.SlideInEasing> --><!--https://reference.avaloniaui.net/api/Avalonia.Animation.Easings/Easing/--><!-- </PageSlide.SlideInEasing>
+					<PageSlide.SlideOutEasing> --><!--https://reference.avaloniaui.net/api/Avalonia.Animation.Easings/Easing/--><!-- </PageSlide.SlideOutEasing>
+				</PageSlide>-->
+				
+			</rxui:RoutedViewHost.PageTransition>
+			
 			<rxui:RoutedViewHost.DefaultContent>
 				<TextBlock Text="Main Window"
 						   HorizontalAlignment="Center"
 						   VerticalAlignment="Center" />
 			</rxui:RoutedViewHost.DefaultContent>
-
-			
-			
+					
 				<rxui:RoutedViewHost.ViewLocator>
 					<app:AppViewLocator />
 				</rxui:RoutedViewHost.ViewLocator>
-			<rxui:RoutedViewHost.Transitions>
-				<Transitions>
-					<DoubleTransition Property="Opacity" Duration="0:0:2"/>
-				</Transitions>
-			</rxui:RoutedViewHost.Transitions>
 		</rxui:RoutedViewHost>
 
 	</Grid>
