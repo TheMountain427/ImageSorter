@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 
 using ImageSorter.ViewModels;
 using ImageSorter.Views;
+using System.Text.Json;
 
 namespace ImageSorter;
 
@@ -24,12 +25,14 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainWindowViewModel()
-            };
+            desktop.MainWindow = new MainWindow();
+            
             // Set App.TopLevel here
             TopLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+            // Changed formated here so that Top Level is loaded before the view models
+            // This way we can access StorageProvider on ViewModel load
+            desktop.MainWindow.DataContext= new MainWindowViewModel();
+
         }
 
         base.OnFrameworkInitializationCompleted();

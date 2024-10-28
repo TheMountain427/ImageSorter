@@ -95,9 +95,16 @@
 									Height="32"
 									Content="Load Config"
 									ToolTip.Tip="{ Binding LoadConfigHelp }"/>
-							<DropDownButton Name="ProjectSelection_Control_RecentProjects_DropDown"
-											Content="Recent Projects"
-											ToolTip.Tip="{ Binding RecentProjectsHelp }"/>
+							<ComboBox Name="ProjectSelection_Control_RecentProjects_DropDown"
+									  ItemsSource="{ Binding RecentProjects }"
+									  SelectedItem="{ Binding SelectedRecentProject }"
+									  ToolTip.Tip="{ Binding RecentProjectsHelp }">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{ Binding }"/>
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
 						</StackPanel>
 						<Button Name="ProjectSelection_Control_BeginButton"
 								Grid.Column="1"

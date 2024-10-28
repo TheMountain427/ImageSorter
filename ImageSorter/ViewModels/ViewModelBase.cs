@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using ImageSorter.Models;
 using ReactiveUI;
 using System.Linq;
 
@@ -11,6 +12,8 @@ public abstract class ViewModelBase : ReactiveObject, IRoutableViewModel
     public abstract string UrlPathSegment { get; }
 
     public RoutingState MainRouter { get; set; }
+
+    public AppState CurrentAppState { get; set; }
 
     private bool _isDebug = true;
     public bool IsDebug

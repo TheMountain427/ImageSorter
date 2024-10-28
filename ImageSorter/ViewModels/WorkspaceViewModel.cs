@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using ImageSorter.Models;
+using ReactiveUI;
 using System.Linq;
 using System.Windows.Input;
 
@@ -8,6 +9,8 @@ public class WorkspaceViewModel : ViewModelBase
 {
 
     public override string UrlPathSegment { get; } = "WorkspaceView";
+
+    public ProjectConfig ProjectConfig { get; protected set; }
 
 
     public void Dbg_GoToProjectSelection()
@@ -20,7 +23,7 @@ public class WorkspaceViewModel : ViewModelBase
 
     private void _goToProjectSelection()
     {
-        MainRouter.NavigateAndReset.Execute(new ProjectSelectionViewModel(this.HostScreen, this.MainRouter));
+        MainRouter.NavigateAndReset.Execute(new ProjectSelectionViewModel(this.HostScreen, this.MainRouter, this.CurrentAppState));
     }
 
     private void _goToProjectSelectionByName()
@@ -42,11 +45,12 @@ public class WorkspaceViewModel : ViewModelBase
     {
         Greeting = "butthole";
     }
-    public WorkspaceViewModel(IScreen screen, RoutingState router)
+    public WorkspaceViewModel(IScreen screen, RoutingState router, AppState appState, ProjectConfig projectConfig)
     {
         MainRouter = router;
         HostScreen = screen;
-
+        CurrentAppState = appState;
+        ProjectConfig = projectConfig;
        
         
     }
