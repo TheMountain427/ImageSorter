@@ -253,6 +253,19 @@ public class ProjectSelectionViewModel : ViewModelBase
         else
         {
             ProjectNameText = CheckProjectNameDuplicates(CurrentAppState, ProjectNameText).Trim();
+
+            // hopefully fix for when: load recent > change name > now no projectconfig > no directories were set > die
+            try
+            {
+                ImgDirectories = ImgDirectories is null || ImgDirectories.Count == 0 ? ImgPathText.Split('|').ToList() : ImgDirectories;
+                OutDirectories = OutDirectories is null || OutDirectories.Count == 0 ? OutPathText.Split('|').ToList() : OutDirectories;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Literally no paths exists anywhere, but all checks failed and somehow we are still trying to start a project", e);
+            }
+
+
             var projConfig = new ProjectConfig
             {
                 ProjectName = ProjectNameText,
@@ -291,17 +304,21 @@ public class ProjectSelectionViewModel : ViewModelBase
         //}
 
         // Load images details from image input directories, only unique file names
-        foreach (var inputPath in projectConfig.ImgDirectoryPaths)
+        if (!didLoadRecentProject) // oops, was duplicating images each load
         {
-            // fuck them other image types
-            var images = Directory.EnumerateFiles(inputPath).Where(x => x.EndsWith(".jpeg") || x.EndsWith(".png") || x.EndsWith(".jpg"));
-            if (images.Count() > 0)
+            foreach (var inputPath in projectConfig.ImgDirectoryPaths)
             {
-                foreach (var imagePath in images)
+                // fuck them other image types
+                var images = Directory.EnumerateFiles(inputPath).Where(x => x.EndsWith(".jpeg") || x.EndsWith(".png") || x.EndsWith(".jpg"));
+                if (images.Count() > 0)
                 {
-                    projectConfig.InputImages.Add(new ImageDetails(imagePath));
+                    foreach (var imagePath in images)
+                    {
+                        projectConfig.InputImages.Add(new ImageDetails(imagePath));
+                    }
                 }
             }
+
         }
 
         // Set up jsonWriter to write projectconfig to a json when it changes
@@ -447,7 +464,7 @@ public class ProjectSelectionViewModel : ViewModelBase
                 if (foundRecentProjects.Count != 0)
                 {
                     // Add 5 most recent projects to RecentProjects
-                    var recentProjects = foundRecentProjects.OrderBy(x => x.Value).Select(x => x.Key).Take(5).ToList();
+                    var recentProjects = foundRecentProjects.OrderByDescending(x => x.Value).Select(x => x.Key).Take(5).ToList();
                     RecentProjects.AddRange(recentProjects);
                     CurrentAppState.RecentProjectNames = recentProjects;
                 }

@@ -20,13 +20,30 @@ public class WorkspaceViewModel : ViewModelBase
 
     public ImgOrder ImageSortOrder { get; set; }
 
+    public int CurrentImageIndex { get; set; }
+
     public void ChangeImageRight()
     {
-
+        if (CurrentImageIndex < SortedImageDetails.Count)
+        {
+            if (CurrentImageIndex < SortedImageDetails.Count - 1)
+            {
+                CurrentImageIndex++;
+            }
+            CurrentImageRouter.NavigateAndReset.Execute(new CurrentImageViewModel(SortedImageDetails[CurrentImageIndex], CurrentImageIndex));
+        }
     }
 
     public void ChangeImageLeft()
     {
+        if (CurrentImageIndex >= 0)
+        {
+            if (CurrentImageIndex != 0)
+            {
+                CurrentImageIndex--;
+            }
+            CurrentImageRouter.Navigate.Execute(new CurrentImageViewModel(SortedImageDetails[CurrentImageIndex], CurrentImageIndex));
+        }
 
     }
 
@@ -92,11 +109,15 @@ public class WorkspaceViewModel : ViewModelBase
         CurrentAppState = appState;
         ProjectConfig = projectConfig;
         ImageSortOrder = ImgOrder.DescFileName;
+        CurrentImageIndex = 0;
         CurrentImageRouter = new RoutingState();
 
         GetImageDetailsSorted(ImageSortOrder);
 
-        CurrentImageRouter.Navigate.Execute(new CurrentImageViewModel(SortedImageDetails[0].FilePath, 0));
+        if (SortedImageDetails is not null)
+        {
+            CurrentImageRouter.Navigate.Execute(new CurrentImageViewModel(SortedImageDetails[CurrentImageIndex], CurrentImageIndex));
+        }
 
 
     }

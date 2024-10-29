@@ -6,7 +6,10 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ImageSorter.Views.CurrentImageView"
 			 x:DataType="vm:CurrentImageViewModel">
-	
-  <Image Source="{ Binding ImageBitmap }"/>
-	
+
+	<StackPanel>
+		<TextBlock Text="{ Binding ImageName }"/>
+		<Image Source="{ Binding ImageBitmap }"/>
+	</StackPanel>
+
 </UserControl>
