@@ -66,7 +66,7 @@ namespace ImageSorter.Models.Helpers
 
         public static string? TryGetProjectConfigPath(AppState appState, string projectName)
         {
-            var path = Path.Join(appState.ProjectConfigsPath, $"{projectName}.json");
+            var path = Path.Join(appState.ProjectConfigsPath, Helpers.ProjectNameToFileName(projectName));
             if (File.Exists(path))
             {
                 return path;
@@ -86,7 +86,7 @@ namespace ImageSorter.Models.Helpers
             }
             else
             {
-                var THIS_IS_AN_ENUMERABLE = files.AsEnumerable().Where(x => x.StartsWith(ProjectName.Trim()));
+                var THIS_IS_AN_ENUMERABLE = files.AsEnumerable().Where(x => x.EndsWith(ProjectNameToFileName(ProjectName)));
                 if (THIS_IS_AN_ENUMERABLE.Count() == 0)
                 {
                     return ProjectName;
@@ -108,6 +108,11 @@ namespace ImageSorter.Models.Helpers
         public static ProjectConfig GetProjectConfigFromJson(string FilePath)
         {
             return JsonSerializer.Deserialize<ProjectConfig>(File.ReadAllText(FilePath));
+        }
+
+        public static string ProjectNameToFileName(string ProjectName)
+        {
+            return $"{ProjectName.Trim()}.json";
         }
     }
 }

@@ -260,7 +260,7 @@ public class ProjectSelectionViewModel : ViewModelBase
                 OutputDirectoryPath = OutDirectories
             };
 
-            var pathToConfig = Path.Join(CurrentAppState.ProjectConfigsPath, $"{ProjectNameText}.json").Trim();
+            var pathToConfig = Path.Join(CurrentAppState.ProjectConfigsPath, Helpers.ProjectNameToFileName(ProjectNameText));
             File.WriteAllText(pathToConfig, JsonSerializer.Serialize(projConfig, new JsonSerializerOptions { WriteIndented = true }));
             CurrentAppState.CurrentProjectConfigPath = pathToConfig;
         }
@@ -462,7 +462,7 @@ public class ProjectSelectionViewModel : ViewModelBase
         if (SelectedRecentProject != "Recent Projects")
         {
             var projectConfigPath = CurrentAppState.ProjectConfigsPath;
-            var jsonConfigPath = Path.Join(projectConfigPath, $"{SelectedRecentProject}.json");
+            var jsonConfigPath = Path.Join(projectConfigPath, Helpers.ProjectNameToFileName(SelectedRecentProject));
             var doesProjExist = File.Exists(jsonConfigPath);
 
             if (doesProjExist)
