@@ -20,7 +20,7 @@ namespace ImageSorter.Models
             return this.OrderByDescending(x => x.FileName);
         }
 
-        public IOrderedEnumerable<ImageDetails> SortByFileSizeAsceding()
+        public IOrderedEnumerable<ImageDetails> SortByFileSizeAscending()
         {
             return this.OrderBy(x => x.FileSize);
         }
@@ -35,7 +35,7 @@ namespace ImageSorter.Models
             return this.OrderBy(x => x.FileCreatedTime);
         }
 
-        public IOrderedEnumerable<ImageDetails> SortbyFileCreationTimeDescending()
+        public IOrderedEnumerable<ImageDetails> SortByFileCreationTimeDescending()
         {
             return this.OrderByDescending(x => x.FileCreatedTime);
         }

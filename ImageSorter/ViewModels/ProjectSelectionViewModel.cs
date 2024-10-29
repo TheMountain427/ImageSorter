@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using ImageSorter.Models;
-using ImageSorter.Models.Helpers;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using static ImageSorter.Models.Helpers;
 
 namespace ImageSorter.ViewModels;
 
@@ -240,7 +240,7 @@ public class ProjectSelectionViewModel : ViewModelBase
         if (didLoadRecentProject)
         {
             CurrentAppState.CurrentProjectName = ProjectNameText;
-            var configPath = Helpers.TryGetProjectConfigPath(CurrentAppState, ProjectNameText);
+            var configPath = TryGetProjectConfigPath(CurrentAppState, ProjectNameText);
             if (configPath is null)
             {
                 throw new Exception("Exploded. Some how the config was not found. Shits fucked.");
@@ -252,7 +252,7 @@ public class ProjectSelectionViewModel : ViewModelBase
         }
         else
         {
-            ProjectNameText = Helpers.CheckProjectNameDuplicates(CurrentAppState, ProjectNameText).Trim();
+            ProjectNameText = CheckProjectNameDuplicates(CurrentAppState, ProjectNameText).Trim();
             var projConfig = new ProjectConfig
             {
                 ProjectName = ProjectNameText,
@@ -260,12 +260,12 @@ public class ProjectSelectionViewModel : ViewModelBase
                 OutputDirectoryPath = OutDirectories
             };
 
-            var pathToConfig = Path.Join(CurrentAppState.ProjectConfigsPath, Helpers.ProjectNameToFileName(ProjectNameText));
+            var pathToConfig = Path.Join(CurrentAppState.ProjectConfigsPath, ProjectNameToFileName(ProjectNameText));
             File.WriteAllText(pathToConfig, JsonSerializer.Serialize(projConfig, new JsonSerializerOptions { WriteIndented = true }));
             CurrentAppState.CurrentProjectConfigPath = pathToConfig;
         }
 
-        var projectConfig = Helpers.GetProjectConfigFromJson(CurrentAppState.CurrentProjectConfigPath);
+        var projectConfig = GetProjectConfigFromJson(CurrentAppState.CurrentProjectConfigPath);
 
         // validate images from a loaded project still exist
         // This should not be needed anymore due to how JsonDeserializer works
@@ -462,7 +462,7 @@ public class ProjectSelectionViewModel : ViewModelBase
         if (SelectedRecentProject != "Recent Projects")
         {
             var projectConfigPath = CurrentAppState.ProjectConfigsPath;
-            var jsonConfigPath = Path.Join(projectConfigPath, Helpers.ProjectNameToFileName(SelectedRecentProject));
+            var jsonConfigPath = Path.Join(projectConfigPath, ProjectNameToFileName(SelectedRecentProject));
             var doesProjExist = File.Exists(jsonConfigPath);
 
             if (doesProjExist)
@@ -470,7 +470,7 @@ public class ProjectSelectionViewModel : ViewModelBase
                 var loadedProj = new ProjectConfig();
                 try
                 {
-                    loadedProj = Helpers.GetProjectConfigFromJson(jsonConfigPath);
+                    loadedProj = GetProjectConfigFromJson(jsonConfigPath);
                 }
                 // handle bad json 
                 catch (JsonException e)
@@ -478,7 +478,7 @@ public class ProjectSelectionViewModel : ViewModelBase
                     return;
                 }
 
-                if (loadedProj is not null && Helpers.TestProjectConfig(loadedProj))
+                if (loadedProj is not null && TestProjectConfig(loadedProj))
                 {
                     ProjectNameText = loadedProj.ProjectName;
                     ImgPathText = SetDirectoryPathText(loadedProj.ImgDirectoryPaths);

@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace ImageSorter.Models.Helpers
+namespace ImageSorter.Models
 {
     public static class Helpers
     {
@@ -93,7 +93,7 @@ namespace ImageSorter.Models.Helpers
                 }
                 else
                 {
-                    return $"{ProjectName} ({THIS_IS_AN_ENUMERABLE.Count() + 1})";
+                    return $"{ProjectName} ({THIS_IS_AN_ENUMERABLE.Count()})";
                 }
             }
         }
@@ -114,5 +114,6 @@ namespace ImageSorter.Models.Helpers
         {
             return $"{ProjectName.Trim()}.json";
         }
+
     }
 }
