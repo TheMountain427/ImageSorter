@@ -13,31 +13,42 @@
 		x:DataType="vm:MainWindowViewModel">
 
 
-	<Grid RowDefinitions="*">
+	<Grid RowDefinitions="*"
+		  PointerPressed="Background_PointerPressed"
+		  Focusable="True"
+		  Background="#00000000">
 		<rxui:RoutedViewHost Grid.Row="0" Router="{ Binding Router }">
-			
+
 			<!--Change the animation for page transitions-->
 			<!--https://reference.avaloniaui.net/api/Avalonia.Animation/-->
 			<rxui:RoutedViewHost.PageTransition>
-				
+
 				<!--<PageSlide>
-					<PageSlide.Duration> 0:0:.2 --><!--Hours:Minutes:Seconds--><!--</PageSlide.Duration>
-					<PageSlide.Orientation>0 --><!--0 = Horizontal, 1 = Vertical--><!-- </PageSlide.Orientation>
-					<PageSlide.SlideInEasing> --><!--https://reference.avaloniaui.net/api/Avalonia.Animation.Easings/Easing/--><!-- </PageSlide.SlideInEasing>
-					<PageSlide.SlideOutEasing> --><!--https://reference.avaloniaui.net/api/Avalonia.Animation.Easings/Easing/--><!-- </PageSlide.SlideOutEasing>
+					<PageSlide.Duration> 0:0:.2 -->
+				<!--Hours:Minutes:Seconds-->
+				<!--</PageSlide.Duration>
+					<PageSlide.Orientation>0 -->
+				<!--0 = Horizontal, 1 = Vertical-->
+				<!-- </PageSlide.Orientation>
+					<PageSlide.SlideInEasing> -->
+				<!--https://reference.avaloniaui.net/api/Avalonia.Animation.Easings/Easing/-->
+				<!-- </PageSlide.SlideInEasing>
+					<PageSlide.SlideOutEasing> -->
+				<!--https://reference.avaloniaui.net/api/Avalonia.Animation.Easings/Easing/-->
+				<!-- </PageSlide.SlideOutEasing>
 				</PageSlide>-->
-				
+
 			</rxui:RoutedViewHost.PageTransition>
-			
+
 			<rxui:RoutedViewHost.DefaultContent>
 				<TextBlock Text="Main Window"
 						   HorizontalAlignment="Center"
 						   VerticalAlignment="Center" />
 			</rxui:RoutedViewHost.DefaultContent>
-					
-				<rxui:RoutedViewHost.ViewLocator>
-					<app:AppViewLocator />
-				</rxui:RoutedViewHost.ViewLocator>
+
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:AppViewLocator />
+			</rxui:RoutedViewHost.ViewLocator>
 		</rxui:RoutedViewHost>
 
 	</Grid>

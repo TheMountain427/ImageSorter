@@ -48,5 +48,5 @@ public partial class ProjectSelectionView : ReactiveUserControl<ProjectSelection
         {
             vm.OutPathTextBoxLostFocus = false;
         }
-    }
+    } 
 }
