@@ -1,9 +1,12 @@
-﻿using ImageSorter.Models;
+﻿using Avalonia.Animation;
+using ImageSorter.Models;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using static ImageSorter.Models.Enums;
+using static Avalonia.Animation.PageSlide.SlideAxis;
+using ImageSorter.Views;
 
 namespace ImageSorter.ViewModels;
 
@@ -16,53 +19,77 @@ public class WorkspaceViewModel : ViewModelBase
 
     public RoutingState CurrentImageRouter { get; } = new RoutingState();
 
-    public List<ImageDetails> SortedImageDetails { get; protected set; }
+    public List<ImageDetails>? SortedImageDetails { get; protected set; }
 
     public ImgOrder ImageSortOrder { get; set; }
 
-    public int CurrentImageIndex { get; set; }
+
+    public int CurrentImageIndex { get; protected set; }
+    public int NextImageIndex { get; protected set; }
+    public int PreviousImageIndex { get; protected set; }
+
+    //public CurrentImageView NextMainImageView { get; protected set; }
+    public CurrentImageViewModel NextMainImageVM { get; protected set; }
+    public CurrentImageViewModel CurrentImageVM { get; protected set; }
+    public CurrentImageViewModel PreviousImageVM { get; protected set; }
+
 
     public void ChangeImageRight()
     {
-        if (CurrentImageIndex < SortedImageDetails.Count)
+        // wtf am I doing just make this a list of CurrentImageViewModels
+        if (SortedImageDetails is not null && CurrentImageIndex < SortedImageDetails.Count - 1)
         {
-            if (CurrentImageIndex < SortedImageDetails.Count - 1)
+            CurrentImageIndex++;
+            CurrentImageRouter.Navigate.Execute(NextMainImageVM);
+            CurrentImageVM = NextMainImageVM;
+
+            if (NextImageIndex < SortedImageDetails.Count - 1)
             {
-                CurrentImageIndex++;
+                PreviousImageVM = CurrentImageVM;
+                NextMainImageVM = new CurrentImageViewModel(SortedImageDetails[NextImageIndex], NextImageIndex);
+                NextImageIndex++;
+                PreviousImageIndex++;
             }
-            CurrentImageRouter.NavigateAndReset.Execute(new CurrentImageViewModel(SortedImageDetails[CurrentImageIndex], CurrentImageIndex));
         }
     }
 
     public void ChangeImageLeft()
     {
-        if (CurrentImageIndex >= 0)
+        if (SortedImageDetails is not null && CurrentImageIndex > 0)
         {
-            if (CurrentImageIndex != 0)
+            CurrentImageIndex--;
+            CurrentImageRouter.Navigate.Execute(PreviousImageVM);
+            if (PreviousImageIndex > 0)
             {
-                CurrentImageIndex--;
+                NextMainImageVM = CurrentImageVM;
+                CurrentImageVM = PreviousImageVM;
+                PreviousImageVM = new CurrentImageViewModel(SortedImageDetails[PreviousImageIndex], PreviousImageIndex);
+                NextImageIndex--;
+                PreviousImageIndex--;
             }
-            CurrentImageRouter.Navigate.Execute(new CurrentImageViewModel(SortedImageDetails[CurrentImageIndex], CurrentImageIndex));
         }
 
     }
 
     public void GetImageDetailsSorted(ImgOrder imgOrder)
     {
-        var imgDetails = ProjectConfig.InputImages;
-
-        SortedImageDetails = imgOrder switch
+        if (ProjectConfig is not null && ProjectConfig.InputImages is not null)
         {
-            ImgOrder.AscFileName => imgDetails.SortByFileNameAscending().ToList(),
-            ImgOrder.DescFileName => imgDetails.SortByFileNameDescending().ToList(),
-            ImgOrder.AscFileSize => imgDetails.SortByFileSizeAscending().ThenBy(x => x.FileName).ToList(),
-            ImgOrder.DescFileSize => imgDetails.SortByFileSizeDescending().ThenBy(x => x.FileName).ToList(),
-            ImgOrder.AscFileCreatedTime => imgDetails.SortByFileCreationTimeAscending().ThenBy(x => x.FileName).ToList(),
-            ImgOrder.DescFileCreatedTime => imgDetails.SortByFileCreationTimeDescending().ThenBy(x => x.FileName).ToList(),
-            ImgOrder.AscLastModifiedTime => imgDetails.SortByLastModifiedTimeAscending().ThenBy(x => x.FileName).ToList(),
-            ImgOrder.DescLastModifiedTime => imgDetails.SortByLastModifiedTimeDescending().ThenBy(x => x.FileName).ToList(),
-            _ => imgDetails.ToList()
-        };
+            var imgDetails = ProjectConfig.InputImages;
+
+            SortedImageDetails = imgOrder switch
+            {
+                ImgOrder.AscFileName => imgDetails.SortByFileNameAscending().ToList(),
+                ImgOrder.DescFileName => imgDetails.SortByFileNameDescending().ToList(),
+                ImgOrder.AscFileSize => imgDetails.SortByFileSizeAscending().ThenBy(x => x.FileName).ToList(),
+                ImgOrder.DescFileSize => imgDetails.SortByFileSizeDescending().ThenBy(x => x.FileName).ToList(),
+                ImgOrder.AscFileCreatedTime => imgDetails.SortByFileCreationTimeAscending().ThenBy(x => x.FileName).ToList(),
+                ImgOrder.DescFileCreatedTime => imgDetails.SortByFileCreationTimeDescending().ThenBy(x => x.FileName).ToList(),
+                ImgOrder.AscLastModifiedTime => imgDetails.SortByLastModifiedTimeAscending().ThenBy(x => x.FileName).ToList(),
+                ImgOrder.DescLastModifiedTime => imgDetails.SortByLastModifiedTimeDescending().ThenBy(x => x.FileName).ToList(),
+                _ => imgDetails.ToList()
+            };
+        }
 
 
     }
@@ -109,16 +136,28 @@ public class WorkspaceViewModel : ViewModelBase
         CurrentAppState = appState;
         ProjectConfig = projectConfig;
         ImageSortOrder = ImgOrder.DescFileName;
+        PreviousImageIndex = -1;
         CurrentImageIndex = 0;
+        NextImageIndex = 1;
         CurrentImageRouter = new RoutingState();
 
         GetImageDetailsSorted(ImageSortOrder);
 
         if (SortedImageDetails is not null)
         {
-            CurrentImageRouter.Navigate.Execute(new CurrentImageViewModel(SortedImageDetails[CurrentImageIndex], CurrentImageIndex));
+            CurrentImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageIndex], CurrentImageIndex);
+            CurrentImageRouter.Navigate.Execute(CurrentImageVM);
+
+            if (CurrentImageIndex < SortedImageDetails.Count)
+            {
+                NextMainImageVM = new CurrentImageViewModel(SortedImageDetails[NextImageIndex], NextImageIndex);
+            }
+
+            // For later if loading project in middle of image list
+            if (CurrentImageIndex > 0)
+            {
+                PreviousImageVM = new CurrentImageViewModel(SortedImageDetails[PreviousImageIndex], PreviousImageIndex);
+            }
         }
-
-
     }
 }

@@ -2,11 +2,23 @@
 using ImageSorter.Views;
 using ReactiveUI;
 using System;
+using System.Linq;
 
 namespace ImageSorter
 {
     public class AppViewLocator : IViewLocator
     {
+        //public IViewFor ResolveView(RoutingState router,  string UrlPathSegment)
+        //{
+        //    var a = router.NavigationStack.Where(x => x.UrlPathSegment == UrlPathSegment);
+        //    return new CurrentImageView{DataContext = a};
+        //}
+
+        //public IViewFor ResolveView<T>(T viewModel, CurrentImageView imgView, string contract = null)
+        //{
+        //    return imgView;
+        //}
+
         public IViewFor ResolveView<T>(T viewModel, string contract = null) => viewModel switch
         {
             ProjectSelectionViewModel context => new ProjectSelectionView { DataContext = context },
