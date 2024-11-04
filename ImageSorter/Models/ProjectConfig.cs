@@ -167,5 +167,12 @@ namespace ImageSorter.Models
                 }
             }
         }
+
+        public void SetImageFilterValue(ImageDetails imageDetails, string filterValue)
+        {
+            var imageToSet = this.InputImages.First(x => x == imageDetails);
+            imageToSet.FilteredValue = filterValue;
+            this.SetLastModifiedTime();
+        }
     }
 }

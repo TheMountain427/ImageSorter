@@ -21,51 +21,67 @@ public class WorkspaceViewModel : ViewModelBase
 
     public List<ImageDetails>? SortedImageDetails { get; protected set; }
 
-    public ImgOrder ImageSortOrder { get; set; }
+    private ImgOrder _imageSortOrder;
+    public ImgOrder ImageSortOrder
+    {
+        get { return _imageSortOrder; }
+        protected set { this.RaiseAndSetIfChanged(ref _imageSortOrder, value); }
+    }
 
 
-    public int CurrentImageIndex { get; protected set; }
-    public int NextImageIndex { get; protected set; }
-    public int PreviousImageIndex { get; protected set; }
+    private int _currentImageIndex;
+    public int CurrentImageIndex
+    {
+        get { return _currentImageIndex; }
+        protected set { this.RaiseAndSetIfChanged(ref _currentImageIndex, value); }
+    }
+    //public int NextImageIndex { get; protected set; }
+    //public int PreviousImageIndex { get; protected set; }
 
     //public CurrentImageView NextMainImageView { get; protected set; }
-    public CurrentImageViewModel NextMainImageVM { get; protected set; }
+    public CurrentImageViewModel NextImageVM { get; protected set; }
     public CurrentImageViewModel CurrentImageVM { get; protected set; }
     public CurrentImageViewModel PreviousImageVM { get; protected set; }
 
 
     public void ChangeImageRight()
     {
-        // wtf am I doing just make this a list of CurrentImageViewModels
-        if (SortedImageDetails is not null && CurrentImageIndex < SortedImageDetails.Count - 1)
+        // Don't think about it
+        if (NextImageVM is not null)
         {
-            CurrentImageIndex++;
-            CurrentImageRouter.Navigate.Execute(NextMainImageVM);
-            CurrentImageVM = NextMainImageVM;
+            CurrentImageRouter.Navigate.Execute(NextImageVM);
+            PreviousImageVM = CurrentImageVM;
+            CurrentImageVM = NextImageVM;
+            CurrentImageIndex = SortedImageDetails.IndexOf(CurrentImageVM.ImageDetails);
 
-            if (NextImageIndex < SortedImageDetails.Count - 1)
+            if (CurrentImageIndex < SortedImageDetails.Count)
             {
-                PreviousImageVM = CurrentImageVM;
-                NextMainImageVM = new CurrentImageViewModel(SortedImageDetails[NextImageIndex], NextImageIndex);
-                NextImageIndex++;
-                PreviousImageIndex++;
+                NextImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageVM.CurrentIndex + 1], CurrentImageVM.CurrentIndex + 1);
+            }
+            else
+            {
+                NextImageVM = null;
             }
         }
     }
 
     public void ChangeImageLeft()
     {
-        if (SortedImageDetails is not null && CurrentImageIndex > 0)
+        // Don't think about it
+        if (PreviousImageVM is not null)
         {
-            CurrentImageIndex--;
             CurrentImageRouter.Navigate.Execute(PreviousImageVM);
-            if (PreviousImageIndex > 0)
+            NextImageVM = CurrentImageVM;
+            CurrentImageVM = PreviousImageVM;
+            CurrentImageIndex = SortedImageDetails.IndexOf(CurrentImageVM.ImageDetails);
+
+            if (CurrentImageIndex > 0)
             {
-                NextMainImageVM = CurrentImageVM;
-                CurrentImageVM = PreviousImageVM;
-                PreviousImageVM = new CurrentImageViewModel(SortedImageDetails[PreviousImageIndex], PreviousImageIndex);
-                NextImageIndex--;
-                PreviousImageIndex--;
+                PreviousImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageVM.CurrentIndex - 1], CurrentImageVM.CurrentIndex - 1);
+            }
+            else
+            {
+                PreviousImageVM = null;
             }
         }
 
@@ -92,6 +108,11 @@ public class WorkspaceViewModel : ViewModelBase
         }
 
 
+    }
+
+    public void FilterImageOne()
+    {
+        this.ProjectConfig.SetImageFilterValue(CurrentImageVM.ImageDetails, "one");
     }
 
     // **** Debug **** //
@@ -136,9 +157,7 @@ public class WorkspaceViewModel : ViewModelBase
         CurrentAppState = appState;
         ProjectConfig = projectConfig;
         ImageSortOrder = ImgOrder.DescFileName;
-        PreviousImageIndex = -1;
         CurrentImageIndex = 0;
-        NextImageIndex = 1;
         CurrentImageRouter = new RoutingState();
 
         GetImageDetailsSorted(ImageSortOrder);
@@ -147,16 +166,24 @@ public class WorkspaceViewModel : ViewModelBase
         {
             CurrentImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageIndex], CurrentImageIndex);
             CurrentImageRouter.Navigate.Execute(CurrentImageVM);
-
+            
             if (CurrentImageIndex < SortedImageDetails.Count)
             {
-                NextMainImageVM = new CurrentImageViewModel(SortedImageDetails[NextImageIndex], NextImageIndex);
+                NextImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageVM.CurrentIndex + 1], CurrentImageVM.CurrentIndex + 1);
+            }
+            else
+            {
+                NextImageVM = null;
             }
 
             // For later if loading project in middle of image list
             if (CurrentImageIndex > 0)
             {
-                PreviousImageVM = new CurrentImageViewModel(SortedImageDetails[PreviousImageIndex], PreviousImageIndex);
+                PreviousImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageVM.CurrentIndex - 1], CurrentImageVM.CurrentIndex - 1);
+            }
+            else
+            {
+                PreviousImageVM = null;
             }
         }
     }

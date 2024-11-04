@@ -7,18 +7,16 @@ namespace ImageSorter.ViewModels;
 
 public class CurrentImageViewModel : ViewModelBase
 {
-    public override string UrlPathSegment { get; } 
-
+    public override string UrlPathSegment { get; }
+    public ImageDetails ImageDetails { get; }
     public string ImageName { get; }
-
     public string ImagePath { get; }
-
     public Bitmap ImageBitmap { get; }
-
     public int CurrentIndex { get; }
 
     public CurrentImageViewModel(ImageDetails imageDetails, int CurrentIndex)
     {
+        this.ImageDetails = imageDetails;
         this.ImagePath = imageDetails.FilePath;
         this.CurrentIndex = CurrentIndex;
         this.ImageName = imageDetails.FileName;
