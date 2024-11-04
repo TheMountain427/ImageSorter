@@ -150,6 +150,10 @@ public class ProjectSelectionViewModel : ViewModelBase
         set { this.RaiseAndSetIfChanged(ref _selectedRecentProject, value); }
     }
 
+    public List<ImageDetails> NewImagesFound { get; set; } = new List<ImageDetails>();
+    public List<ImageDetails> OldImagesRemoved { get; set; } = new List<ImageDetails>();
+    // Old detail > New detail
+    public List<KeyValuePair<ImageDetails, ImageDetails>> UpdatedImages { get; set; } = new List<KeyValuePair<ImageDetails, ImageDetails>>();
 
 
     public void UpdateCanGoToWorkspace()
@@ -281,29 +285,6 @@ public class ProjectSelectionViewModel : ViewModelBase
 
         var projectConfig = GetProjectConfigFromJson(CurrentAppState.CurrentProjectConfigPath);
 
-        // validate images from a loaded project still exist
-        // This should not be needed anymore due to how JsonDeserializer works
-        // Detail won't be created if file not found by ImageDetails > JsonWriter overrites project config with the image removed
-        //if (projectConfig.InputImages.Count != 0)
-        //{
-        //    // remove bad images details, avoid altering enumerable size while in a loop
-        //    int badImages = 0;
-        //    foreach (var image in projectConfig.InputImages)
-        //    {
-        //        bool isImageValid = image.ValidateImageProperties();
-        //        if (isImageValid == false)
-        //        {
-        //            image.IsValid = false;
-        //            badImages++;
-        //        }
-        //    }
-
-        //    if (badImages > 0)
-        //    {
-        //        projectConfig.InputImages.RemoveWhere(x => x.IsValid == false);
-        //    }
-        //}
-
         // Load images details from image input directories, only unique file names
         if (!didLoadRecentProject) // oops, was duplicating images each load
         {
@@ -320,6 +301,103 @@ public class ProjectSelectionViewModel : ViewModelBase
                 }
             }
 
+        }
+        else
+        {
+            // Loading a recent project, try to fix missing values, remove old images, and load new ones
+            // Placing any issues into NewImagesFound, OldImagesMissing, UpdatedImages properties for use later
+            var foundImagePaths = new List<string>();
+
+            foreach (var inputPath in projectConfig.ImgDirectoryPaths)
+            {
+                foundImagePaths.AddRange(Directory.EnumerateFiles(inputPath).Where(x => x.EndsWith(".jpeg") || x.EndsWith(".png") || x.EndsWith(".jpg")));
+            }
+
+            // Try to fix any images in the config with missing paths
+            var missingPaths = new List<ImageDetails>();
+            missingPaths.AddRange(projectConfig.InputImages.Where(x => x.FilePath is null && x.FileName is not null));
+
+            if (missingPaths.Any())
+            {
+                foreach (var missing in missingPaths)
+                {
+                    var foundMissingPath = foundImagePaths.FirstOrDefault(x => Path.GetFileName(x) == missing.FileName);
+                    var oldImage = projectConfig.InputImages.First(x => x.FileName == missing.FileName);
+
+                    if (!string.IsNullOrEmpty(foundMissingPath))
+                    {
+                        // We found the image and will fix the path
+                        var updatedImage = new ImageDetails(foundMissingPath);
+                        // Add a Old>New keypair to use as an alert later
+                        UpdatedImages.Add(new KeyValuePair<ImageDetails, ImageDetails>(oldImage, updatedImage));
+                        projectConfig.InputImages.Remove(oldImage);
+                        projectConfig.InputImages.Add(updatedImage);
+                    }
+                    else
+                    {
+                        // Image was not found, add an alert and remove it from the config
+                        OldImagesRemoved.Add(oldImage);
+                        projectConfig.InputImages.Remove(oldImage);
+                    }
+                }
+            }
+
+            // Try to fix any images with missing names
+            var missingNames = new List<ImageDetails>();
+            missingNames.AddRange(projectConfig.InputImages.Where(x => x.FileName is null && x.FilePath is not null));
+
+            if (missingNames.Any())
+            {
+                foreach (var missing in missingNames)
+                {
+                    var oldImage = projectConfig.InputImages.First(x => x.FilePath == missing.FilePath);
+                    var fileName = Path.GetFileName(missing.FilePath);
+
+                    if (!string.IsNullOrEmpty(fileName))
+                    {
+                        // We found the image name
+                        var updatedImage = new ImageDetails(fileName);
+                        UpdatedImages.Add(new KeyValuePair<ImageDetails, ImageDetails>(oldImage, updatedImage));
+                        projectConfig.InputImages.Remove(oldImage);
+                        projectConfig.InputImages.Add(updatedImage);
+                    }
+                    else
+                    {
+                        // File doesn't have a name??? shouldn't happen but we will log it and remove it
+                        OldImagesRemoved.Add(oldImage);
+                        projectConfig.InputImages.Remove(oldImage);
+                    }
+                }
+            }
+
+            // Load any new Images not currently in the project config
+            // Returns filepaths in foundImagePaths that are not present in InputImages(x => x.FilePath)
+            var newImages = foundImagePaths.Except(projectConfig.InputImages.Select(x => x.FilePath));
+
+            if (newImages.Any())
+            {
+                foreach (var newImagePath in newImages)
+                {
+                    // We found new images, log em and add em
+                    var newImageDetail = new ImageDetails(newImagePath);
+                    NewImagesFound.Add(newImageDetail);
+                    projectConfig.InputImages.Add(newImageDetail);
+                }
+            }
+
+            // Remove any images from project config that no longer exist in the directories
+            var removedImages = projectConfig.InputImages.Select(x => x.FilePath).Except(foundImagePaths);
+
+            if (removedImages.Any())
+            {
+                foreach (var missingImage in removedImages)
+                {
+                    // We found an image that no longer exists and could not be fixed, bag em and tag em
+                    var oldImage = ProjectConfig.InputImages.First(x => x.FilePath == missingImage);
+                    OldImagesRemoved.Add(oldImage);
+                    projectConfig.InputImages.Remove(oldImage);
+                }
+            }
         }
 
         // Set up jsonWriter to write projectconfig to a json when it changes
@@ -340,6 +418,17 @@ public class ProjectSelectionViewModel : ViewModelBase
 
         // Change last modified time on App close, triggers a JSON write
         App.Desktop.Exit += ProjectConfig.SetLastModifiedOnAppClose;
+
+        // Initilize file watchers to watch for changes in the input images
+        this.ProjectConfig.ProjectImageWatchers = new List<ImageFileWatcher>();
+        foreach (var path in this.ProjectConfig.ImgDirectoryPaths)
+        {
+            var watcher = new ImageFileWatcher(path);
+            watcher.ImageWatcher.Renamed += this.ProjectConfig.InputImageChangeEvent;
+            watcher.ImageWatcher.Created += this.ProjectConfig.InputImages.OnImageCreated;
+            watcher.ImageWatcher.Deleted += this.ProjectConfig.InputImages.OnImageDeleted;
+            ProjectConfig.ProjectImageWatchers.Add(watcher);
+        }
     }
 
 

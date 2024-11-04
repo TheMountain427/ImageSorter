@@ -22,6 +22,8 @@ namespace ImageSorter.Models
         private ImageHashSet _referenceImages = new ImageHashSet();
         [JsonIgnore]
         public bool JsonWriterEnabled { get; private set; } = false;
+        [JsonIgnore]
+        public List<ImageFileWatcher> ProjectImageWatchers { get; set; }
 
         public string ProjectName
         {
@@ -130,6 +132,14 @@ namespace ImageSorter.Models
         public void SetJsonWriterState(bool value)
         {
             this.JsonWriterEnabled = value;
+        }
+
+        public void InputImageChangeEvent(object sender, EventArgs e)
+        {
+            if (e is RenamedEventArgs renamedEventArgs)
+            {
+                this.InputImages.OnImageRenamed(sender, renamedEventArgs);
+            }
         }
     }
 }
