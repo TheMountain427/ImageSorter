@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using ImageSorter.Models;
 using ReactiveUI;
@@ -336,6 +337,9 @@ public class ProjectSelectionViewModel : ViewModelBase
         projectConfig.ProjectConfigPath = CurrentAppState.CurrentProjectConfigPath;
 
         this.ProjectConfig = projectConfig;
+
+        // Change last modified time on App close, triggers a JSON write
+        App.Desktop.Exit += ProjectConfig.SetLastModifiedOnAppClose;
     }
 
 
@@ -446,16 +450,26 @@ public class ProjectSelectionViewModel : ViewModelBase
                 {
                     try
                     {
-                        var projName = JsonDocument.Parse(File.ReadAllText(jsonPath)).RootElement.GetProperty("ProjectName");
+                        var projJSON = JsonDocument.Parse(File.ReadAllText(jsonPath));
+                        var projName = projJSON.RootElement.GetProperty("ProjectName");
+
                         if (!string.IsNullOrEmpty(projName.ToString()))
                         {
-                            // uh... stinky
-                            var mod = (DateTimeOffset)(await (await App.TopLevel.StorageProvider.TryGetFileFromPathAsync(jsonPath))!.GetBasicPropertiesAsync()).DateModified!;
-                            foundRecentProjects.Add(new KeyValuePair<string, DateTimeOffset>(projName.ToString(), mod));
+                            bool doesTimeExist = DateTime.TryParse(projJSON.RootElement.GetProperty("LastModifiedTime").ToString(), out var mod);
+
+                            if (doesTimeExist)
+                            {
+                                foundRecentProjects.Add(new KeyValuePair<string, DateTimeOffset>(projName.ToString(), mod));
+                            }
                         }
                     }
                     // Handle Invalid Json
                     catch (JsonException e)
+                    {
+                        continue;
+                    }
+                    // Handle JSON does not contain property
+                    catch (KeyNotFoundException e)
                     {
                         continue;
                     }

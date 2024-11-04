@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Avalonia.Controls.ApplicationLifetimes;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -12,6 +13,7 @@ namespace ImageSorter.Models
     public class ProjectConfig
     {
         private string _projectName;
+        private DateTime _lastModifiedTime = DateTime.UtcNow;
         private string _projectConfigPath;
         private List<string> _imgDirectoryPaths;
         private List<string> _outputDirectoryPath;
@@ -91,6 +93,16 @@ namespace ImageSorter.Models
             }
         }
 
+        public DateTime LastModifiedTime
+        {
+            get => _lastModifiedTime;
+            protected set
+            {
+                _lastModifiedTime = value;
+                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
         private EventHandler _onProjectConfigChange;
         public event EventHandler OnProjectConfigChange
         {
@@ -103,6 +115,17 @@ namespace ImageSorter.Models
                 _onProjectConfigChange -= value;
             }
         }
+
+        public void SetLastModifiedTime()
+        {
+            LastModifiedTime = DateTime.UtcNow;
+        }
+
+        public void SetLastModifiedOnAppClose(object sender, ControlledApplicationLifetimeExitEventArgs e)
+        {
+            LastModifiedTime = DateTime.UtcNow;
+        }
+
 
         public void SetJsonWriterState(bool value)
         {

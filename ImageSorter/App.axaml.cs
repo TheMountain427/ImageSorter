@@ -16,6 +16,8 @@ public partial class App : Application
     // https://github.com/AvaloniaUI/Avalonia/discussions/13599#discussioncomment-7562209
     public static TopLevel TopLevel { get; private set; }
 
+    public static IClassicDesktopStyleApplicationLifetime Desktop { get; private set; }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -26,12 +28,15 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow();
-            
+
             // Set App.TopLevel here
             TopLevel = TopLevel.GetTopLevel(desktop.MainWindow);
             // Changed formated here so that Top Level is loaded before the view models
             // This way we can access StorageProvider on ViewModel load
-            desktop.MainWindow.DataContext= new MainWindowViewModel();
+            desktop.MainWindow.DataContext = new MainWindowViewModel();
+
+            // Allow access to ApplicationLiftetime for App Exit event
+            Desktop = desktop;
 
         }
 
