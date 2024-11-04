@@ -32,6 +32,7 @@ namespace ImageSorter.Models
             {
                 _projectName = value;
                 _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
+                this.SetLastModifiedTime();
             }
         }
 
@@ -42,6 +43,7 @@ namespace ImageSorter.Models
             {
                 _projectConfigPath = value;
                 _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
+                this.SetLastModifiedTime();
             }
         }
 
@@ -52,6 +54,7 @@ namespace ImageSorter.Models
             {
                 _imgDirectoryPaths = value;
                 _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
+                this.SetLastModifiedTime();
             }
         }
 
@@ -62,6 +65,7 @@ namespace ImageSorter.Models
             {
                 _outputDirectoryPath = value;
                 _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
+                this.SetLastModifiedTime();
             }
         }
 
@@ -72,6 +76,7 @@ namespace ImageSorter.Models
             {
                 _filterValues = value;
                 _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
+                this.SetLastModifiedTime();
             }
         }
 
@@ -82,6 +87,7 @@ namespace ImageSorter.Models
             {
                 _inputImages = value;
                 _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
+                this.SetLastModifiedTime();
             }
         }
 
@@ -92,6 +98,7 @@ namespace ImageSorter.Models
             {
                 _referenceImages = value;
                 _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
+                this.SetLastModifiedTime();
             }
         }
 
@@ -136,9 +143,28 @@ namespace ImageSorter.Models
 
         public void InputImageChangeEvent(object sender, EventArgs e)
         {
+            // Forwarding ImageWatcher events to ImageHashSet
+            // Kinda hacky way to force an onChanged event and have JSON writer fire
             if (e is RenamedEventArgs renamedEventArgs)
             {
                 this.InputImages.OnImageRenamed(sender, renamedEventArgs);
+                this.SetLastModifiedTime();
+            }
+            else if (e is FileSystemEventArgs fileSystemEventArgs)
+            {
+                switch (fileSystemEventArgs.ChangeType)
+                {
+                    case WatcherChangeTypes.Created:
+                        this.InputImages.OnImageCreated(sender, fileSystemEventArgs);
+                        this.SetLastModifiedTime();
+                        break;
+                    case WatcherChangeTypes.Deleted:
+                        this.InputImages.OnImageDeleted(sender, fileSystemEventArgs);
+                        this.SetLastModifiedTime();
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

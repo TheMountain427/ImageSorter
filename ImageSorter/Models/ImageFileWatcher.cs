@@ -18,7 +18,7 @@ namespace ImageSorter.Models
             ImageWatcher = new FileSystemWatcher()
             {
                 Path = path,
-                NotifyFilter = NotifyFilters.FileName,
+                //NotifyFilter = NotifyFilters.FileName,
                 IncludeSubdirectories = false,
                 EnableRaisingEvents = true
             };
