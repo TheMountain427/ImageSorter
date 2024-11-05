@@ -24,6 +24,7 @@ namespace ImageSorter
             ProjectSelectionViewModel context => new ProjectSelectionView { DataContext = context },
             WorkspaceViewModel context => new WorkspaceView { DataContext = context },
             CurrentImageViewModel context => new CurrentImageView { DataContext = context },
+            WorkspaceControlsViewModel context => new WorkspaceControls { DataContext = context },
             _ => throw new ArgumentOutOfRangeException(nameof(viewModel))
         };
     }

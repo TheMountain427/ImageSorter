@@ -1,0 +1,74 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ImageSorter.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="200"
+             x:Class="ImageSorter.Views.WorkspaceControls"
+			 x:DataType="vm:WorkspaceControlsViewModel">
+
+	<Grid>
+		<Border Name="WorkCtrl_Border"
+				BorderBrush="Black"
+				BorderThickness="2"
+				CornerRadius="2"
+				Padding="5"
+				MaxWidth="500"
+				MaxHeight="200">
+			<Grid Name="WorkCtrl_MainGrid"
+				  RowDefinitions="Auto,*,auto">
+				<Grid Name="WorkCtrl_UpperGrid"
+					  ColumnDefinitions="*,*,*,*"
+					  VerticalAlignment="Top"
+					  Grid.Row="0" >
+					<Button Name="WorkCtrl_ResetImageButton"
+							Content="Reset Image"
+							HorizontalContentAlignment="Center"
+							Grid.Column="0"
+							Width="120"/>
+					<Button Name="WorkCtrl_PreviousImageButton"
+							Content="Previous Image"
+							HorizontalContentAlignment="Center"
+							Grid.Column="1"
+							Width="120"/>
+					<Button Name="WorkCtrl_NextImageButton"
+							Content="Next Image"
+							HorizontalContentAlignment="Center"
+							Grid.Column="2"
+							Width="120"/>
+					<Button Name="WorkCtrl_SetFiltersButton"
+							Content="Set Filters"
+							HorizontalContentAlignment="Center"
+							Grid.Column="3"
+							Width="120"/>
+				</Grid>
+				<Rectangle Name="WorkCtrl_SeperatorRectangle"
+						   HorizontalAlignment="Stretch"
+						   Grid.Row="1"
+						   Fill="LightGray"
+						   Height="10"
+						   VerticalAlignment="Center"
+						   Margin="-5,10"/>
+				<ItemsControl Name="WorkCtrl_FilterWrapRepeater"
+							  ItemsSource="{ Binding FilterList }"
+							  x:CompileBindings="False"
+							  Grid.Row="2">
+					<ItemsControl.ItemsPanel>
+						<!--https://docs.avaloniaui.net/docs/concepts/custom-itemspanel-->
+						<ItemsPanelTemplate>
+							<WrapPanel HorizontalAlignment="Center"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Button Content="{ Binding }" 
+									Command="{ Binding $parent[UserControl].DataContext.FilterImage }" 
+									CommandParameter="{ Binding $self.Content }"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</Grid>
+		</Border>
+	</Grid>
+
+</UserControl>

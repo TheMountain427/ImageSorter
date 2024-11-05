@@ -19,6 +19,8 @@ public class WorkspaceViewModel : ViewModelBase
 
     public RoutingState CurrentImageRouter { get; } = new RoutingState();
 
+    public RoutingState WorkspaceControlsRouter { get; } = new RoutingState();
+
     public List<ImageDetails>? SortedImageDetails { get; protected set; }
 
     private ImgOrder _imageSortOrder;
@@ -159,6 +161,7 @@ public class WorkspaceViewModel : ViewModelBase
         ImageSortOrder = ImgOrder.DescFileName;
         CurrentImageIndex = 0;
         CurrentImageRouter = new RoutingState();
+        WorkspaceControlsRouter = new RoutingState();
 
         GetImageDetailsSorted(ImageSortOrder);
 
@@ -186,5 +189,7 @@ public class WorkspaceViewModel : ViewModelBase
                 PreviousImageVM = null;
             }
         }
+
+        WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel());
     }
 }
