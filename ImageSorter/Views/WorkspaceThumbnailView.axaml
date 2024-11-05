@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ImageSorter.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="1000"
+             x:Class="ImageSorter.Views.WorkspaceThumbnailView"
+			 x:DataType="vm:WorkspaceThumbnailViewModel">
+
+	<!--<Grid>
+		<ItemsControl ItemsSource="{ Binding ImageDetails }">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel VerticalAlignment="Center"
+								HorizontalAlignment="Center">
+					</StackPanel>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Border Name="{ Binding FilteredValue, StringFormat=WorkThumb_{0}Border }"
+							BorderBrush="Gray"
+							BorderThickness="2"
+							CornerRadius="0">
+						<StackPanel>
+							<Grid>
+								<Button Name="{ Binding FilteredValue, StringFormat=WorkThumb_{0}MenuButton }"
+										Content="...">
+									<Button.Flyout>
+										<Flyout>
+											<StackPanel>
+												<Button Name="{ Binding FilteredValue, StringFormat=WorkThumb_{0}SetRefImgButton }"
+														Content="Set Reference Image"
+														HorizontalAlignment="Stretch"
+														HorizontalContentAlignment="Center"
+														Command="{ Binding SetReferenceImage }"
+														CommandParameter=""/>
+												<Button Name="{ Binding FilteredValue, StringFormat=WorkThumb_{0}ChangeFilterButton }"
+														Content="Change Filter Name"
+														HorizontalAlignment="Stretch"
+														HorizontalContentAlignment="Center"
+														Command="{ Binding ChangeFilterName }"
+														CommandParameter=""/>
+											</StackPanel>
+										</Flyout>
+									</Button.Flyout>
+								</Button>
+								<TextBlock Text="{ Binding FilteredValue }" HorizontalAlignment="Center"/>
+							</Grid>
+							<Image Source="{ Binding FilePath, FallbackValue=/Assets/avalonia-logo.ico }" PointerPressed=""/>
+						</StackPanel>
+					</Border>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</Grid>-->
+</UserControl>

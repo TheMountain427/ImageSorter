@@ -53,6 +53,7 @@
 								   Height="12"
 								   Margin="0,0,10,0"
 								   ToolTip.Tip="{ Binding ImgPathHelp }"/>
+							<!--Try UpdateSourceTrigger instead of Events-->
 							<TextBox Name="ProjectSelection_ImgPath_TextBox"
 									 Grid.Column="1"
 									 Watermark="Path\To\Images"

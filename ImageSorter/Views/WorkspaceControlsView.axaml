@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:ImageSorter.ViewModels"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="200"
-             x:Class="ImageSorter.Views.WorkspaceControls"
+             x:Class="ImageSorter.Views.WorkspaceControlsView"
 			 x:DataType="vm:WorkspaceControlsViewModel">
 
 	<Grid>
@@ -25,22 +25,60 @@
 							Content="Reset Image"
 							HorizontalContentAlignment="Center"
 							Grid.Column="0"
+							Command="{ Binding ResetImageView }"
 							Width="120"/>
 					<Button Name="WorkCtrl_PreviousImageButton"
 							Content="Previous Image"
 							HorizontalContentAlignment="Center"
+							Command="{ Binding GoPreviousImage }"
 							Grid.Column="1"
 							Width="120"/>
 					<Button Name="WorkCtrl_NextImageButton"
 							Content="Next Image"
 							HorizontalContentAlignment="Center"
+							Command="{ Binding GoNextImage }"
 							Grid.Column="2"
 							Width="120"/>
 					<Button Name="WorkCtrl_SetFiltersButton"
 							Content="Set Filters"
 							HorizontalContentAlignment="Center"
+							Command="{ Binding SetFilterValues }"
 							Grid.Column="3"
-							Width="120"/>
+							Width="120">
+						<Button.Flyout>
+							<Flyout>
+								<StackPanel Spacing="3"
+											Margin="2">
+									<Grid RowDefinitions="*,*">
+										<TextBlock Text="Set Filters"
+												   HorizontalAlignment="Left"
+												   Grid.Row="0"/>
+										<NumericUpDown Increment="1"
+													   Minimum="0"
+													   Value="{ Binding FilterAmount, Mode=TwoWay }"
+													   HorizontalAlignment="Right"
+													   Grid.Row="0"/>
+									</Grid>
+									<ListBox ItemsSource="{ Binding TempFilterList }">
+										<ListBox.ItemTemplate>
+											<DataTemplate>
+												<TextBox Text="{ Binding, Mode=TwoWay }"/>
+											</DataTemplate>
+										</ListBox.ItemTemplate>
+									</ListBox>
+									<!--<ItemsControl ItemsSource="{ Binding TempFilterList }">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<TextBox Text="{ Binding, Mode=TwoWay }"/>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>-->
+									<Button Content="Apply"
+											Command="{ Binding SetFilters }"/>
+								</StackPanel>
+							</Flyout>
+						</Button.Flyout>
+					</Button>
 				</Grid>
 				<Rectangle Name="WorkCtrl_SeperatorRectangle"
 						   HorizontalAlignment="Stretch"
@@ -61,9 +99,12 @@
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<Button Content="{ Binding }" 
-									Command="{ Binding $parent[UserControl].DataContext.FilterImage }" 
-									CommandParameter="{ Binding $self.Content }"/>
+							<!--https://docs.avaloniaui.net/docs/basics/data/data-binding/data-binding-syntax#string-formatting-->
+							<Button Name="{ Binding $self.Tag, Mode=OneWay, StringFormat=WorkCtrl_{0}Button }"
+									Content="{ Binding }"
+									Command="{ Binding $parent[UserControl].DataContext.FilterImage }"
+									CommandParameter="{ Binding $self.Tag }"
+									Tag="{ Binding }"/>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

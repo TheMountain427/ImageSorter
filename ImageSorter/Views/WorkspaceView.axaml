@@ -8,40 +8,68 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ImageSorter.Views.WorkspaceView"
              x:DataType="vm:WorkspaceViewModel">
-	<Grid RowDefinitions="*,*,*">
-		<StackPanel Grid.Row="0">
-			<Button Content="Click Me" Command="{ Binding BtnCommand }"/>
-			<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
-			<Button Content="Change Image Right" Command="{ Binding ChangeImageRight }"/>
-			<Button Content="Change Image Left" Command="{ Binding ChangeImageLeft }"/>
-			<TextBlock Text="{ Binding CurrentImageIndex }"/>
-			<Button Content="FilterOne" Command="{ Binding FilterImageOne }"/>
+
+	<Grid ColumnDefinitions="*,4,*,4,*">
+		<StackPanel Grid.Column="0">
+			<Button Content="Reset Split"
+					HorizontalAlignment="Center"
+					IsEnabled="True"
+					IsVisible="True"/>
 		</StackPanel>
-		<Panel MaxHeight="500"
-				MaxWidth="500"
-				Grid.Row="1">
-			<rxui:RoutedViewHost Router="{ Binding CurrentImageRouter }">
-				<rxui:RoutedViewHost.PageTransition>
-					<CrossFade Duration="0:0:0.5"/>
-				</rxui:RoutedViewHost.PageTransition>
+		<GridSplitter Grid.Column="1"
+					  Background="Black"
+					  ResizeDirection="Columns"
+					  IsEnabled="True"
+					  IsVisible="True"/>
+
+		<Grid RowDefinitions="*,*,*"
+			  Grid.Column="2">
+			<StackPanel Grid.Row="0">
+				<Button Content="Click Me" Command="{ Binding BtnCommand }"/>
+				<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
+				<Button Content="Change Image Right" Command="{ Binding ChangeImageRight }"/>
+				<Button Content="Change Image Left" Command="{ Binding ChangeImageLeft }"/>
+				<TextBlock Text="{ Binding CurrentImageIndex }"/>
+				<Button Content="FilterOne" Command="{ Binding FilterImageOne }"/>
+			</StackPanel>
+			<Panel MaxHeight="500"
+				   MaxWidth="500"
+				   Grid.Row="1">
+				<rxui:RoutedViewHost Router="{ Binding CurrentImageRouter }">
+					<rxui:RoutedViewHost.PageTransition>
+						<CrossFade Duration="0:0:0.5"/>
+					</rxui:RoutedViewHost.PageTransition>
+					<rxui:RoutedViewHost.DefaultContent>
+						<TextBlock Text="I should be the current image"/>
+					</rxui:RoutedViewHost.DefaultContent>
+					<rxui:RoutedViewHost.ViewLocator>
+						<app:AppViewLocator />
+					</rxui:RoutedViewHost.ViewLocator>
+				</rxui:RoutedViewHost>
+			</Panel>
+			<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
+								 VerticalAlignment="Bottom"
+								 Grid.Row="2">
 				<rxui:RoutedViewHost.DefaultContent>
-					<TextBlock Text="I should be the current image"/>
+					<Rectangle Fill="Black" Height="100" Width="300"/>
 				</rxui:RoutedViewHost.DefaultContent>
 				<rxui:RoutedViewHost.ViewLocator>
-					<app:AppViewLocator />
+					<app:AppViewLocator/>
 				</rxui:RoutedViewHost.ViewLocator>
 			</rxui:RoutedViewHost>
-		</Panel>
-		<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
-							 VerticalAlignment="Bottom"
-							 Grid.Row="2">
-			<rxui:RoutedViewHost.DefaultContent>
-				<Rectangle Fill="Black" Height="100" Width="300"/>
-			</rxui:RoutedViewHost.DefaultContent>
-			<rxui:RoutedViewHost.ViewLocator>
-				<app:AppViewLocator/>
-			</rxui:RoutedViewHost.ViewLocator>
-		</rxui:RoutedViewHost>
+		</Grid>
+
+		<GridSplitter Grid.Column="3"
+					  Background="Black"
+					  ResizeDirection="Columns"
+					  IsEnabled="True"
+					  IsVisible="True"/>
+		<StackPanel Grid.Column="4">
+			<Button Content="Reset Split"
+					HorizontalAlignment="Center"
+					IsEnabled="True"
+					IsVisible="True"/>
+		</StackPanel>
 
 	</Grid>
 </UserControl>

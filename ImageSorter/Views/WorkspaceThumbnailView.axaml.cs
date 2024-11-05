@@ -7,9 +7,9 @@ using ReactiveUI;
 
 namespace ImageSorter.Views;
 
-public partial class WorkspaceControls : ReactiveUserControl<WorkspaceControlsViewModel>
+public partial class WorkspaceThumbnailView : ReactiveUserControl<WorkspaceThumbnailViewModel>
 {
-    public WorkspaceControls()
+    public WorkspaceThumbnailView()
     {
         this.WhenActivated(disposables => { });
         AvaloniaXamlLoader.Load(this);

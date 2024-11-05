@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ImageSorter.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ImageSorter.Views.WorkspaceReferenceImageView"
+			 x:DataType="vm:WorkspaceReferenceImageViewModel">
+
+	<Grid>
+		<Border 
+				BorderBrush="Gray"
+				BorderThickness="2"
+				CornerRadius="0">
+			<StackPanel>
+				<Grid>
+					<Button 
+							Content="...">
+						<Button.Flyout>
+							<Flyout>
+								<StackPanel>
+									<Button 
+											Content="Set Reference Image"
+											HorizontalAlignment="Stretch"
+											HorizontalContentAlignment="Center"
+											Command=""
+											CommandParameter=""/>
+									<Button 
+											Content="Change Filter Name"
+											HorizontalAlignment="Stretch"
+											HorizontalContentAlignment="Center"
+											Command=""
+											CommandParameter=""/>
+								</StackPanel>
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+					<TextBox Text="" HorizontalAlignment="Center"/>
+				</Grid>
+				<Button Content="Select Reference Image" 
+						Command="{ Binding SetReferenceImage }"
+						IsEnabled="{ Binding !ImageExists }"
+						IsVisible="{ Binding !ImageExists }"/>
+				<Image Source="" 
+					   PointerPressed=""
+					   IsEnabled="{ Binding ImageExists }"
+					   IsVisible="{ Binding ImageExists }"/>
+			</StackPanel>
+		</Border>
+	</Grid>
+
+</UserControl>

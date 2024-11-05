@@ -190,6 +190,6 @@ public class WorkspaceViewModel : ViewModelBase
             }
         }
 
-        WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel());
+        WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(this.ProjectConfig));
     }
 }
