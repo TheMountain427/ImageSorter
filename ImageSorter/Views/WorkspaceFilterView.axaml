@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ImageSorter.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="1000"
+             x:Class="ImageSorter.Views.WorkspaceFilterView"
+			 x:DataType="vm:WorkspaceFilterViewModel">
+	<StackPanel Spacing="5">
+		<StackPanel Orientation="Horizontal"
+					HorizontalAlignment="Center"
+					Spacing="5">
+			<Button Name="SideFilters_RemoveFilterButton"
+					Content="Remove Filter"
+					Command="{ Binding RemoveFilter }"
+					Width="110"
+					HorizontalContentAlignment="Center"/>
+			<Button Name="SideFilters_AddFilterButton"
+					Content="Add Filter"
+					Command="{ Binding AddFilter }"
+					Width="110"
+					HorizontalContentAlignment="Center"/>
+			<Button Content="Apply" 
+					Command="{ Binding ApplyFilters }"/>
+		</StackPanel>
+		<ItemsControl ItemsSource="{ Binding Filters }">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<TextBox Text="{ Binding FilteredValue, Mode=TwoWay }"/>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</StackPanel>
+</UserControl>

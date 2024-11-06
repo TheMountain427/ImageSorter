@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ImageSorter.Models
 {
-    public class AppState
+    public class AppState : ReactiveObject
     {
         private string _currentAppDirectory;
         private string _appStateFileName = "AppState.json";
@@ -17,6 +18,7 @@ namespace ImageSorter.Models
         private List<string> _recentProjectNames;
         private string _currentProjectName;
         private string _currentProjectConfigPath;
+        private bool _filterSidePanelOpen;
         [JsonIgnore]
         public bool JsonWriterEnabled { get; private set; } = false;
 
@@ -99,6 +101,16 @@ namespace ImageSorter.Models
             set
             {
                 _currentProjectConfigPath = value;
+                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public bool FilterSidePanelOpen
+        {
+            get => _filterSidePanelOpen;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _filterSidePanelOpen, value);
                 _onAppStateChanged?.Invoke(this, EventArgs.Empty);
             }
         }

@@ -31,4 +31,12 @@
       <DependentUpon>WorkspaceView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\sbker\OneDrive\Desktop\ImageSorter\ImageSorter\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\sbker\OneDrive\Desktop\ImageSorter\ImageSorter\.editorconfig" />
+  </ItemGroup>
 </Project>

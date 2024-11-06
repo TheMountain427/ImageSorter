@@ -23,6 +23,9 @@ public class WorkspaceViewModel : ViewModelBase
 
     public List<ImageDetails>? SortedImageDetails { get; protected set; }
 
+    public RoutingState WorkspaceFilterRouter { get; } = new RoutingState();
+      
+
     private ImgOrder _imageSortOrder;
     public ImgOrder ImageSortOrder
     {
@@ -148,20 +151,20 @@ public class WorkspaceViewModel : ViewModelBase
 
     public void BtnCommand()
     {
-        Greeting = "butthole";
+        CurrentAppState.FilterSidePanelOpen = !CurrentAppState.FilterSidePanelOpen;
     }
 
 
     public WorkspaceViewModel(IScreen screen, RoutingState router, AppState appState, ProjectConfig projectConfig)
     {
-        MainRouter = router;
-        HostScreen = screen;
-        CurrentAppState = appState;
-        ProjectConfig = projectConfig;
-        ImageSortOrder = ImgOrder.DescFileName;
-        CurrentImageIndex = 0;
-        CurrentImageRouter = new RoutingState();
-        WorkspaceControlsRouter = new RoutingState();
+        this.MainRouter = router;
+        this.HostScreen = screen;
+        this.CurrentAppState = appState;
+        this.ProjectConfig = projectConfig;
+        this.ImageSortOrder = ImgOrder.DescFileName;
+        this.CurrentImageIndex = 0;
+        this.CurrentImageRouter = new RoutingState();
+        this.WorkspaceControlsRouter = new RoutingState();
 
         GetImageDetailsSorted(ImageSortOrder);
 
@@ -189,7 +192,9 @@ public class WorkspaceViewModel : ViewModelBase
                 PreviousImageVM = null;
             }
         }
+        
+        WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(this.ProjectConfig, CurrentAppState));
 
-        WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(this.ProjectConfig));
+        WorkspaceFilterRouter.Navigate.Execute(new WorkspaceFilterViewModel(this.ProjectConfig));
     }
 }

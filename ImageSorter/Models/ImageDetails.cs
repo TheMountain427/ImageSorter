@@ -21,8 +21,17 @@ namespace ImageSorter.Models
         public string FilteredValue { get; set; } = "Unsorted";
         public bool IsValid { get; set; } = true;
 
+        public ImageDetails()
+        {
+
+        }
 
         public ImageDetails(string filePath)
+        {
+            CreateImageDetails(filePath);
+        }
+
+        private void CreateImageDetails(string filePath)
         {
             var file = Task.Run(() => App.TopLevel.StorageProvider.TryGetFileFromPathAsync(filePath));
             file.Wait();

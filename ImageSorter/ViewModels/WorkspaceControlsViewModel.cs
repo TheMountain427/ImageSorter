@@ -1,10 +1,12 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using DynamicData;
 using ImageSorter.Models;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -23,78 +25,20 @@ public class WorkspaceControlsViewModel : ViewModelBase
 
     public ProjectConfig ProjectConfig { get; }
 
-    public List<string> FilterList { get; protected set; } = new List<string> { "Filter1", "Filter2", "Filter3" };
-
-    public List<string> _tempFilterList;
-    public List<string> TempFilterList 
+    //public IObservableList<string> FilterList;
+    private new ObservableCollection<ImageDetails> _filterList;
+    public new ObservableCollection<ImageDetails> FilterList
     {
-        get { return _tempFilterList; }
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _tempFilterList, value);
-        }
-    }
-     
-
-    private decimal _filterAmount;
-    public decimal FilterAmount
-    {
-        get { return _filterAmount; }
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _filterAmount, value);
-            //_onFilterAmountChanged?.Invoke(this, EventArgs.Empty);
-        }
+        get { return _filterList; }
+        protected set { this.RaiseAndSetIfChanged(ref _filterList, value); }
     }
 
-    private EventHandler _onFilterAmountChanged;
-    public event EventHandler OnFilterAmountChanged
-    {
-        add
-        {
-            _onFilterAmountChanged += value;
-        }
-        remove
-        {
-            _onFilterAmountChanged -= value;
-        }
-    }
-
-    private void ChangeFilterAmount()
-    {
-        if (TempFilterList.Count < FilterAmount)
-        {
-            //var toAdd = FilterAmount - TempFilterList.Count;
-            while (TempFilterList.Count < FilterAmount)
-            {
-                TempFilterList.Add($"Filter{TempFilterList.Count}");
-            }
-        }
-        else if (TempFilterList.Count > FilterAmount)
-        {
-            var toRemove = TempFilterList.Count - (int)FilterAmount;
-            TempFilterList.RemoveRange((int)FilterAmount , toRemove);
-
-        }
-    }
-
-    public void SetFilters()
-    {
-        FilterList.Clear();
-        FilterList.AddRange(TempFilterList);
-        ProjectConfig.SetLastModifiedTime();
-    }
     public void GoNextImage()
     {
 
     }
 
     public void GoPreviousImage()
-    {
-
-    }
-
-    public void SetFilterValues()
     {
 
     }
@@ -108,21 +52,18 @@ public class WorkspaceControlsViewModel : ViewModelBase
     {
 
     }
+    
+    public void ToggleFilterSidePane()
+    {
+        CurrentAppState.FilterSidePanelOpen = !CurrentAppState.FilterSidePanelOpen;
+    }
 
-    public WorkspaceControlsViewModel(ProjectConfig projectConfig)
+    public WorkspaceControlsViewModel(ProjectConfig projectConfig, AppState appState)
     {
         this.ProjectConfig = projectConfig;
+        this.CurrentAppState = appState;
 
-        if (this.ProjectConfig.FilterValues.Count != 0)
-        {
-            this.FilterList = this.ProjectConfig.FilterValues;
-        }
-
-        this.TempFilterList = new List<string>();
-        TempFilterList.AddRange(this.FilterList);
-
-        this.FilterAmount = TempFilterList.Count;
-
-        this.WhenAnyValue(x => x.FilterAmount).Subscribe(_ => ChangeFilterAmount());
+        this.FilterList = this.ProjectConfig.ReferenceImages;
+        
     }
 }

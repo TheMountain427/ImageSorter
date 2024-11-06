@@ -1,6 +1,10 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
+using DynamicData;
+using DynamicData.Binding;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -10,16 +14,16 @@ using System.Threading.Tasks;
 
 namespace ImageSorter.Models
 {
-    public class ProjectConfig
+    public class ProjectConfig : ReactiveObject
     {
         private string _projectName;
         private DateTime _lastModifiedTime = DateTime.UtcNow;
         private string _projectConfigPath;
         private List<string> _imgDirectoryPaths;
         private List<string> _outputDirectoryPath;
-        private List<string> _filterValues = new List<string> { "Unsorted" };
+        private ObservableCollection<string> _filterValues = new ObservableCollection<string> { "Unsorted" };
         private ImageHashSet _inputImages = new ImageHashSet();
-        private ImageHashSet _referenceImages = new ImageHashSet();
+        private ObservableCollection<ImageDetails> _referenceImages = new ObservableCollection<ImageDetails>();
         [JsonIgnore]
         public bool JsonWriterEnabled { get; private set; } = false;
         [JsonIgnore]
@@ -69,12 +73,12 @@ namespace ImageSorter.Models
             }
         }
 
-        public List<string> FilterValues
+        public ObservableCollection<string> FilterValues
         {
             get => _filterValues;
             set
             {
-                _filterValues = value;
+                this.RaiseAndSetIfChanged(ref _filterValues, value);
                 _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
                 this.SetLastModifiedTime();
             }
@@ -91,7 +95,7 @@ namespace ImageSorter.Models
             }
         }
 
-        public ImageHashSet ReferenceImages
+        public ObservableCollection<ImageDetails> ReferenceImages
         {
             get => _referenceImages;
             set
@@ -174,5 +178,7 @@ namespace ImageSorter.Models
             imageToSet.FilteredValue = filterValue;
             this.SetLastModifiedTime();
         }
+
+        
     }
 }
