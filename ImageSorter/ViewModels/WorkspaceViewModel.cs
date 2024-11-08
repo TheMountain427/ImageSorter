@@ -7,6 +7,7 @@ using System.Windows.Input;
 using static ImageSorter.Models.Enums;
 using static Avalonia.Animation.PageSlide.SlideAxis;
 using ImageSorter.Views;
+using System;
 
 namespace ImageSorter.ViewModels;
 
@@ -24,7 +25,19 @@ public class WorkspaceViewModel : ViewModelBase
     public List<ImageDetails>? SortedImageDetails { get; protected set; }
 
     public RoutingState WorkspaceFilterRouter { get; } = new RoutingState();
-      
+
+    public RoutingState WorkspaceAlphaReferenceRouter { get; } = new RoutingState();
+
+    public RoutingState WorkspaceBetaReferenceRouter { get; } = new RoutingState();
+
+    public List<ImageDetails> AlphaReferenceImages { get; set; }
+
+    public List<ImageDetails> BetaReferenceImages { get; set; }
+
+    public WorkspaceReferenceImageViewModel AlphaReferenceViewModel { get; }
+
+    public WorkspaceReferenceImageViewModel BetaReferenceViewModel { get; }
+
 
     private ImgOrder _imageSortOrder;
     public ImgOrder ImageSortOrder
@@ -120,6 +133,19 @@ public class WorkspaceViewModel : ViewModelBase
         this.ProjectConfig.SetImageFilterValue(CurrentImageVM.ImageDetails, "one");
     }
 
+
+    private void ManageReferenceSplit(object sender, EventArgs e)
+    {
+        // Make alpha have the greater number of refs if the total reference count is odd
+        int alphaCount = this.ProjectConfig.ReferenceImages.Count / 2 + (this.ProjectConfig.ReferenceImages.Count % 2);
+
+        this.AlphaReferenceImages = this.ProjectConfig.ReferenceImages.Take(alphaCount).ToList();
+        this.BetaReferenceImages = this.ProjectConfig.ReferenceImages.Skip(alphaCount).ToList();
+
+        this.AlphaReferenceViewModel.UpdateReferenceCollection(this.AlphaReferenceImages);
+        this.BetaReferenceViewModel.UpdateReferenceCollection(this.BetaReferenceImages);
+    }
+
     // **** Debug **** //
     public void Dbg_GoToProjectSelection()
     {
@@ -155,6 +181,7 @@ public class WorkspaceViewModel : ViewModelBase
     }
 
 
+
     public WorkspaceViewModel(IScreen screen, RoutingState router, AppState appState, ProjectConfig projectConfig)
     {
         this.MainRouter = router;
@@ -172,7 +199,7 @@ public class WorkspaceViewModel : ViewModelBase
         {
             CurrentImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageIndex], CurrentImageIndex);
             CurrentImageRouter.Navigate.Execute(CurrentImageVM);
-            
+
             if (CurrentImageIndex < SortedImageDetails.Count)
             {
                 NextImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageVM.CurrentIndex + 1], CurrentImageVM.CurrentIndex + 1);
@@ -192,9 +219,43 @@ public class WorkspaceViewModel : ViewModelBase
                 PreviousImageVM = null;
             }
         }
-        
+
         WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(this.ProjectConfig, CurrentAppState));
 
+        // Side pane that allows modification of filter amounts
         WorkspaceFilterRouter.Navigate.Execute(new WorkspaceFilterViewModel(this.ProjectConfig));
+
+
+        // Time for some magic collections. Need to split the reference collection to both sides
+        // but allow changes to properties on the collection to reflect the original list
+        // Oh that actually wasn't bad
+
+        // Oh this will break on a new project cause no filters
+        // Well actually maybe not but just to be sure
+        // Also force 2 cause then you wouldn't be sorting anything
+        if (this.ProjectConfig.ReferenceImages.Count <= 1)
+        {
+            while (this.ProjectConfig.ReferenceImages.Count <= 1)
+            {
+                this.ProjectConfig.ReferenceImages.Add(new ImageDetails());
+            }
+        }
+
+        // Make alpha have the greater number of refs if the total reference count is odd
+        int alphaCount = this.ProjectConfig.ReferenceImages.Count / 2 + (this.ProjectConfig.ReferenceImages.Count % 2);
+
+        this.AlphaReferenceImages = this.ProjectConfig.ReferenceImages.Take(alphaCount).ToList();
+        this.BetaReferenceImages = this.ProjectConfig.ReferenceImages.Skip(alphaCount).ToList();
+
+        // Have to save the view models cause I need to notify the VM's that the collection changes
+        // Other option is to just make a new VM every time..? Seems smelly to do that
+        this.AlphaReferenceViewModel = new WorkspaceReferenceImageViewModel(this.ProjectConfig, AlphaReferenceImages);
+        this.BetaReferenceViewModel = new WorkspaceReferenceImageViewModel(this.ProjectConfig, BetaReferenceImages);
+
+        WorkspaceAlphaReferenceRouter.Navigate.Execute(this.AlphaReferenceViewModel);
+        WorkspaceBetaReferenceRouter.Navigate.Execute(this.BetaReferenceViewModel);
+
+        // Handle rebuilding the split when reference image count changes
+        this.ProjectConfig.ReferenceImages.CollectionChanged += ManageReferenceSplit;
     }
 }

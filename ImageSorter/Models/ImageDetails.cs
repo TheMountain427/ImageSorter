@@ -1,4 +1,5 @@
-﻿using Avalonia.Platform.Storage;
+﻿using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using DynamicData;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ImageSorter.Models
@@ -20,6 +22,25 @@ namespace ImageSorter.Models
         public DateTimeOffset FileLastModifiedTime { get; set; }
         public string FilteredValue { get; set; } = "Unsorted";
         public bool IsValid { get; set; } = true;
+
+        [JsonIgnore]
+        public Bitmap ImageBitmap { get; set; }
+        //[JsonIgnore]
+        //public bool ImageLoaded { get; set; }
+        
+        //[JsonIgnore]
+        //private Bitmap _imageBitmap { get; }
+        //[JsonIgnore]
+        //public Bitmap ImageBitmap
+        //{
+        //    get => _imageBitmap;
+        //    set
+        //    {
+        //        _imageBitmap = value;
+        //        _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
+        //        this.SetLastModifiedTime();
+        //    }
+        //}
 
         public ImageDetails()
         {

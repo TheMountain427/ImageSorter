@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaResource Remove="Assets\512x512-Transparent.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\question_mark_icon_195110.ico" />
   </ItemGroup>
 
@@ -34,6 +38,12 @@
 
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Users\sbker\OneDrive\Desktop\ImageSorter\ImageSorter\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\512x512-Transparent.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

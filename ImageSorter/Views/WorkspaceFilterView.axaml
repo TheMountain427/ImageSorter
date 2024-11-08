@@ -23,7 +23,7 @@
 			<Button Content="Apply" 
 					Command="{ Binding ApplyFilters }"/>
 		</StackPanel>
-		<ItemsControl ItemsSource="{ Binding Filters }">
+		<ItemsControl ItemsSource="{ Binding ReferenceImages }">
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
 					<TextBox Text="{ Binding FilteredValue, Mode=TwoWay }"/>

@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media.Imaging;
 using DynamicData;
 using DynamicData.Binding;
 using ReactiveUI;

@@ -8,45 +8,49 @@
 			 x:DataType="vm:WorkspaceReferenceImageViewModel">
 
 	<Grid>
-		<Border 
-				BorderBrush="Gray"
-				BorderThickness="2"
-				CornerRadius="0">
-			<StackPanel>
-				<Grid>
-					<Button 
-							Content="...">
-						<Button.Flyout>
-							<Flyout>
-								<StackPanel>
-									<Button 
-											Content="Set Reference Image"
-											HorizontalAlignment="Stretch"
-											HorizontalContentAlignment="Center"
-											Command=""
-											CommandParameter=""/>
-									<Button 
-											Content="Change Filter Name"
-											HorizontalAlignment="Stretch"
-											HorizontalContentAlignment="Center"
-											Command=""
-											CommandParameter=""/>
-								</StackPanel>
-							</Flyout>
-						</Button.Flyout>
-					</Button>
-					<TextBox Text="" HorizontalAlignment="Center"/>
-				</Grid>
-				<Button Content="Select Reference Image" 
-						Command="{ Binding SetReferenceImage }"
-						IsEnabled="{ Binding !ImageExists }"
-						IsVisible="{ Binding !ImageExists }"/>
-				<Image Source="" 
-					   PointerPressed=""
-					   IsEnabled="{ Binding ImageExists }"
-					   IsVisible="{ Binding ImageExists }"/>
-			</StackPanel>
-		</Border>
+			<ItemsControl ItemsSource="{ Binding ReferenceImages }"
+						  x:CompileBindings="False">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border BorderBrush="Gray"
+								BorderThickness="2"
+								CornerRadius="0">
+							<StackPanel>
+								<Grid>
+									<Button Content="...">
+										<Button.Flyout>
+											<Flyout>
+												<StackPanel>
+													<Button Content="Set Reference Image"
+															HorizontalAlignment="Stretch"
+															HorizontalContentAlignment="Center"
+															Command="{ Binding $parent[UserControl].DataContext.SetReferenceImage }"
+															CommandParameter="{ Binding $self.Tag }"
+															Tag="{ Binding FilteredValue }"/>
+													<Button Content="Change Filter Name"
+															HorizontalAlignment="Stretch"
+															HorizontalContentAlignment="Center"
+															Command="{ Binding $parent[UserControl].DataContext.SetFilterValue }"
+															CommandParameter="{ Binding $self.Tag }"
+															Tag="{ Binding FilteredValue }"/>
+												</StackPanel>
+											</Flyout>
+										</Button.Flyout>
+									</Button>
+									<TextBox Text="{ Binding FilteredValue }" 
+											 HorizontalAlignment="Center" 
+											 TextChanged="FilterNameChanged"/>
+								</Grid>
+								<Button Name="{ Binding $self.Tag, Mode=OneWay, StringFormat=WorkRef_Set{0}Button }"
+										Tag="{ Binding FilteredValue }"
+										Content="Select Reference Image"
+										Command="{ Binding $parent[UserControl].DataContext.SetReferenceImage }"
+										CommandParameter="{ Binding $self.Tag }"/>
+								<Image Source="{ Binding ImageBitmap }"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
 	</Grid>
-
 </UserControl>

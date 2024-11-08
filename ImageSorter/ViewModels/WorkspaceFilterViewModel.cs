@@ -15,11 +15,11 @@ public class WorkspaceFilterViewModel : ViewModelBase
     public override string UrlPathSegment { get; }
     public ProjectConfig ProjectConfig { get; }
 
-    private new ObservableCollection<ImageDetails> _filters = new ObservableCollection<ImageDetails>();
-    public new ObservableCollection<ImageDetails> Filters
+    private ObservableCollection<ImageDetails> _referenceImages = new ObservableCollection<ImageDetails>();
+    public ObservableCollection<ImageDetails> ReferenceImages
     {
-        get { return _filters; }
-        protected set { this.RaiseAndSetIfChanged(ref _filters, value); }
+        get { return _referenceImages; }
+        protected set { this.RaiseAndSetIfChanged(ref _referenceImages, value); }
     }
     
     // imagine binding to a List<string> and a textbox.
@@ -27,16 +27,16 @@ public class WorkspaceFilterViewModel : ViewModelBase
     public void AddFilter()
     {
         var shit = new ImageDetails();
-        shit.FilteredValue = $"Filter{Filters.Count}";
-        Filters.Add(shit);
+        shit.FilteredValue = $"Filter{ReferenceImages.Count}";
+        ReferenceImages.Add(shit);
         ProjectConfig.SetLastModifiedTime();
     }
 
     public void RemoveFilter()
     {
-        if (Filters.Count > 0)
+        if (ReferenceImages.Count > 0)
         {
-            Filters.RemoveAt(Filters.Count - 1);
+            ReferenceImages.RemoveAt(ReferenceImages.Count - 1);
         }
         ProjectConfig.SetLastModifiedTime();
     }
@@ -46,7 +46,8 @@ public class WorkspaceFilterViewModel : ViewModelBase
         // this is actually so fucking stupid
         // only way I can get both of the things to update correctly
         var tempImgRefShit = new ImageDetails[ProjectConfig.ReferenceImages.Count];
-        Filters.CopyTo(tempImgRefShit,0);
+        ReferenceImages.CopyTo(tempImgRefShit,0);
+
         ProjectConfig.ReferenceImages.Clear();
         if (tempImgRefShit.Count() > 0)
         {
@@ -61,6 +62,6 @@ public class WorkspaceFilterViewModel : ViewModelBase
     public WorkspaceFilterViewModel(ProjectConfig projectConfig)
     {
         this.ProjectConfig = projectConfig;
-        this.Filters = this.ProjectConfig.ReferenceImages;
+        this.ReferenceImages = this.ProjectConfig.ReferenceImages;
     }
 }
