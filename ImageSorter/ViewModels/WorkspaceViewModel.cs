@@ -8,6 +8,7 @@ using static ImageSorter.Models.Enums;
 using static Avalonia.Animation.PageSlide.SlideAxis;
 using ImageSorter.Views;
 using System;
+using Avalonia.Controls;
 
 namespace ImageSorter.ViewModels;
 
@@ -37,7 +38,6 @@ public class WorkspaceViewModel : ViewModelBase
     public WorkspaceReferenceImageViewModel AlphaReferenceViewModel { get; }
 
     public WorkspaceReferenceImageViewModel BetaReferenceViewModel { get; }
-
 
     private ImgOrder _imageSortOrder;
     public ImgOrder ImageSortOrder
@@ -177,7 +177,6 @@ public class WorkspaceViewModel : ViewModelBase
 
     public void BtnCommand()
     {
-        CurrentAppState.FilterSidePanelOpen = !CurrentAppState.FilterSidePanelOpen;
     }
 
 

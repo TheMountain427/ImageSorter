@@ -31,7 +31,7 @@
 													<Button Content="Change Filter Name"
 															HorizontalAlignment="Stretch"
 															HorizontalContentAlignment="Center"
-															Command="{ Binding $parent[UserControl].DataContext.SetFilterValue }"
+															Command="{ Binding $parent[UserControl].DataContext.ChangeFilterName }"
 															CommandParameter="{ Binding $self.Tag }"
 															Tag="{ Binding ImageIndex }"/>
 												</StackPanel>

@@ -43,9 +43,9 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
         protected set { this.RaiseAndSetIfChanged(ref _imageExists, value); }
     }
 
-    public void SetFilterValue()
+    public void ChangeFilterName()
     {
-
+        // Jump focus to text box
     }
 
     // ????

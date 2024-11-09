@@ -9,15 +9,31 @@
              x:Class="ImageSorter.Views.WorkspaceView"
              x:DataType="vm:WorkspaceViewModel">
 	<Grid>
-		<Grid ColumnDefinitions="*,4,*,4,*">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="{ Binding Test }"/>
+				<ColumnDefinition Width="4"/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="4"/>
+				<ColumnDefinition Width="{ Binding Test }" />
+			</Grid.ColumnDefinitions>
 			<ScrollViewer Name="Workspace_Alpha_RefScrollView"
 						  Grid.Column="0">
 				<StackPanel Name="Workspace_Alpha_RefStackPanel">
-					<Button Name="Workspace_Alpha_RefResetSplitButton"
-							Content="Reset Split"
-							HorizontalAlignment="Center"
-							IsEnabled="True"
-							IsVisible="True"/>
+					<DockPanel>
+						<Button Name="Workspace_Alpha_RefResetSplitButton"
+								Content="Reset Split"
+								HorizontalAlignment="Left"
+								IsEnabled="True"
+								IsVisible="True"
+								DockPanel.Dock="Left"/>
+						<Button Name="Workspace_Alpha_RefEqualizeSplitButton"
+								Content="Set Equal to -&gt;"
+								HorizontalAlignment="Right"
+								IsEnabled="True"
+								IsVisible="True"
+								DockPanel.Dock="Right"/>
+					</DockPanel>
 					<rxui:RoutedViewHost Name="Workspace_Alpha_RefRouter"
 										 Router="{ Binding WorkspaceAlphaReferenceRouter }">
 						<rxui:RoutedViewHost.ViewLocator>
@@ -30,7 +46,8 @@
 						  Background="Black"
 						  ResizeDirection="Columns"
 						  IsEnabled="True"
-						  IsVisible="True"/>
+						  IsVisible="True"
+						  />
 
 			<Grid RowDefinitions="*,*,*"
 				  Grid.Column="2">
@@ -77,11 +94,20 @@
 			<ScrollViewer Name="Workspace_Beta_RefScrollView"
 						  Grid.Column="4">
 				<StackPanel Name="Workspace_Beta_RefStackPanel">
-					<Button Name="Workspace_Beta_RefResetSplitButton"
-							Content="Reset Split"
-							HorizontalAlignment="Center"
-							IsEnabled="True"
-							IsVisible="True"/>
+					<DockPanel>
+						<Button Name="Workspace_Beta_RefResetSplitButton"
+								Content="Reset Split"
+								IsEnabled="True"
+								IsVisible="True"
+								HorizontalAlignment="Right"
+								DockPanel.Dock="Right"/>
+						<Button Name="Workspace_Beta_RefEqualizeSplitButton"
+								Content="Set Equal to &lt;-"
+								HorizontalAlignment="Left"
+								IsEnabled="True"
+								IsVisible="True"
+								DockPanel.Dock="Left"/>
+					</DockPanel>
 					<rxui:RoutedViewHost Name="Workspace_Beta_RefRouter"
 										 Router="{ Binding WorkspaceBetaReferenceRouter }">
 						<rxui:RoutedViewHost.ViewLocator>
