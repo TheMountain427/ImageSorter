@@ -39,6 +39,7 @@ public class WorkspaceViewModel : ViewModelBase
 
     public WorkspaceReferenceImageViewModel BetaReferenceViewModel { get; }
 
+
     private ImgOrder _imageSortOrder;
     public ImgOrder ImageSortOrder
     {
@@ -60,7 +61,6 @@ public class WorkspaceViewModel : ViewModelBase
     public CurrentImageViewModel NextImageVM { get; protected set; }
     public CurrentImageViewModel CurrentImageVM { get; protected set; }
     public CurrentImageViewModel PreviousImageVM { get; protected set; }
-
 
     public void ChangeImageRight()
     {
@@ -102,6 +102,11 @@ public class WorkspaceViewModel : ViewModelBase
                 PreviousImageVM = null;
             }
         }
+
+    }
+
+    public void ResetImagePosition()
+    {
 
     }
 
@@ -219,7 +224,15 @@ public class WorkspaceViewModel : ViewModelBase
             }
         }
 
-        WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(this.ProjectConfig, CurrentAppState));
+        // Pass through commands to control vm that navigate the main image
+        var imageCommands = new ImageCommands()
+        {
+            NavigateNextMainImage = ReactiveCommand.Create(ChangeImageRight),
+            NavigatePreviousMainImage = ReactiveCommand.Create(ChangeImageLeft),
+            ResetMainImagePosition = ReactiveCommand.Create(ResetImagePosition)
+        };
+
+        WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(this.ProjectConfig, this.CurrentAppState, imageCommands));
 
         // Side pane that allows modification of filter amounts
         WorkspaceFilterRouter.Navigate.Execute(new WorkspaceFilterViewModel(this.ProjectConfig));
@@ -254,7 +267,7 @@ public class WorkspaceViewModel : ViewModelBase
         WorkspaceAlphaReferenceRouter.Navigate.Execute(this.AlphaReferenceViewModel);
         WorkspaceBetaReferenceRouter.Navigate.Execute(this.BetaReferenceViewModel);
 
-        // Handle rebuilding the split when reference image count changes
+        // Handle rebuilding the image split when reference image count changes
         this.ProjectConfig.ReferenceImages.CollectionChanged += ManageReferenceSplit;
     }
 }

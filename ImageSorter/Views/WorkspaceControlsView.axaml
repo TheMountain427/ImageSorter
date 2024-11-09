@@ -25,7 +25,7 @@
 							Content="Reset Image"
 							HorizontalContentAlignment="Center"
 							Grid.Column="0"
-							Command="{ Binding ResetImageView }"
+							Command="{ Binding ResetImagePosition }"
 							Width="120"/>
 					<Button Name="WorkCtrl_PreviousImageButton"
 							Content="Previous Image"

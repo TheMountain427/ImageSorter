@@ -11,11 +11,11 @@
 	<Grid>
 		<Grid>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="{ Binding Test }"/>
+				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="4"/>
-				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="4"/>
-				<ColumnDefinition Width="{ Binding Test }" />
+				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 			<ScrollViewer Name="Workspace_Alpha_RefScrollView"
 						  Grid.Column="0">
