@@ -235,7 +235,7 @@ public class WorkspaceViewModel : ViewModelBase
         WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(this.ProjectConfig, this.CurrentAppState, imageCommands));
 
         // Side pane that allows modification of filter amounts
-        WorkspaceFilterRouter.Navigate.Execute(new WorkspaceFilterViewModel(this.ProjectConfig));
+        WorkspaceFilterRouter.Navigate.Execute(new WorkspaceFilterViewModel(this.ProjectConfig, this.CurrentAppState));
 
 
         // Time for some magic collections. Need to split the reference collection to both sides

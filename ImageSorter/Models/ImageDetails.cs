@@ -22,7 +22,14 @@ namespace ImageSorter.Models
         public string FilePath { get; set; }
         public DateTimeOffset FileCreatedTime { get; set; }
         public DateTimeOffset FileLastModifiedTime { get; set; }
-        public string FilteredValue { get; set; } = "Unsorted";
+
+        private string _filteredValue = "Unsorted";
+        public string FilteredValue
+        {
+            get { return _filteredValue; }
+            set { this.RaiseAndSetIfChanged(ref _filteredValue, value); }
+        }
+
         public bool IsValid { get; set; } = true;
         public bool ImageNotLoaded { get; set; } = false;
         public ReferenceViewIdentifier ReferenceViewID { get; set; }
@@ -36,22 +43,6 @@ namespace ImageSorter.Models
 
         [JsonIgnore]
         public Bitmap ImageBitmap { get; set; }
-        //[JsonIgnore]
-        //public bool ImageLoaded { get; set; }
-
-        //[JsonIgnore]
-        //private Bitmap _imageBitmap { get; }
-        //[JsonIgnore]
-        //public Bitmap ImageBitmap
-        //{
-        //    get => _imageBitmap;
-        //    set
-        //    {
-        //        _imageBitmap = value;
-        //        _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
-        //        this.SetLastModifiedTime();
-        //    }
-        //}
 
         public ImageDetails()
         {
@@ -92,6 +83,7 @@ namespace ImageSorter.Models
         }
 
         // This might not be needed anymore, at least not on project init
+        // Using this to set image detail properties for reference images
         public bool ValidateImageProperties()
         {
             var filePath = this.FilePath;

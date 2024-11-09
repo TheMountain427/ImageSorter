@@ -27,12 +27,12 @@ public class WorkspaceControlsViewModel : ViewModelBase
 
     private ImageCommands ImageCommands { get; }
 
-    //public IObservableList<string> FilterList;
-    private new ObservableCollection<ImageDetails> _filterList;
-    public new ObservableCollection<ImageDetails> FilterList
+    // Probably should be read only
+    private ObservableCollection<ImageDetails> _referenceImages;
+    public ObservableCollection<ImageDetails> ReferenceImages
     {
-        get { return _filterList; }
-        protected set { this.RaiseAndSetIfChanged(ref _filterList, value); }
+        get { return _referenceImages; }
+        protected set { this.RaiseAndSetIfChanged(ref _referenceImages, value); }
     }
 
     public ICommand GoNextImage { get; }
@@ -45,7 +45,7 @@ public class WorkspaceControlsViewModel : ViewModelBase
     {
 
     }
-    
+
     public void ToggleFilterSidePane()
     {
         CurrentAppState.FilterSidePanelOpen = !CurrentAppState.FilterSidePanelOpen;
@@ -57,11 +57,11 @@ public class WorkspaceControlsViewModel : ViewModelBase
         this.CurrentAppState = appState;
         this.ImageCommands = imageCommands;
 
-        this.FilterList = this.ProjectConfig.ReferenceImages;
+        this.ReferenceImages = this.ProjectConfig.ReferenceImages;
 
         this.GoNextImage = ImageCommands.NavigateNextMainImage;
         this.GoPreviousImage = ImageCommands.NavigatePreviousMainImage;
         this.ResetImagePosition = ImageCommands.ResetMainImagePosition;
-        
+
     }
 }

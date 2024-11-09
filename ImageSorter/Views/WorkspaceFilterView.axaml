@@ -7,26 +7,35 @@
              x:Class="ImageSorter.Views.WorkspaceFilterView"
 			 x:DataType="vm:WorkspaceFilterViewModel">
 	<StackPanel Spacing="5">
-		<StackPanel Orientation="Horizontal"
-					HorizontalAlignment="Center"
-					Spacing="5">
-			<Button Name="SideFilters_RemoveFilterButton"
-					Content="Remove Filter"
-					Command="{ Binding RemoveFilter }"
-					Width="110"
-					HorizontalContentAlignment="Center"/>
-			<Button Name="SideFilters_AddFilterButton"
-					Content="Add Filter"
-					Command="{ Binding AddFilter }"
-					Width="110"
-					HorizontalContentAlignment="Center"/>
-			<Button Content="Apply" 
-					Command="{ Binding ApplyFilters }"/>
-		</StackPanel>
+		<Grid ColumnDefinitions="Auto,*">
+			<Button Name="SideFilters_ClosePanelButton"
+					Content=" X "
+					Command="{ Binding CloseFilterPanel }"
+					HorizontalAlignment="Left"
+					HorizontalContentAlignment="Center"
+					Grid.Column="0"/>
+			<StackPanel Orientation="Horizontal"
+						HorizontalAlignment="Center"
+						Spacing="5"
+						Grid.Column="1">
+				<Button Name="SideFilters_RemoveFilterButton"
+						Content="Remove Filter"
+						Command="{ Binding RemoveFilter }"
+						Width="110"
+						HorizontalContentAlignment="Center"/>
+				<Button Name="SideFilters_AddFilterButton"
+						Content="Add Filter"
+						Command="{ Binding AddFilter }"
+						Width="110"
+						HorizontalContentAlignment="Center"/>
+				<!--<Button Content="Apply"
+						Command="{ Binding ApplyFilters }"/>-->
+			</StackPanel>
+		</Grid>
 		<ItemsControl ItemsSource="{ Binding ReferenceImages }">
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<TextBox Text="{ Binding FilteredValue, Mode=TwoWay }"/>
+					<TextBox Text="{ Binding FilteredValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus }"/>
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>

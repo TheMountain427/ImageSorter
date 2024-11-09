@@ -38,9 +38,14 @@
 											</Flyout>
 										</Button.Flyout>
 									</Button>
+									<!--Text="{ Binding FilteredValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus }
+										This fails here for some reason but works in WorkspaceFilterView.
+										Possibly because ReferenceImages in this VM is created from a IEnumerable<ImageDetails>?
+										Have to use a code behind event instead at the moment.-->
 									<TextBox Text="{ Binding FilteredValue }"
 											 HorizontalAlignment="Center"
-											 TextChanged="FilterNameChanged"/>
+											 TextChanged="FilterNameChanged"
+											 />
 								</Grid>
 								<Image Source="{ Binding ImageBitmap }"/>
 							</StackPanel>

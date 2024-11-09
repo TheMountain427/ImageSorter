@@ -55,7 +55,7 @@
 						   VerticalAlignment="Center"
 						   Margin="-5,10"/>
 				<ItemsControl Name="WorkCtrl_FilterWrapRepeater"
-							  ItemsSource="{ Binding FilterList }"
+							  ItemsSource="{ Binding ReferenceImages }"
 							  x:CompileBindings="False"
 							  Grid.Row="2">
 					<ItemsControl.ItemsPanel>

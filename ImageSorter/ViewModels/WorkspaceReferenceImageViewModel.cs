@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -48,6 +49,12 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
         // Jump focus to text box
     }
 
+
+    // I believe all this image loading and reference stuff can be improved and simplified
+    // with proper obeservable collection setup and event handling.
+    // ImageDetails propbably needs more RaiseAndSetIfChanged on filepath and iamge properties.
+    // It works as the moment so I do not feel like messing with it.
+
     // ????
     public ReactiveCommand<int, Unit> SetReferenceImage { get; }
 
@@ -56,10 +63,10 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
         var selectedFile = await BrowseFilesReference(referenceIndex);
         UpdateReferenceImage(referenceIndex, selectedFile);
 
-        
-        // There is def a better way than rebuilding the whole collection when loading a new image
+
+        //There is def a better way than rebuilding the whole collection when loading a new image
         var tempImgRef = new ImageDetails[this.ReferenceImages.Count];
-        ReferenceImages.CopyTo(tempImgRef,0);
+        ReferenceImages.CopyTo(tempImgRef, 0);
         UpdateReferenceCollection(tempImgRef);
     }
 
@@ -94,7 +101,7 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
         {
             var selectedFilePath = selectedFile[0].Path.LocalPath;
 
-            var referenceImageDetail = this.ReferenceImages.FirstOrDefault(x => x.ImageIndex == referenceIndex 
+            var referenceImageDetail = this.ReferenceImages.FirstOrDefault(x => x.ImageIndex == referenceIndex
                                                                         && x.ReferenceViewID == this.ReferenceViewID);
 
             if (referenceImageDetail is not null)
@@ -117,9 +124,17 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
     }
 
     // Handle when number of reference image changes by calling image loader
-    private void LoadReferenceBitmapOnChange(object sender, EventArgs e)
+    // This is triggering 4 times on a collection change.
+    // Actually I'm a partial dingus, have to views using this so it needs to run twice.
+    // Other 2 are reset events due to my smelly code, will filter those.
+    // Actually actually, runs on each foreach in UpdateReferenceCollection. Only need it run at the end. <- Fixed
+    private void LoadReferenceBitmapOnChange(object sender, NotifyCollectionChangedEventArgs e)
     {
-        LoadReferenceBitmap();
+        // Filter out Resets, since we are doing a Clear() then loading all images
+        if (e.Action != NotifyCollectionChangedAction.Reset)
+        {
+            LoadReferenceBitmap();
+        }
     }
 
 
@@ -142,6 +157,9 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
                 {
                     refImg.ImageNotLoaded = false;
                     refImg.ImageBitmap = new Bitmap(refImg.FilePath);
+
+                    // Fill out image properties
+                    refImg.ValidateImageProperties();
                 }
                 else
                 {
@@ -159,16 +177,30 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
     public void UpdateReferenceCollection(IEnumerable<ImageDetails> referenceImages)
     {
         // ObservableCollections suck and I am lazy
-        //var tmpReferenceImages = new ObservableCollection<ImageDetails>(this.ReferenceImages);
+        var tmpReferenceImages = new ObservableCollection<ImageDetails>(this.ReferenceImages);
         this.ReferenceImages.Clear();
+
+        // Going to do a little hacky thing to prevent this from triggering LoadReferenceBitmapOnChange
+        // multiple times when WorkspaceViewModel provides images with count > 1
         if (referenceImages.Count() > 0)
         {
             int i = 0;
+            // Ubsubscribe from collection changed for now
+            this.ReferenceImages.CollectionChanged -= LoadReferenceBitmapOnChange;
+
             foreach (var refImg in referenceImages)
             {
+                // If we are at the last refImg, subsribe again to trigger an image load on all images
+                if (i + 1 == referenceImages.Count())
+                {
+                    this.ReferenceImages.CollectionChanged += LoadReferenceBitmapOnChange;
+                }
+
+                // Triggers the LoadReferenceBitmapOnChange on last refImg to update everything 
                 this.ReferenceImages.Add(refImg);
 
                 refImg.ReferenceViewID = this.ReferenceViewID;
+
                 refImg.ImageIndex = i;
                 i++;
             }

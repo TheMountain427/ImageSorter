@@ -9,6 +9,7 @@
 
 	<StackPanel>
 		<TextBlock Text="{ Binding ImageName }"/>
+		<TextBlock Text="{ Binding ImageDetails.FilteredValue }"/>
 		<Image Source="{ Binding ImageBitmap }"/>
 	</StackPanel>
 
