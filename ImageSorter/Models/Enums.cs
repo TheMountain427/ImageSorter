@@ -16,4 +16,10 @@ public static class Enums
         DescLastModifiedTime = 8
 
     }
+
+    public enum ReferenceViewIdentifier
+    {
+        Alpha = 0,
+        Beta = 1
+    }
 }

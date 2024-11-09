@@ -19,6 +19,8 @@ namespace ImageSorter.Models
         private string _currentProjectName;
         private string _currentProjectConfigPath;
         private bool _filterSidePanelOpen;
+
+        public string LastReferenceImagePath { get; set; }
         [JsonIgnore]
         public bool JsonWriterEnabled { get; private set; } = false;
 

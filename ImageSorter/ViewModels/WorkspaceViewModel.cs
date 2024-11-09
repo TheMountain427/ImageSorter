@@ -232,7 +232,7 @@ public class WorkspaceViewModel : ViewModelBase
 
         // Oh this will break on a new project cause no filters
         // Well actually maybe not but just to be sure
-        // Also force 2 cause then you wouldn't be sorting anything
+        // Also force 2 cause otherwise you wouldn't be sorting anything
         if (this.ProjectConfig.ReferenceImages.Count <= 1)
         {
             while (this.ProjectConfig.ReferenceImages.Count <= 1)
@@ -249,8 +249,8 @@ public class WorkspaceViewModel : ViewModelBase
 
         // Have to save the view models cause I need to notify the VM's that the collection changes
         // Other option is to just make a new VM every time..? Seems smelly to do that
-        this.AlphaReferenceViewModel = new WorkspaceReferenceImageViewModel(this.ProjectConfig, AlphaReferenceImages);
-        this.BetaReferenceViewModel = new WorkspaceReferenceImageViewModel(this.ProjectConfig, BetaReferenceImages);
+        this.AlphaReferenceViewModel = new WorkspaceReferenceImageViewModel(this.CurrentAppState, this.ProjectConfig, AlphaReferenceImages, ReferenceViewIdentifier.Alpha);
+        this.BetaReferenceViewModel = new WorkspaceReferenceImageViewModel(this.CurrentAppState, this.ProjectConfig, BetaReferenceImages, ReferenceViewIdentifier.Beta);
 
         WorkspaceAlphaReferenceRouter.Navigate.Execute(this.AlphaReferenceViewModel);
         WorkspaceBetaReferenceRouter.Navigate.Execute(this.BetaReferenceViewModel);

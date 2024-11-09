@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using DynamicData;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -10,10 +11,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using static ImageSorter.Models.Enums;
 
 namespace ImageSorter.Models
 {
-    public class ImageDetails
+    public class ImageDetails : ReactiveObject
     {
         public string FileName { get; set; }
         public ulong FileSize { get; set; }
@@ -22,12 +24,21 @@ namespace ImageSorter.Models
         public DateTimeOffset FileLastModifiedTime { get; set; }
         public string FilteredValue { get; set; } = "Unsorted";
         public bool IsValid { get; set; } = true;
+        public bool ImageNotLoaded { get; set; } = false;
+        public ReferenceViewIdentifier ReferenceViewID { get; set; }
+
+        private int _imageIndex;
+        public int ImageIndex
+        {
+            get { return _imageIndex; }
+            set { this.RaiseAndSetIfChanged(ref _imageIndex, value); }
+        }
 
         [JsonIgnore]
         public Bitmap ImageBitmap { get; set; }
         //[JsonIgnore]
         //public bool ImageLoaded { get; set; }
-        
+
         //[JsonIgnore]
         //private Bitmap _imageBitmap { get; }
         //[JsonIgnore]

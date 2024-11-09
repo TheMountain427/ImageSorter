@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using ImageSorter.Models;
 using ReactiveUI;
 using System;
@@ -8,6 +9,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reactive;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using static ImageSorter.Models.Enums;
 
 namespace ImageSorter.ViewModels;
 
@@ -20,6 +25,9 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
     public string DefaultImgPath { get; }
 
     public Bitmap DefaultBitmap { get; }
+
+    public ReferenceViewIdentifier ReferenceViewID { get; }
+
 
     private ObservableCollection<ImageDetails> _referenceImages;
     public ObservableCollection<ImageDetails> ReferenceImages
@@ -35,14 +43,77 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
         protected set { this.RaiseAndSetIfChanged(ref _imageExists, value); }
     }
 
-    public void SetReferenceImage()
+    public void SetFilterValue()
     {
 
     }
 
-    public void SetFilterValue()
-    {
+    // ????
+    public ReactiveCommand<int, Unit> SetReferenceImage { get; }
 
+    private async void _setReferenceImage(int referenceIndex)
+    {
+        var selectedFile = await BrowseFilesReference(referenceIndex);
+        UpdateReferenceImage(referenceIndex, selectedFile);
+
+        
+        // There is def a better way than rebuilding the whole collection when loading a new image
+        var tempImgRef = new ImageDetails[this.ReferenceImages.Count];
+        ReferenceImages.CopyTo(tempImgRef,0);
+        UpdateReferenceCollection(tempImgRef);
+    }
+
+
+    private async Task<IReadOnlyList<IStorageFile>?> BrowseFilesReference(int referenceIndex)
+    {
+        // Set settings for folder browser, default location is Desktop
+        var options = new FilePickerOpenOptions
+        {
+            AllowMultiple = false,
+            SuggestedStartLocation = await App.TopLevel.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Desktop),
+            FileTypeFilter = [FilePickerFileTypes.ImageAll],
+            Title = "Select Reference Image"
+        };
+
+        // Try to use the last location used to select reference images
+        if (!string.IsNullOrEmpty(this.CurrentAppState.LastReferenceImagePath))
+        {
+            var tryGetFolder = await App.TopLevel.StorageProvider.TryGetFolderFromPathAsync(this.CurrentAppState.LastReferenceImagePath);
+            options.SuggestedStartLocation = tryGetFolder is not null ? tryGetFolder : options.SuggestedStartLocation;
+        }
+
+        var selectedFile = await App.TopLevel.StorageProvider.OpenFilePickerAsync(options);
+
+        return selectedFile;
+
+    }
+
+    private void UpdateReferenceImage(int referenceIndex, IReadOnlyList<IStorageFile>? selectedFile)
+    {
+        if (selectedFile is not null)
+        {
+            var selectedFilePath = selectedFile[0].Path.LocalPath;
+
+            var referenceImageDetail = this.ReferenceImages.FirstOrDefault(x => x.ImageIndex == referenceIndex 
+                                                                        && x.ReferenceViewID == this.ReferenceViewID);
+
+            if (referenceImageDetail is not null)
+            {
+                referenceImageDetail.FilePath = selectedFilePath;
+
+                var selectedFileParentDir = Directory.GetParent(selectedFilePath);
+
+                // Save for convience when browsing for the next reference image
+                if (selectedFileParentDir is not null && !string.IsNullOrEmpty(selectedFileParentDir.FullName))
+                {
+                    this.CurrentAppState.LastReferenceImagePath = selectedFileParentDir.FullName;
+                }
+            }
+            else
+            {
+                throw new ArgumentNullException($"No reference image found with referenceIndex, {referenceIndex}");
+            }
+        }
     }
 
     // Handle when number of reference image changes by calling image loader
@@ -57,18 +128,30 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
     {
         if (this.ReferenceImages.Count > 0)
         {
+            // Need index of imagedetail so itemcontrol tags can bind to it.
+            // Using it to identify which ref image to load the image to.
+            // Because nothing wrong with have the same filter name on different reference images.
+            // They are just references after all.
+            int i = 0;
+
             foreach (var refImg in this.ReferenceImages)
             {
-                if (!string.IsNullOrEmpty(refImg.FilePath) 
+                if (!string.IsNullOrEmpty(refImg.FilePath)
                     && (refImg.FilePath.EndsWith(".jpeg") || refImg.FilePath.EndsWith(".png") || refImg.FilePath.EndsWith(".jpg"))
                     && File.Exists(refImg.FilePath))
                 {
+                    refImg.ImageNotLoaded = false;
                     refImg.ImageBitmap = new Bitmap(refImg.FilePath);
                 }
                 else
                 {
+                    refImg.ImageNotLoaded = true;
                     refImg.ImageBitmap = DefaultBitmap;
                 }
+
+                refImg.ReferenceViewID = this.ReferenceViewID;
+                refImg.ImageIndex = i;
+                i++;
             }
         }
     }
@@ -80,16 +163,25 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
         this.ReferenceImages.Clear();
         if (referenceImages.Count() > 0)
         {
-            foreach (var smellyImages in referenceImages)
+            int i = 0;
+            foreach (var refImg in referenceImages)
             {
-                this.ReferenceImages.Add(smellyImages);
+                this.ReferenceImages.Add(refImg);
+
+                refImg.ReferenceViewID = this.ReferenceViewID;
+                refImg.ImageIndex = i;
+                i++;
             }
         }
     }
 
-    public WorkspaceReferenceImageViewModel(ProjectConfig projectConfig, IEnumerable<ImageDetails> referenceImages)
+    public WorkspaceReferenceImageViewModel(AppState appState, ProjectConfig projectConfig, IEnumerable<ImageDetails> referenceImages, ReferenceViewIdentifier referenceViewID)
     {
+        this.CurrentAppState = appState;
         this.ProjectConfig = projectConfig;
+        this.ReferenceViewID = referenceViewID;
+
+        this.SetReferenceImage = ReactiveCommand.Create<int>(_setReferenceImage);
 
         // Use provided referenceImage as it may be modified version of ProjectConfig
         this.ReferenceImages = new ObservableCollection<ImageDetails>(referenceImages);
