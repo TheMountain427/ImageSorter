@@ -30,6 +30,7 @@ namespace ImageSorter
             WorkspaceFilterViewModel context => new WorkspaceFilterView { DataContext = context },
             OverlayViewModel context => new OverlayView { DataContext = context },
             DebugViewModel context => new DebugView { DataContext = context },
+            SortConfirmationViewModel context => new SortConfirmationView { DataContext = context },
             _ => throw new ArgumentOutOfRangeException(nameof(viewModel))
         };
     }

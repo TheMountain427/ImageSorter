@@ -9,6 +9,7 @@ using static Avalonia.Animation.PageSlide.SlideAxis;
 using ImageSorter.Views;
 using System;
 using Avalonia.Controls;
+using System.Collections.ObjectModel;
 
 namespace ImageSorter.ViewModels;
 
@@ -164,10 +165,87 @@ public class WorkspaceViewModel : ViewModelBase
         OverlayRouter.NavigationStack.Clear();
     }
 
-    public void InitiateSortingOfImages()
+    public void ConfirmSortingOfImages()
     {
-        CurrentAppState.IsWorkSpaceOverlayEnabled = true;
-        OverlayRouter.Navigate.Execute(new OverlayViewModel(this.CurrentAppState, new DebugViewModel(), this.CloseOverlayView, true));
+        var imageSortFilters = GetSortedImageFilters(this.ProjectConfig.InputImages);
+
+        var referenceFilters = GetSortedImageFilters(this.ProjectConfig.ReferenceImages);
+
+        
+        // Check both and open window after
+        var orphanedImageFilters = imageSortFilters.Except(referenceFilters);
+        bool filtersContainsUnsorted = imageSortFilters.Contains("Unsorted");
+
+        var SortConfirmations = new List<SortConfirmation>();
+        // Create a warning overlay view model requiring interaction
+        if (filtersContainsUnsorted)
+        {
+            var unsortedCount = this.SortedImageDetails.Where(x => x.FilteredValue == "Unsorted").Count();
+
+            var unsortedConfirmationsText = new List<KeyValuePair<string, string>>()
+            {
+                new KeyValuePair<string, string>("Ignore unsorted", "Continue, ignoring any images that are unsorted"),
+                new KeyValuePair<string, string>("Include unsorted", "Continue, including any images that are unsorted")
+            };
+
+            var unsortedWarningText = $"Warning: {unsortedCount} unsorted images remain, choose how to proceed.";
+
+            var unsortedSortConfirmation = new SortConfirmation(unsortedWarningText, unsortedConfirmationsText);
+
+            SortConfirmations.Add(unsortedSortConfirmation);
+        }
+
+        if (orphanedImageFilters.Any())
+        {
+            var orphanedConfirmationsText = new List<KeyValuePair<string, string>>()
+            {
+                new KeyValuePair<string, string>("Ignore orphans", "Continue, ignoring any images that contian orphaned filters"),
+                new KeyValuePair<string, string>("Include orphans", "Continue, including any images that contian orphaned filters")
+            };
+            var orphans = string.Join(", ",orphanedImageFilters);
+            var orphanedWarningText = $"Warning: {orphanedImageFilters.Count()} images contain orphaned filters. These orphans are: \n {orphans}";
+
+            var orphanedSortConfirmation = new SortConfirmation(orphanedWarningText, orphanedConfirmationsText);
+
+            SortConfirmations.Add(orphanedSortConfirmation);
+        }
+
+        var SortConfirmationVM = new SortConfirmationViewModel(SortConfirmations, this.CloseOverlayView);
+
+        OverlayRouter.Navigate.Execute(new OverlayViewModel(this.CurrentAppState, SortConfirmationVM, this.CloseOverlayView, false));
+
+        //if (filtersContainsUnsorted)
+        //{
+        //    bool includeUnsorted = false;
+        //    // warn that images are unsorted, count of images
+
+        //    // Expecting an enum with options, continue but ignore, continue and include, cancel
+
+        //    if (false) // Ignore unsorted and continue with sort?
+        //    {
+        //        includeUnsorted = false;
+        //    }
+        //    else if (false) // Continue but include unsorted images in sort?
+        //    {
+        //        includeUnsorted = true;
+        //    }
+        //    else
+        //    {
+        //        // Open viewer showing images filtered by unsorted?
+        //        return;
+        //    }
+        //}
+    }
+
+    private void SortImagesIntoGroups(IEnumerable<ImageDetails> imageDetails, IEnumerable<string> filterValues)
+    {
+        
+
+    }
+
+    private IEnumerable<string> GetSortedImageFilters(IEnumerable<ImageDetails> imageDetails)
+    {
+        return imageDetails.Select(x => x.FilteredValue).Distinct();
     }
 
     // **** Debug **** //
@@ -202,6 +280,8 @@ public class WorkspaceViewModel : ViewModelBase
 
     public void BtnCommand()
     {
+        CurrentAppState.IsWorkSpaceOverlayEnabled = true;
+        OverlayRouter.Navigate.Execute(new OverlayViewModel(this.CurrentAppState, new DebugViewModel(), this.CloseOverlayView, true));
     }
 
 

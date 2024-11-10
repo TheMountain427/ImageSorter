@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ImageSorter.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ImageSorter.Views.SortConfirmationView"
+			 x:DataType="vm:SortConfirmationViewModel">
+
+	<Grid>
+		<StackPanel Spacing="5">
+			<ItemsControl ItemsSource="{ Binding SortConfirmations }">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border BorderBrush="Black"
+								BorderThickness="2"
+								Padding="2">
+							<Grid RowDefinitions="*,*"
+								  ColumnDefinitions="*,*">
+								<TextBlock Text="{ Binding WarningText }"
+										   Grid.Row="0"
+										   Grid.Column="0"/>
+								<ItemsControl ItemsSource="{ Binding ConfirmationOptions }"
+											  Grid.Row="1"
+											  Grid.Column="0">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Orientation="Horizontal"
+														HorizontalAlignment="Center"
+														Spacing="5"/>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<CheckBox Content="{ Binding OptionText }"
+													  IsChecked="{ Binding OptionSelection.Boolean }"
+													  ToolTip.Tip="{ Binding OptionSelection.AccessText }"/>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</Grid>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+			<StackPanel Orientation="Horizontal"
+						Spacing="5"
+						HorizontalAlignment="Center">
+				<Button Content="Confirm"
+						Command="{ Binding ConfirmSelection }"
+						IsEnabled="{ Binding SelectionSet }"/>
+				<Button Content="Cancel" Command="{ Binding CancelSort }"/>
+			</StackPanel>
+		</StackPanel>
+	</Grid>
+</UserControl>

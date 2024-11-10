@@ -53,15 +53,17 @@
 				  Grid.Column="2">
 				<StackPanel Grid.Row="0">
 					<TextBlock Text="Filter by filter values check box"/>
+					<TextBlock Text="Warning window on mismatch between ref filters and image filters"/>
 					<TextBlock Text="Edit Preferences"/>
 					<TextBlock Text="Change Sort Order"/>
-					<TextBlock Text="Warning window on unsorted iamges"/>
+					<TextBlock Text="Warning window on unsorted images"/>
+					<TextBlock Text="Warning window on project load about missing/fixed input images"/>
 					<TextBlock Text="Preview window on sort destinations"/>
 					<TextBlock Text="Thumbnail viewer, sort by sort values, with colors"/>
 					<Button Content="Click Me" Command="{ Binding BtnCommand }"/>
 					<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
 					<TextBlock Text="{ Binding CurrentImageIndex }"/>
-					<Button Content="Initiate Sort" Command="{ Binding InitiateSortingOfImages }"/>
+					<Button Content="Initiate Sort" Command="{ Binding ConfirmSortingOfImages }"/>
 					
 				</StackPanel>
 				<Panel MaxHeight="500"
