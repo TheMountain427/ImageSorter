@@ -9,12 +9,12 @@
              x:Class="ImageSorter.Views.WorkspaceView"
              x:DataType="vm:WorkspaceViewModel">
 	<Grid>
-		<Grid>
+		<Grid IsEnabled="{ Binding !CurrentAppState.IsWorkSpaceOverlayEnabled }">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*"/>
-				<ColumnDefinition Width="4"/>
+				<ColumnDefinition Width="2"/>
 				<ColumnDefinition Width="*"/>
-				<ColumnDefinition Width="4"/>
+				<ColumnDefinition Width="2"/>
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
 			<ScrollViewer Name="Workspace_Alpha_RefScrollView"
@@ -52,12 +52,17 @@
 			<Grid RowDefinitions="*,*,*"
 				  Grid.Column="2">
 				<StackPanel Grid.Row="0">
+					<TextBlock Text="Filter by filter values check box"/>
+					<TextBlock Text="Edit Preferences"/>
+					<TextBlock Text="Change Sort Order"/>
+					<TextBlock Text="Warning window on unsorted iamges"/>
+					<TextBlock Text="Preview window on sort destinations"/>
+					<TextBlock Text="Thumbnail viewer, sort by sort values, with colors"/>
 					<Button Content="Click Me" Command="{ Binding BtnCommand }"/>
 					<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
-					<Button Content="Change Image Right" Command="{ Binding ChangeImageRight }"/>
-					<Button Content="Change Image Left" Command="{ Binding ChangeImageLeft }"/>
 					<TextBlock Text="{ Binding CurrentImageIndex }"/>
-					<Button Content="FilterOne" Command="{ Binding FilterImageOne }"/>
+					<Button Content="Initiate Sort" Command="{ Binding InitiateSortingOfImages }"/>
+					
 				</StackPanel>
 				<Panel MaxHeight="500"
 					   MaxWidth="500"
@@ -134,6 +139,13 @@
 			</SplitView.Pane>
 		</SplitView>
 
-
+	<!--Overlay has to be down here because images just ignore z-index when in routed views I guess-->
+		<Grid>
+			<rxui:RoutedViewHost Router="{ Binding OverlayRouter }" ZIndex="1">
+				<rxui:RoutedViewHost.ViewLocator>
+					<app:AppViewLocator/>
+				</rxui:RoutedViewHost.ViewLocator>
+			</rxui:RoutedViewHost>
+		</Grid>
 	</Grid>
 </UserControl>

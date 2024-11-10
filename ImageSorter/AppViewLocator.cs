@@ -28,6 +28,8 @@ namespace ImageSorter
             WorkspaceThumbnailViewModel context => new WorkspaceThumbnailView { DataContext = context },
             WorkspaceReferenceImageViewModel context => new WorkspaceReferenceImageView { DataContext = context },
             WorkspaceFilterViewModel context => new WorkspaceFilterView { DataContext = context },
+            OverlayViewModel context => new OverlayView { DataContext = context },
+            DebugViewModel context => new DebugView { DataContext = context },
             _ => throw new ArgumentOutOfRangeException(nameof(viewModel))
         };
     }

@@ -31,6 +31,8 @@ public class WorkspaceViewModel : ViewModelBase
 
     public RoutingState WorkspaceBetaReferenceRouter { get; } = new RoutingState();
 
+    public RoutingState OverlayRouter { get; } = new RoutingState();
+
     public List<ImageDetails> AlphaReferenceImages { get; set; }
 
     public List<ImageDetails> BetaReferenceImages { get; set; }
@@ -151,6 +153,23 @@ public class WorkspaceViewModel : ViewModelBase
         this.BetaReferenceViewModel.UpdateReferenceCollection(this.BetaReferenceImages);
     }
 
+    
+    public ICommand CloseOverlayView { get; }
+    private void _closeOverlayView()
+    {
+        CurrentAppState.IsWorkSpaceOverlayEnabled = false;
+
+        // Idk which to use, probably clear
+        //OverlayRouter.NavigateBack.Execute();
+        OverlayRouter.NavigationStack.Clear();
+    }
+
+    public void InitiateSortingOfImages()
+    {
+        CurrentAppState.IsWorkSpaceOverlayEnabled = true;
+        OverlayRouter.Navigate.Execute(new OverlayViewModel(this.CurrentAppState, new DebugViewModel(), this.CloseOverlayView, true));
+    }
+
     // **** Debug **** //
     public void Dbg_GoToProjectSelection()
     {
@@ -170,6 +189,7 @@ public class WorkspaceViewModel : ViewModelBase
         var routableViewModel = MainRouter.NavigationStack.FirstOrDefault(x => x.UrlPathSegment == "ProjectSelection");
         MainRouter.Navigate.Execute(routableViewModel);
     }
+
 
 
     private string _greeting = "Welcome to Avalonia!";
@@ -269,5 +289,7 @@ public class WorkspaceViewModel : ViewModelBase
 
         // Handle rebuilding the image split when reference image count changes
         this.ProjectConfig.ReferenceImages.CollectionChanged += ManageReferenceSplit;
+
+        this.CloseOverlayView = ReactiveCommand.Create(_closeOverlayView);
     }
 }

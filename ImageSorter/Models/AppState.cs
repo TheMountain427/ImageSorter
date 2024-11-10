@@ -21,6 +21,16 @@ namespace ImageSorter.Models
         private bool _filterSidePanelOpen;
 
         public string LastReferenceImagePath { get; set; }
+
+        [JsonIgnore]
+        private bool _isWorkSpaceOverlayEnabled = false;
+        [JsonIgnore]
+        public bool IsWorkSpaceOverlayEnabled
+        {
+            get { return _isWorkSpaceOverlayEnabled; }
+            set { this.RaiseAndSetIfChanged(ref _isWorkSpaceOverlayEnabled, value); }
+        }
+
         [JsonIgnore]
         public bool JsonWriterEnabled { get; private set; } = false;
 
@@ -75,7 +85,7 @@ namespace ImageSorter.Models
             }
         }
 
-        
+
         public List<string> RecentProjectNames
         {
             get => _recentProjectNames;
@@ -86,7 +96,7 @@ namespace ImageSorter.Models
             }
         }
 
-        
+
         public string CurrentProjectName
         {
             get => _currentProjectName;
@@ -96,7 +106,7 @@ namespace ImageSorter.Models
                 _onAppStateChanged?.Invoke(this, EventArgs.Empty);
             }
         }
-        
+
         public string CurrentProjectConfigPath
         {
             get => _currentProjectConfigPath;

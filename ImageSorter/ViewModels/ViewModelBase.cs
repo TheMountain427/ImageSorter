@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace ImageSorter.ViewModels;
 
+
+
 public abstract class ViewModelBase : ReactiveObject, IRoutableViewModel
 {
     public IScreen HostScreen { get; set; }
