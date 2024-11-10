@@ -1,5 +1,6 @@
 ﻿
 
+using Avalonia.Controls.Primitives;
 using ReactiveUI;
 using System.Collections.Generic;
 
@@ -7,24 +8,48 @@ namespace ImageSorter.Models
 {
     public class AccessibleBool : ReactiveObject
     {
-        private bool _boolean;
-        public bool Boolean
+        private bool _booleanValue;
+        public bool BooleanValue
         {
-            get { return _boolean; }
-            set { this.RaiseAndSetIfChanged(ref _boolean, value); }
+            get { return _booleanValue; }
+            set { this.RaiseAndSetIfChanged(ref _booleanValue, value); }
         }
 
-        public string AccessText { get; set; }
+        public string AccessibleText { get; set; }
 
         public AccessibleBool(string accessText)
         {
-            this.AccessText = accessText;
+            this.AccessibleText = accessText;
         }
 
-        public AccessibleBool(string accessText, bool boolean)
+        public AccessibleBool(bool Boolean, string AccessibleText)
         {
-            this.AccessText = accessText;
-            this.Boolean = boolean;
+            this.BooleanValue = Boolean;
+            this.AccessibleText = AccessibleText;
+        }
+    }
+
+    public class AccessibleString : ReactiveObject
+    {
+        private string _stringValue;
+        public string StringValue
+        {
+            get { return _stringValue; }
+            set { this.RaiseAndSetIfChanged(ref _stringValue, value); }
+        }
+
+        public string AccessibleText { get; set; }
+
+        public AccessibleString(string StringValue)
+        {
+            this.StringValue = StringValue;
+            this.AccessibleText = "";
+        }
+
+        public AccessibleString(string StringValue, string AccessibleText)
+        {
+            this.StringValue = StringValue;
+            this.AccessibleText = AccessibleText;
         }
     }
 }

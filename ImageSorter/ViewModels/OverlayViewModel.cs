@@ -19,12 +19,12 @@ public class OverlayViewModel : ViewModelBase
     // If clicking the background should close the overlay, set to false for required stuff
     public bool AllowClickOff { get; } = true;
 
-    public OverlayViewModel(AppState appState, ViewModelBase viewModel,  ICommand closeOverlay, bool allowClickOff)
+    public OverlayViewModel(AppState AppState, ViewModelBase ViewModelToDisplay,  ICommand CloseOverlay, bool AllowClickOff)
     {
-        this.CurrentAppState = appState;
-        this.CloseOverlay = closeOverlay;
-        this.AllowClickOff = allowClickOff;
+        this.CurrentAppState = AppState;
+        this.CloseOverlay = CloseOverlay;
+        this.AllowClickOff = AllowClickOff;
 
-        this.OverlayRouter.Navigate.Execute(viewModel);
+        this.OverlayRouter.Navigate.Execute(ViewModelToDisplay);
     }
 }

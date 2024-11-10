@@ -113,13 +113,13 @@ public class WorkspaceViewModel : ViewModelBase
 
     }
 
-    public void GetImageDetailsSorted(ImgOrder imgOrder)
+    public void GetImageDetailsSorted(ImgOrder ImgOrder)
     {
         if (ProjectConfig is not null && ProjectConfig.InputImages is not null)
         {
             var imgDetails = ProjectConfig.InputImages;
 
-            SortedImageDetails = imgOrder switch
+            SortedImageDetails = ImgOrder switch
             {
                 ImgOrder.AscFileName => imgDetails.SortByFileNameAscending().ToList(),
                 ImgOrder.DescFileName => imgDetails.SortByFileNameDescending().ToList(),
@@ -176,7 +176,7 @@ public class WorkspaceViewModel : ViewModelBase
         var orphanedImageFilters = imageSortFilters.Except(referenceFilters);
         bool filtersContainsUnsorted = imageSortFilters.Contains("Unsorted");
 
-        var SortConfirmations = new List<SortConfirmation>();
+        var sortConfirmations = new List<SortConfirmation>();
         // Create a warning overlay view model requiring interaction
         if (filtersContainsUnsorted)
         {
@@ -188,11 +188,13 @@ public class WorkspaceViewModel : ViewModelBase
                 new KeyValuePair<string, string>("Include unsorted", "Continue, including any images that are unsorted")
             };
 
-            var unsortedWarningText = $"Warning: {unsortedCount} unsorted images remain, choose how to proceed.";
+            var unsortedWarningText = $"Warning: {unsortedCount} unsorted images remain.";
 
-            var unsortedSortConfirmation = new SortConfirmation(unsortedWarningText, unsortedConfirmationsText);
+            var unsortedSortConfirmation = new SortConfirmation(WarningText: unsortedWarningText,
+                                                                Pairs: unsortedConfirmationsText,
+                                                                RequiredToContinue: true);
 
-            SortConfirmations.Add(unsortedSortConfirmation);
+            sortConfirmations.Add(unsortedSortConfirmation);
         }
 
         if (orphanedImageFilters.Any())
@@ -202,17 +204,28 @@ public class WorkspaceViewModel : ViewModelBase
                 new KeyValuePair<string, string>("Ignore orphans", "Continue, ignoring any images that contian orphaned filters"),
                 new KeyValuePair<string, string>("Include orphans", "Continue, including any images that contian orphaned filters")
             };
-            var orphans = string.Join(", ",orphanedImageFilters);
-            var orphanedWarningText = $"Warning: {orphanedImageFilters.Count()} images contain orphaned filters. These orphans are: \n {orphans}";
 
-            var orphanedSortConfirmation = new SortConfirmation(orphanedWarningText, orphanedConfirmationsText);
+            var orphans = new List<string>();
+            foreach (var orphan in orphanedImageFilters)
+            {
+                orphans.Add($"\"{orphan}\"");
+            }
+            var orphanedWarningText = $"Warning: {orphanedImageFilters.Count()} images contain orphaned filters. These orphans are: \n {string.Join(", ",orphans)}";
 
-            SortConfirmations.Add(orphanedSortConfirmation);
+            var orphanedSortConfirmation = new SortConfirmation(WarningText: orphanedWarningText, 
+                                                                Pairs: orphanedConfirmationsText,
+                                                                RequiredToContinue: true);
+
+            sortConfirmations.Add(orphanedSortConfirmation);
         }
 
-        var SortConfirmationVM = new SortConfirmationViewModel(SortConfirmations, this.CloseOverlayView);
+        var sortConfirmationVM = new SortConfirmationViewModel(SortConfirmations: sortConfirmations,
+                                                               CloseOverlay: this.CloseOverlayView);
 
-        OverlayRouter.Navigate.Execute(new OverlayViewModel(this.CurrentAppState, SortConfirmationVM, this.CloseOverlayView, false));
+        OverlayRouter.Navigate.Execute(new OverlayViewModel(AppState: CurrentAppState, 
+                                                            ViewModelToDisplay: sortConfirmationVM, 
+                                                            CloseOverlay: CloseOverlayView,
+                                                            AllowClickOff: false));
 
         //if (filtersContainsUnsorted)
         //{
@@ -237,15 +250,15 @@ public class WorkspaceViewModel : ViewModelBase
         //}
     }
 
-    private void SortImagesIntoGroups(IEnumerable<ImageDetails> imageDetails, IEnumerable<string> filterValues)
+    private void SortImagesIntoGroups(IEnumerable<ImageDetails> ImageDetails, IEnumerable<string> FilterValues)
     {
         
 
     }
 
-    private IEnumerable<string> GetSortedImageFilters(IEnumerable<ImageDetails> imageDetails)
+    private IEnumerable<string> GetSortedImageFilters(IEnumerable<ImageDetails> ImageDetails)
     {
-        return imageDetails.Select(x => x.FilteredValue).Distinct();
+        return ImageDetails.Select(x => x.FilteredValue).Distinct();
     }
 
     // **** Debug **** //

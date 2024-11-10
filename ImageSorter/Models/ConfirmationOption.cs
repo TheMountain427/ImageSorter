@@ -18,15 +18,15 @@ public class ConfirmationOption : ReactiveObject
         set { this.RaiseAndSetIfChanged(ref _optionSelection, value); }
     }
 
-    public ConfirmationOption(string optionText, string accessText)
+    public ConfirmationOption(string OptionText, string AccessibleText)
     {
-        this.OptionText = optionText;
-        this.OptionSelection = new AccessibleBool(accessText);
+        this.OptionText = OptionText;
+        this.OptionSelection = new AccessibleBool(AccessibleText);
     }
 
-    public ConfirmationOption(KeyValuePair<string, string> pair)
+    public ConfirmationOption(KeyValuePair<string, string> Pair)
     {
-        this.OptionText = pair.Key;
-        this.OptionSelection = new AccessibleBool(pair.Value);
+        this.OptionText = Pair.Key;
+        this.OptionSelection = new AccessibleBool(Pair.Value);
     }
 }

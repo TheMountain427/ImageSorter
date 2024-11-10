@@ -21,7 +21,10 @@ public partial class OverlayView : ReactiveUserControl<OverlayViewModel>
     {
         if (DataContext is OverlayViewModel vm)
         {
-            vm.CloseOverlay.Execute(null);
+            if (vm.AllowClickOff == true)
+            {
+                vm.CloseOverlay.Execute(null);
+            }
         }
     }
 }
