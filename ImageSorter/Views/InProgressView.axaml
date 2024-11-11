@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ImageSorter.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ImageSorter.Views.InProgressView"
+             x:DataType="vm:InProgressViewModel">
+
+	<Grid>
+		<StackPanel>
+			<Button Content="Debug" Command="{ Binding DebugCommand }"/>
+			<Border BorderBrush="Black"
+					BorderThickness="2"
+					CornerRadius="2">
+				<!--Hide if value is null or empty-->
+				<TextBlock Text="{ Binding ProgressMessage }"
+						   IsVisible="{ Binding ProgressMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty} }"
+						   HorizontalAlignment="Center"/>
+			</Border>
+			<ProgressBar Minimum="{ Binding ProgressMinimum }"
+						 Maximum="{ Binding ProgressMaximum }"
+						 Value="{ Binding CurrentProgressValue }"
+						 HorizontalAlignment="Center"
+						 Height="50"
+						 Width="500"/>
+			<Button Content="Continue" 
+					Command="{ Binding ContinueCommand }"
+					IsEnabled="{ Binding ShowCompletionControls }"
+					IsVisible="{ Binding ShowCompletionControls }"
+					HorizontalAlignment="Center"/>
+		</StackPanel>
+	</Grid>
+</UserControl>

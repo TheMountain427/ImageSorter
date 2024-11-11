@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Diagnostics;
 
 namespace ImageSorter.ViewModels;
 
@@ -50,6 +51,13 @@ public class WorkspaceViewModel : ViewModelBase
     public ICommand OverlaySuccessCommand { get; set; }
 
     public SortConfigs SortConfigs { get; set; } = new SortConfigs();
+
+    private double _sortProgress;
+    public double SortProgress
+    {
+        get { return _sortProgress; }
+        set { this.RaiseAndSetIfChanged(ref _sortProgress, value); }
+    }
 
     private bool _isSortWarningUp;
     public bool IsSortWarningUp
@@ -186,7 +194,7 @@ public class WorkspaceViewModel : ViewModelBase
         OverlayRouter.NavigationStack.Clear();
     }
 
-    public void ConfirmSortingOfImages()
+    public void CheckForImageSortIssues()
     {
         var imageSortFilters = GetSortedImageFilters(this.ProjectConfig.InputImages);
 
@@ -262,8 +270,8 @@ public class WorkspaceViewModel : ViewModelBase
                         this.SortConfigs.SetValue(option, true);
                     }
                 }
+                // Event handler will handle navigate to the SortPreviewView
                 this.IsSortWarningUp = false;
-                this.CloseOverlayView.Execute(null);
             };
             var processWarningOptions = ReactiveCommand.Create(_processOptions);
 
@@ -311,13 +319,86 @@ public class WorkspaceViewModel : ViewModelBase
 
     private void ShowPreview()
     {
+        var successCommand = ReactiveCommand.Create(() =>
+        {
+            BeginSortProcess();
+        });
+
+        var cancelCommand = ReactiveCommand.Create(() =>
+        {
+            this.CloseOverlayView.Execute(null);
+        });
+
+        var sortPreviewVM = new SortPreviewViewModel(AppState: this.CurrentAppState,
+                                                     ProjectConfig: this.ProjectConfig,
+                                                     OnSuccessCommand: successCommand,
+                                                     OnCancelCommand: cancelCommand);
+
+        OverlayRouter.Navigate.Execute(new OverlayViewModel(AppState: CurrentAppState,
+                                                            ViewModelToDisplay: sortPreviewVM,
+                                                            CloseOverlay: CloseOverlayView,
+                                                            AllowClickOff: false));
 
     }
 
-    private void SortImagesIntoGroups(IEnumerable<ImageDetails> ImageDetails, IEnumerable<string> FilterValues)
+    private void BeginSortProcess()
     {
+        double imageCount = this.ProjectConfig.InputImages.Count;
+        this.SortProgress = 0;
+        var inProgessText = "Watch it! I'm trying to work here!";
 
+        var progresVM = new InProgressViewModel(MinimumValue: 0,
+                                                MaximumValue: imageCount,
+                                                ValueToWatch: this.WhenAnyValue(x => x.SortProgress), // pass an IObservable<double>, so it can be monitored
+                                                InProgressText: inProgessText,
+                                                PauseOnCompletion: true,
+                                                OnSuccessCommand: this.CloseOverlayView);
 
+        OverlayRouter.Navigate.Execute(new OverlayViewModel(AppState: CurrentAppState,
+                                                            ViewModelToDisplay: progresVM,
+                                                            CloseOverlay: CloseOverlayView,
+                                                            AllowClickOff: false));
+        // Run the image sort as an async command so we can change the UI while it is running
+        // We will monitor it with a progress bar
+        // Tbh it will probably complete so fast it doesn't really matter
+        SortImageDetailsAsyncCommand.Execute((this.SortProgress, imageCount));
+
+        // This is a hacked way to get a command to run async. Just a check to see if the increment is increasing
+        Task.Run(async () =>
+        {
+            await Task.Run(() =>
+            {
+                while (this.SortProgress < imageCount)
+                {
+                    Thread.Sleep(500);
+                    //Console.WriteLine($"{progressValue}");
+                    //Debug.WriteLine($"{this.SortProgress}");
+                }
+            });
+        });
+
+    }
+
+    // ????? tuple shit ????? and it works ?????
+    // This is the base for the Async command that will sort the images in the background
+    // Has no need to be a tuple but I am leaving it cause it's cool
+    // The tuple allows more than one variable to be passed in
+    public ReactiveCommand<(double Counter, double ImageCount), Unit> SortImageDetailsAsyncCommand { get; }
+    // This is the method to be called by SortImageDetailsAsyncCommand
+    // https://stackoverflow.com/questions/76400048/ui-freezing-while-executing-async-command-avaloniaui-reactiveui
+    private IObservable<Unit> SortImageDetails(double Counter, double ImageCount)
+    {
+        return Observable.Start(() =>
+        {
+            // Just a test to check if InProgressVM progress bar is working correctly
+            while (Counter < ImageCount)
+            {
+                Thread.Sleep(100);
+                Counter++;
+                this.SortProgress++;
+                //Debug.WriteLine("Counter increased");
+            }
+        });
     }
 
     private IEnumerable<string> GetSortedImageFilters(IEnumerable<ImageDetails> ImageDetails)
@@ -448,5 +529,9 @@ public class WorkspaceViewModel : ViewModelBase
         this.ProjectConfig.ReferenceImages.CollectionChanged += ManageReferenceSplit;
 
         this.CloseOverlayView = ReactiveCommand.Create(_closeOverlayView);
+
+        // ????? tuple shit ????? and it works ?????
+        // This just creates the command, tuple cause funny
+        SortImageDetailsAsyncCommand = ReactiveCommand.CreateFromObservable<(double Counter, double ImageCount), Unit>(tuple => SortImageDetails(tuple.Counter, tuple.ImageCount));
     }
 }

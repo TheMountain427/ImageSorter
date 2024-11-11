@@ -31,6 +31,8 @@ namespace ImageSorter
             OverlayViewModel context => new OverlayView { DataContext = context },
             DebugViewModel context => new DebugView { DataContext = context },
             SortConfirmationViewModel context => new SortConfirmationView { DataContext = context },
+            SortPreviewViewModel context => new SortPreviewView { DataContext = context },
+            InProgressViewModel context => new InProgressView { DataContext = context },
             _ => throw new ArgumentOutOfRangeException(nameof(viewModel))
         };
     }
