@@ -10,6 +10,11 @@ using ImageSorter.Views;
 using System;
 using Avalonia.Controls;
 using System.Collections.ObjectModel;
+using static ImageSorter.Models.SortOptionKey;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Reactive;
+using System.Reactive.Linq;
 
 namespace ImageSorter.ViewModels;
 
@@ -42,6 +47,22 @@ public class WorkspaceViewModel : ViewModelBase
 
     public WorkspaceReferenceImageViewModel BetaReferenceViewModel { get; }
 
+    public ICommand OverlaySuccessCommand { get; set; }
+
+    public SortConfigs SortConfigs { get; set; } = new SortConfigs();
+
+    private bool _isSortWarningUp;
+    public bool IsSortWarningUp
+    {
+        get { return _isSortWarningUp; }
+        set { _isSortWarningUp = value; _onIsSortWarningUpChange?.Invoke(this, EventArgs.Empty); }
+    }
+    private EventHandler _onIsSortWarningUpChange;
+    public event EventHandler OnIsSortWarningUpChange
+    {
+        add { _onIsSortWarningUpChange += value; }
+        remove { _onIsSortWarningUpChange -= value; }
+    }
 
     private ImgOrder _imageSortOrder;
     public ImgOrder ImageSortOrder
@@ -154,7 +175,7 @@ public class WorkspaceViewModel : ViewModelBase
         this.BetaReferenceViewModel.UpdateReferenceCollection(this.BetaReferenceImages);
     }
 
-    
+
     public ICommand CloseOverlayView { get; }
     private void _closeOverlayView()
     {
@@ -171,21 +192,24 @@ public class WorkspaceViewModel : ViewModelBase
 
         var referenceFilters = GetSortedImageFilters(this.ProjectConfig.ReferenceImages);
 
-        
+
         // Check both and open window after
         var orphanedImageFilters = imageSortFilters.Except(referenceFilters);
         bool filtersContainsUnsorted = imageSortFilters.Contains("Unsorted");
 
         var sortConfirmations = new List<SortConfirmation>();
+
         // Create a warning overlay view model requiring interaction
+
+        // Check if any images remain unsorted, create a line item if so
         if (filtersContainsUnsorted)
         {
             var unsortedCount = this.SortedImageDetails.Where(x => x.FilteredValue == "Unsorted").Count();
 
             var unsortedConfirmationsText = new List<KeyValuePair<string, string>>()
             {
-                new KeyValuePair<string, string>("Ignore unsorted", "Continue, ignoring any images that are unsorted"),
-                new KeyValuePair<string, string>("Include unsorted", "Continue, including any images that are unsorted")
+                new KeyValuePair<string, string>(this.SortConfigs.GetOptionText(IgnoreUnsorted), "Continue, ignoring any images that are unsorted"),
+                new KeyValuePair<string, string>(this.SortConfigs.GetOptionText(IncludeUnsorted), "Continue, including any images that are unsorted")
             };
 
             var unsortedWarningText = $"Warning: {unsortedCount} unsorted images remain.";
@@ -197,12 +221,13 @@ public class WorkspaceViewModel : ViewModelBase
             sortConfirmations.Add(unsortedSortConfirmation);
         }
 
+        // Check if any images have orphaned filterValues, create a line item if so
         if (orphanedImageFilters.Any())
         {
             var orphanedConfirmationsText = new List<KeyValuePair<string, string>>()
             {
-                new KeyValuePair<string, string>("Ignore orphans", "Continue, ignoring any images that contian orphaned filters"),
-                new KeyValuePair<string, string>("Include orphans", "Continue, including any images that contian orphaned filters")
+                new KeyValuePair<string, string>(this.SortConfigs.GetOptionText(IgnoreOrphans), "Continue, ignoring any images that contian orphaned filters"),
+                new KeyValuePair<string, string>(this.SortConfigs.GetOptionText(IncludeOrphans), "Continue, including any images that contian orphaned filters")
             };
 
             var orphans = new List<string>();
@@ -210,49 +235,88 @@ public class WorkspaceViewModel : ViewModelBase
             {
                 orphans.Add($"\"{orphan}\"");
             }
-            var orphanedWarningText = $"Warning: {orphanedImageFilters.Count()} images contain orphaned filters. These orphans are: \n {string.Join(", ",orphans)}";
+            var orphanedWarningText = $"Warning: {orphanedImageFilters.Count()} images contain orphaned filters. These orphans are: \n {string.Join(", ", orphans)}";
 
-            var orphanedSortConfirmation = new SortConfirmation(WarningText: orphanedWarningText, 
+            var orphanedSortConfirmation = new SortConfirmation(WarningText: orphanedWarningText,
                                                                 Pairs: orphanedConfirmationsText,
                                                                 RequiredToContinue: true);
 
             sortConfirmations.Add(orphanedSortConfirmation);
         }
 
-        var sortConfirmationVM = new SortConfirmationViewModel(SortConfirmations: sortConfirmations,
-                                                               CloseOverlay: this.CloseOverlayView);
 
-        OverlayRouter.Navigate.Execute(new OverlayViewModel(AppState: CurrentAppState, 
-                                                            ViewModelToDisplay: sortConfirmationVM, 
-                                                            CloseOverlay: CloseOverlayView,
-                                                            AllowClickOff: false));
 
-        //if (filtersContainsUnsorted)
-        //{
-        //    bool includeUnsorted = false;
-        //    // warn that images are unsorted, count of images
 
-        //    // Expecting an enum with options, continue but ignore, continue and include, cancel
+        // If their are warnings, we need to prompt for how to proceed.
+        // Also some ghetto event handling as I would rather the overlay be an async method that awaits values
+        // then we would just continue this method, but idk how
+        if (sortConfirmations.Any())
+        {
+            // Create a Action that will be run when the Continue/Confirm button is selected
+            Action<IEnumerable<string>> _processOptions = stringOptions =>
+            {
+                foreach (var option in stringOptions)
+                {
+                    if (this.SortConfigs.ContainsText(option))
+                    {
+                        this.SortConfigs.SetValue(option, true);
+                    }
+                }
+                this.IsSortWarningUp = false;
+                this.CloseOverlayView.Execute(null);
+            };
+            var processWarningOptions = ReactiveCommand.Create(_processOptions);
 
-        //    if (false) // Ignore unsorted and continue with sort?
-        //    {
-        //        includeUnsorted = false;
-        //    }
-        //    else if (false) // Continue but include unsorted images in sort?
-        //    {
-        //        includeUnsorted = true;
-        //    }
-        //    else
-        //    {
-        //        // Open viewer showing images filtered by unsorted?
-        //        return;
-        //    }
-        //}
+            // Create the command that will be run when the Cancel button is hit
+            var cancelCommand = ReactiveCommand.Create(() =>
+            {
+                // Unsubscribe since we are not going to show the preview after canceling
+                this.OnIsSortWarningUpChange -= ShowPreviewAfterWarning;
+                this.IsSortWarningUp = false;
+                this.CloseOverlayView.Execute(null);
+            });
+
+            // Create the warning view
+            var sortConfirmationVM = new SortConfirmationViewModel(SortConfirmations: sortConfirmations,
+                                                                   CloseOverlay: this.CloseOverlayView,
+                                                                   OnSuccessCommand: processWarningOptions,
+                                                                   OnCancelCommand: cancelCommand);
+
+            // Mark this as up, we will have a handler that will show preview if continue is selected
+            this.IsSortWarningUp = true;
+
+            // Create and navigate to the overlay view
+            OverlayRouter.Navigate.Execute(new OverlayViewModel(AppState: CurrentAppState,
+                                                                ViewModelToDisplay: sortConfirmationVM,
+                                                                CloseOverlay: CloseOverlayView,
+                                                                AllowClickOff: false));
+            // Subscribe to watch for OnSuccessCommand to run and mark IsSortWarningUp = 
+            this.OnIsSortWarningUpChange += ShowPreviewAfterWarning;
+        }
+        else
+        {
+            // No warnings, we can proceed to the sort preview
+            ShowPreview();
+        }
+
+    }
+
+    private void ShowPreviewAfterWarning(object sender, EventArgs e)
+    {
+        // Show the sort preview
+        ShowPreview();
+        // Unsubscribe, we only want to be subscribed when the view is up
+        this.OnIsSortWarningUpChange -= ShowPreviewAfterWarning;
+    }
+
+    private void ShowPreview()
+    {
+
     }
 
     private void SortImagesIntoGroups(IEnumerable<ImageDetails> ImageDetails, IEnumerable<string> FilterValues)
     {
-        
+
 
     }
 

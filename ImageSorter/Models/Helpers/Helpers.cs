@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using static ImageSorter.Models.Enums;
 
 namespace ImageSorter.Models
 {
@@ -114,6 +115,5 @@ namespace ImageSorter.Models
         {
             return $"{ProjectName.Trim()}.json";
         }
-
     }
 }

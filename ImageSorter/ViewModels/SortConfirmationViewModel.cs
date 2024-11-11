@@ -23,16 +23,26 @@ public class SortConfirmationViewModel : ViewModelBase
     }
 
     public AccessibleString ContinueButton { get; set; } = new AccessibleString("Continue");
-
-    public ICommand CancelSort { get; }
+    
     public ICommand CloseOverlay { get; }
+
+    public ICommand OnCancelCommand { get; }
+
+    // uh this needs to always take a List<string>, not sure how to make that clear though
+    public ICommand OnSuccessCommand { get; }
 
     // Stinky, only contains SortConfirmations that require a selection
     private List<List<AccessibleBool>> _requiredOptionsSeperated { get; } = new List<List<AccessibleBool>>();
 
     public void ConfirmSelection()
     {
-        CloseOverlay.Execute(null);
+        // Get all option texts that are selected
+        var selectedOptions = this.SortConfirmations.SelectMany(x => x.ConfirmationOptions.Where(x => x.OptionSelection.BooleanValue == true)
+                                                                                          .Select(x => x.OptionText));
+
+        OnSuccessCommand.Execute(selectedOptions);
+        // OnSuccessCommand will close the view now
+        //CloseOverlay.Execute(null);
     }
 
     private void UpdateCanContinue(IReactivePropertyChangedEventArgs<IReactiveObject> e)
@@ -60,16 +70,21 @@ public class SortConfirmationViewModel : ViewModelBase
         }
     }
 
-    public void DebugButton(IReactivePropertyChangedEventArgs<IReactiveObject> e)
+    public void DebugButton()
     {
 
     }
 
+    public SortConfirmationViewModel(IEnumerable<SortConfirmation> SortConfirmations, ICommand CloseOverlay, ICommand OnSuccessCommand, ICommand OnCancelCommand) 
+        : this(SortConfirmations, CloseOverlay)
+    {
+        this.OnSuccessCommand = OnSuccessCommand;
+        this.OnCancelCommand = OnCancelCommand;
+    }
 
     public SortConfirmationViewModel(IEnumerable<SortConfirmation> SortConfirmations, ICommand CloseOverlay)
     {
         this.SortConfirmations = (List<SortConfirmation>)SortConfirmations;
-        this.CancelSort = CloseOverlay;
         this.CloseOverlay = CloseOverlay;
 
 

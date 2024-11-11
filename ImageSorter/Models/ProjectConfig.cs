@@ -120,14 +120,8 @@ namespace ImageSorter.Models
         private EventHandler _onProjectConfigChange;
         public event EventHandler OnProjectConfigChange
         {
-            add
-            {
-                _onProjectConfigChange += value;
-            }
-            remove
-            {
-                _onProjectConfigChange -= value;
-            }
+            add { _onProjectConfigChange += value; }
+            remove {  _onProjectConfigChange -= value; }
         }
 
         public void SetLastModifiedTime()

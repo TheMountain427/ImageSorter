@@ -11,8 +11,8 @@
 		<StackPanel Spacing="5">
 			<Button Content="Dbg_Button"
 					Command="{ Binding DebugButton }" 
-					IsEnabled="False"
-					IsVisible="False"/>
+					IsEnabled="True"
+					IsVisible="True"/>
 			<ItemsControl ItemsSource="{ Binding SortConfirmations }">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
@@ -51,7 +51,7 @@
 						Command="{ Binding ConfirmSelection }"
 						IsEnabled="{ Binding CanContinue }"
 						ToolTip.Tip="{ Binding ContinueButton.AccessibleText }"/>
-				<Button Content="Cancel" Command="{ Binding CancelSort }"/>
+				<Button Content="Cancel" Command="{ Binding OnCancelCommand }"/>
 			</StackPanel>
 		</StackPanel>
 	</Grid>
