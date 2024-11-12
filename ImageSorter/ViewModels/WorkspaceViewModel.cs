@@ -53,7 +53,7 @@ public class WorkspaceViewModel : ViewModelBase
 
     public SortConfigs SortConfigs { get; set; } = new SortConfigs();
 
-    private SortEngine SortEngine { get; } = new SortEngine();
+    private SortEngine SortEngine { get; }
 
     public ICommand SetImageFilteredValue { get; }
 
@@ -101,10 +101,6 @@ public class WorkspaceViewModel : ViewModelBase
     public CurrentImageViewModel CurrentImageVM { get; protected set; }
     public CurrentImageViewModel PreviousImageVM { get; protected set; }
 
-    // ************************************************************************************
-    // Uh I need to dispose these, they actually just stay in memory
-    // https://www.reactiveui.net/docs/handbook/when-activated
-    // ************************************************************************************
     // Don't think about it
     public void ChangeImageRight()
     {
@@ -213,6 +209,13 @@ public class WorkspaceViewModel : ViewModelBase
         // Idk which to use, probably clear
         //OverlayRouter.NavigateBack.Execute();
         OverlayRouter.NavigationStack.Clear();
+    }
+    public ICommand CloseProgressOverlayView { get; }
+    private void _closeProgressOverlayView()
+    {
+        _closeOverlayView();
+        // Gotta reset SortProgress after a sort, progress view will always think it's done
+        SortProgress = 0;
     }
 
     public void CheckForImageSortIssues()
@@ -374,17 +377,20 @@ public class WorkspaceViewModel : ViewModelBase
         double imageCount = this.ProjectConfig.InputImages.Count;
         this.SortProgress = 0;
         var inProgessText = "Watch it! I'm trying to work here!";
+        
+        double maxProgress = this.SortEngine.CalculateSortProgressMaximum(this.ProjectConfig);
 
-        var progresVM = new InProgressViewModel(MinimumValue: 0,
-                                                MaximumValue: imageCount,
+        var progressVM = new InProgressViewModel(MinimumValue: 0,
+                                                MaximumValue: maxProgress,
                                                 ValueToWatch: this.WhenAnyValue(x => x.SortProgress), // pass an IObservable<double>, so it can be monitored
                                                 InProgressText: inProgessText,
                                                 PauseOnCompletion: true,
-                                                OnSuccessCommand: this.CloseOverlayView);
+                                                OnSuccessCommand: this.CloseProgressOverlayView,
+                                                CompletionMessage: "I'm done!");
 
         OverlayRouter.Navigate.Execute(new OverlayViewModel(AppState: CurrentAppState,
-                                                            ViewModelToDisplay: progresVM,
-                                                            CloseOverlay: CloseOverlayView,
+                                                            ViewModelToDisplay: progressVM,
+                                                            CloseOverlay: this.CloseProgressOverlayView,
                                                             AllowClickOff: false));
         // Here we need to come up with a semi fake sort progess maximum.
         // Because I made the progress view and damnit I'm going to use it
@@ -401,6 +407,8 @@ public class WorkspaceViewModel : ViewModelBase
         // Run the image sort as an async command so we can change the UI while it is running
         // We will monitor it with a progress bar
         // Tbh it will probably complete so fast it doesn't really matter
+        // It actually is still noticable when image count ~195 so I will leave it
+
         SortImageDetailsAsyncCommand.Execute((this.SortProgress, imageCount));
 
         // This is a hacked way to get a command to run async. Just a check to see if the increment is increasing
@@ -429,9 +437,17 @@ public class WorkspaceViewModel : ViewModelBase
     {
         return Observable.Start(() =>
         {
-            var sortedImageGroups = this.SortEngine.SortImageDetailsForOutput(this.SortedImageDetails, this.ProjectConfig.ReferenceImages, this.SortConfigs, this.ProgressIncrement);
+            // Seperate the images into groups based on filters
+            var sortedImageGroups = this.SortEngine.SortImageDetailsForOutput(this.SortedImageDetails, this.ProjectConfig.ReferenceImages, this.SortConfigs);
 
-            // Create output directories... (this.ProjectConfig.OutputDirectoryPath, sortedImageGroups)
+            // Get the filters that are actually being used since I didn't think far enough ahead 
+            var outputNames = this.SortEngine.ConvertSortedGroupsToFilterOutputDirectories(sortedImageGroups);
+
+            // Create the output directories the images will go into
+            var outputDirectories = this.SortEngine.CreateOutputDirectories(outputNames, this.ProjectConfig.OutputDirectoryPath.First());
+
+            this.SortEngine.SortImagesIntoDirectories(sortedImageGroups, outputDirectories);
+
 
 
             // Just a test to check if InProgressVM progress bar is working correctly
@@ -486,7 +502,10 @@ public class WorkspaceViewModel : ViewModelBase
         this.CurrentImageRouter = new RoutingState();
         this.WorkspaceControlsRouter = new RoutingState();
 
+        // Create the sort engine
+        // Pass on the ProgressIncrement for now
         ProgressIncrement = ReactiveCommand.Create(() => this.SortProgress++);
+        this.SortEngine = new SortEngine(this.ProgressIncrement);
 
         GetImageDetailsSorted(ImageSortOrder);
 
@@ -572,6 +591,7 @@ public class WorkspaceViewModel : ViewModelBase
         this.ProjectConfig.ReferenceImages.CollectionChanged += ManageReferenceSplit;
 
         this.CloseOverlayView = ReactiveCommand.Create(_closeOverlayView);
+        this.CloseProgressOverlayView = ReactiveCommand.Create(_closeProgressOverlayView);
 
         // ????? tuple shit ????? and it works ?????
         // This just creates the command, tuple cause funny

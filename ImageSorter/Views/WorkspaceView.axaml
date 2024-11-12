@@ -53,6 +53,9 @@
 				  Grid.Column="2">
 				<StackPanel Grid.Row="0">
 					<TextBlock Text="Filter by filter values check box"/>
+					<TextBlock Text="If output directory is missing on a recent project, the project won't load"/>
+					<TextBlock Text="Allow changing of output directory while in workspace view"/>
+					<TextBlock Text="Monitor input paths for addition of new images"/>
 					<TextBlock Text="Warning window on mismatch between ref filters and image filters"/>
 					<TextBlock Text="Edit Preferences"/>
 					<TextBlock Text="Change Sort Order"/>

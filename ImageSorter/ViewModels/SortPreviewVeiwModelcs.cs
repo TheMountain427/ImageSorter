@@ -23,7 +23,7 @@ public class SortPreviewViewModel : ViewModelBase
 
     public void CancelSort()
     {
-        ContinueSortCommand.Execute(null);
+        CancelSortCommand.Execute(null);
     }
 
     public SortPreviewViewModel(AppState AppState, ProjectConfig ProjectConfig, ICommand OnSuccessCommand, ICommand OnCancelCommand)
