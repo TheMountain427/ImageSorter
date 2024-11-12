@@ -103,6 +103,9 @@ public class WorkspaceViewModel : ViewModelBase
 
     public void ChangeImageRight()
     {
+        // ************************************************************************************
+        // Uh I need to dispose these, they actually just stay in memory
+        // ************************************************************************************
         // Don't think about it
         if (NextImageVM is not null)
         {
@@ -111,7 +114,7 @@ public class WorkspaceViewModel : ViewModelBase
             CurrentImageVM = NextImageVM;
             CurrentImageIndex = SortedImageDetails.IndexOf(CurrentImageVM.ImageDetails);
 
-            if (CurrentImageIndex < SortedImageDetails.Count)
+            if (CurrentImageIndex < SortedImageDetails.Count - 1)
             {
                 NextImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageVM.CurrentIndex + 1], CurrentImageVM.CurrentIndex + 1);
             }
@@ -539,6 +542,10 @@ public class WorkspaceViewModel : ViewModelBase
 
         this.AlphaReferenceImages = this.ProjectConfig.ReferenceImages.Take(alphaCount).ToList();
         this.BetaReferenceImages = this.ProjectConfig.ReferenceImages.Skip(alphaCount).ToList();
+
+        // ************************************************************************************
+        // I also need to dispose of these old ref view models, they chill in memory too 
+        // ************************************************************************************
 
         // Have to save the view models cause I need to notify the VM's that the collection changes
         // Other option is to just make a new VM every time..? Seems smelly to do that
