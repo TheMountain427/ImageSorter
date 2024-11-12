@@ -97,7 +97,7 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
 
     private void UpdateReferenceImage(int referenceIndex, IReadOnlyList<IStorageFile>? selectedFile)
     {
-        if (selectedFile is not null)
+        if (selectedFile is not null && selectedFile.Count != 0)
         {
             var selectedFilePath = selectedFile[0].Path.LocalPath;
 

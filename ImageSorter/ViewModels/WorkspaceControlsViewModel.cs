@@ -41,27 +41,25 @@ public class WorkspaceControlsViewModel : ViewModelBase
 
     public ICommand ResetImagePosition { get; }
 
-    public void FilterImage(object filter)
-    {
-
-    }
+    public ICommand SetImageFilteredValue { get; }
 
     public void ToggleFilterSidePane()
     {
         CurrentAppState.FilterSidePanelOpen = !CurrentAppState.FilterSidePanelOpen;
     }
 
-    public WorkspaceControlsViewModel(ProjectConfig projectConfig, AppState appState, ImageCommands imageCommands)
+    public WorkspaceControlsViewModel(ProjectConfig ProjectConfig, AppState AppState, ImageCommands ImageCommands)
     {
-        this.ProjectConfig = projectConfig;
-        this.CurrentAppState = appState;
-        this.ImageCommands = imageCommands;
+        this.ProjectConfig = ProjectConfig;
+        this.CurrentAppState = AppState;
+        this.ImageCommands = ImageCommands;
 
         this.ReferenceImages = this.ProjectConfig.ReferenceImages;
 
         this.GoNextImage = ImageCommands.NavigateNextMainImage;
         this.GoPreviousImage = ImageCommands.NavigatePreviousMainImage;
         this.ResetImagePosition = ImageCommands.ResetMainImagePosition;
+        this.SetImageFilteredValue = ImageCommands.SetImageFilteredValue;
 
     }
 }

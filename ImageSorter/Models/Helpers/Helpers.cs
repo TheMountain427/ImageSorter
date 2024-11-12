@@ -115,5 +115,10 @@ namespace ImageSorter.Models
         {
             return $"{ProjectName.Trim()}.json";
         }
+
+        public static IEnumerable<string> GetSortedImageFilters(IEnumerable<ImageDetails> ImageDetails)
+        {
+            return ImageDetails.Select(x => x.FilteredValue).Distinct();
+        }
     }
 }

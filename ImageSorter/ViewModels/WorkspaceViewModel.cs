@@ -16,6 +16,7 @@ using System.Threading;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Diagnostics;
+using static ImageSorter.Models.Helpers;
 
 namespace ImageSorter.ViewModels;
 
@@ -51,6 +52,12 @@ public class WorkspaceViewModel : ViewModelBase
     public ICommand OverlaySuccessCommand { get; set; }
 
     public SortConfigs SortConfigs { get; set; } = new SortConfigs();
+
+    private SortEngine SortEngine { get; } = new SortEngine();
+
+    public ICommand SetImageFilteredValue { get; }
+
+    public ICommand ProgressIncrement { get; }
 
     private double _sortProgress;
     public double SortProgress
@@ -165,9 +172,10 @@ public class WorkspaceViewModel : ViewModelBase
 
     }
 
-    public void FilterImageOne()
+    private void _setImageFilterValue(string FilterValue)
     {
-        this.ProjectConfig.SetImageFilterValue(CurrentImageVM.ImageDetails, "one");
+        // Not sure why I did it like this
+        this.ProjectConfig.SetImageFilterValue(CurrentImageVM.ImageDetails, FilterValue);
     }
 
 
@@ -204,6 +212,13 @@ public class WorkspaceViewModel : ViewModelBase
         // Check both and open window after
         var orphanedImageFilters = imageSortFilters.Except(referenceFilters);
         bool filtersContainsUnsorted = imageSortFilters.Contains("Unsorted");
+
+        // Take on unsorted from orphans as it is handled by its own confirmation
+        if (filtersContainsUnsorted && orphanedImageFilters.Contains("Unsorted"))
+        {
+            orphanedImageFilters.ToList().Remove("Unsorted");
+        }
+            
 
         var sortConfirmations = new List<SortConfirmation>();
 
@@ -358,6 +373,18 @@ public class WorkspaceViewModel : ViewModelBase
                                                             ViewModelToDisplay: progresVM,
                                                             CloseOverlay: CloseOverlayView,
                                                             AllowClickOff: false));
+        // Here we need to come up with a semi fake sort progess maximum.
+        // Because I made the progress view and damnit I'm going to use it
+        // this.ProjectConfig.InputImages.Count  ->  easy, worth 1 point since we will loop to move them
+        // SortImageDetailsForOutput             ->  funky, it has 8 steps so lets make it 10 points
+        //                              Huh thats it
+        // Yeah, SortImageDetailsForOutput is lightning fast
+        // Okay.. we have to make directories for the output so theres some increments there
+        // Except I don't know the number until after we start. Changing the progress after we start seems rude
+        // Max filters I expect would be 8 though
+        // So creating directories               -> worth 8 points
+
+
         // Run the image sort as an async command so we can change the UI while it is running
         // We will monitor it with a progress bar
         // Tbh it will probably complete so fast it doesn't really matter
@@ -371,8 +398,7 @@ public class WorkspaceViewModel : ViewModelBase
                 while (this.SortProgress < imageCount)
                 {
                     Thread.Sleep(500);
-                    //Console.WriteLine($"{progressValue}");
-                    //Debug.WriteLine($"{this.SortProgress}");
+                    Debug.WriteLine($"{this.SortProgress}");
                 }
             });
         });
@@ -381,7 +407,7 @@ public class WorkspaceViewModel : ViewModelBase
 
     // ????? tuple shit ????? and it works ?????
     // This is the base for the Async command that will sort the images in the background
-    // Has no need to be a tuple but I am leaving it cause it's cool
+    // Has no need to be a tuple, in fact it is useless) but I am leaving it cause it's cool
     // The tuple allows more than one variable to be passed in
     public ReactiveCommand<(double Counter, double ImageCount), Unit> SortImageDetailsAsyncCommand { get; }
     // This is the method to be called by SortImageDetailsAsyncCommand
@@ -390,21 +416,23 @@ public class WorkspaceViewModel : ViewModelBase
     {
         return Observable.Start(() =>
         {
+            var sortedImageGroups = this.SortEngine.SortImageDetailsForOutput(this.SortedImageDetails, this.ProjectConfig.ReferenceImages, this.SortConfigs, this.ProgressIncrement);
+            
+            // Create output directories... (this.ProjectConfig.OutputDirectoryPath, sortedImageGroups)
+
+
             // Just a test to check if InProgressVM progress bar is working correctly
-            while (Counter < ImageCount)
-            {
-                Thread.Sleep(100);
-                Counter++;
-                this.SortProgress++;
-                //Debug.WriteLine("Counter increased");
-            }
+            //while (Counter < ImageCount)
+            //{
+            //    Thread.Sleep(100);
+            //    Counter++;
+            //    this.SortProgress++;
+            //    //Debug.WriteLine("Counter increased");
+            //}
         });
     }
 
-    private IEnumerable<string> GetSortedImageFilters(IEnumerable<ImageDetails> ImageDetails)
-    {
-        return ImageDetails.Select(x => x.FilteredValue).Distinct();
-    }
+    
 
     // **** Debug **** //
     public void Dbg_GoToProjectSelection()
@@ -425,17 +453,7 @@ public class WorkspaceViewModel : ViewModelBase
         var routableViewModel = MainRouter.NavigationStack.FirstOrDefault(x => x.UrlPathSegment == "ProjectSelection");
         MainRouter.Navigate.Execute(routableViewModel);
     }
-
-
-
-    private string _greeting = "Welcome to Avalonia!";
-    public string Greeting
-    {
-        get => _greeting;
-        set => this.RaiseAndSetIfChanged(ref _greeting, value);
-
-    }
-
+       
     public void BtnCommand()
     {
         CurrentAppState.IsWorkSpaceOverlayEnabled = true;
@@ -454,6 +472,8 @@ public class WorkspaceViewModel : ViewModelBase
         this.CurrentImageIndex = 0;
         this.CurrentImageRouter = new RoutingState();
         this.WorkspaceControlsRouter = new RoutingState();
+
+        ProgressIncrement  = ReactiveCommand.Create(() => this.SortProgress++);
 
         GetImageDetailsSorted(ImageSortOrder);
 
@@ -481,14 +501,17 @@ public class WorkspaceViewModel : ViewModelBase
                 PreviousImageVM = null;
             }
         }
-
+        
+        SetImageFilteredValue = ReactiveCommand.Create<string>(_ => _setImageFilterValue(_));
         // Pass through commands to control vm that navigate the main image
         var imageCommands = new ImageCommands()
         {
             NavigateNextMainImage = ReactiveCommand.Create(ChangeImageRight),
             NavigatePreviousMainImage = ReactiveCommand.Create(ChangeImageLeft),
-            ResetMainImagePosition = ReactiveCommand.Create(ResetImagePosition)
+            ResetMainImagePosition = ReactiveCommand.Create(ResetImagePosition),
+            SetImageFilteredValue = this.SetImageFilteredValue
         };
+        
 
         WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(this.ProjectConfig, this.CurrentAppState, imageCommands));
 

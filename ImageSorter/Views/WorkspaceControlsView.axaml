@@ -69,7 +69,7 @@
 							<!--https://docs.avaloniaui.net/docs/basics/data/data-binding/data-binding-syntax#string-formatting-->
 							<Button Name="{ Binding $self.Tag, Mode=OneWay, StringFormat=WorkCtrl_{0}Button }"
 									Content="{ Binding FilteredValue}"
-									Command="{ Binding $parent[UserControl].DataContext.FilterImage }"
+									Command="{ Binding $parent[UserControl].DataContext.SetImageFilteredValue }"
 									CommandParameter="{ Binding $self.Tag }"
 									Tag="{ Binding FilteredValue }"/>
 						</DataTemplate>

@@ -77,6 +77,34 @@ namespace ImageSorter.Models
             }
         }
 
+        public SortOption<T> GetKey<T>(SortOptionKey SortOptionKey)
+        {
+            // Find the option by key
+            var option = SortOptions.Find(x => x.OptionKey == SortOptionKey);
+
+            // Ensure the option is of type SortOption<T>
+            if (option is SortOption<T> typedOption)
+            {
+                return typedOption;
+            }
+
+            throw new InvalidOperationException($"The SortOption type does not match the specified type.");
+        }
+
+        public SortOption<T> GetKey<T>(string SortOptionText)
+        {
+            // Find the option by key
+            var option = SortOptions.Find(x => x.OptionText == SortOptionText);
+
+            // Ensure the option is of type SortOption<T>
+            if (option is SortOption<T> typedOption)
+            {
+                return typedOption;
+            }
+
+            throw new InvalidOperationException($"The SortOption type does not match the specified type.");
+        }
+
         public bool ContainsKey(SortOptionKey sortOptionKey)
         {
             return SortOptions.Exists(x => x.OptionKey == sortOptionKey);
