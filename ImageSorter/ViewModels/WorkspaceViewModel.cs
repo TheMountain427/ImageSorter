@@ -101,15 +101,20 @@ public class WorkspaceViewModel : ViewModelBase
     public CurrentImageViewModel CurrentImageVM { get; protected set; }
     public CurrentImageViewModel PreviousImageVM { get; protected set; }
 
+    // ************************************************************************************
+    // Uh I need to dispose these, they actually just stay in memory
+    // https://www.reactiveui.net/docs/handbook/when-activated
+    // ************************************************************************************
+    // Don't think about it
     public void ChangeImageRight()
     {
-        // ************************************************************************************
-        // Uh I need to dispose these, they actually just stay in memory
-        // ************************************************************************************
-        // Don't think about it
         if (NextImageVM is not null)
         {
             CurrentImageRouter.Navigate.Execute(NextImageVM);
+
+            // If PreviousImageVM is not null, Dispose it since it will be out of the "cache"
+            PreviousImageVM?.Dispose();
+
             PreviousImageVM = CurrentImageVM;
             CurrentImageVM = NextImageVM;
             CurrentImageIndex = SortedImageDetails.IndexOf(CurrentImageVM.ImageDetails);
@@ -131,6 +136,11 @@ public class WorkspaceViewModel : ViewModelBase
         if (PreviousImageVM is not null)
         {
             CurrentImageRouter.Navigate.Execute(PreviousImageVM);
+
+            
+            // If NextImageVM is not null, Dispose it since it will be out of the "cache"
+            NextImageVM?.Dispose();
+
             NextImageVM = CurrentImageVM;
             CurrentImageVM = PreviousImageVM;
             CurrentImageIndex = SortedImageDetails.IndexOf(CurrentImageVM.ImageDetails);
@@ -221,7 +231,7 @@ public class WorkspaceViewModel : ViewModelBase
         {
             orphanedImageFilters.ToList().Remove("Unsorted");
         }
-            
+
 
         var sortConfirmations = new List<SortConfirmation>();
 
@@ -420,7 +430,7 @@ public class WorkspaceViewModel : ViewModelBase
         return Observable.Start(() =>
         {
             var sortedImageGroups = this.SortEngine.SortImageDetailsForOutput(this.SortedImageDetails, this.ProjectConfig.ReferenceImages, this.SortConfigs, this.ProgressIncrement);
-            
+
             // Create output directories... (this.ProjectConfig.OutputDirectoryPath, sortedImageGroups)
 
 
@@ -435,7 +445,7 @@ public class WorkspaceViewModel : ViewModelBase
         });
     }
 
-    
+
 
     // **** Debug **** //
     public void Dbg_GoToProjectSelection()
@@ -456,7 +466,7 @@ public class WorkspaceViewModel : ViewModelBase
         var routableViewModel = MainRouter.NavigationStack.FirstOrDefault(x => x.UrlPathSegment == "ProjectSelection");
         MainRouter.Navigate.Execute(routableViewModel);
     }
-       
+
     public void BtnCommand()
     {
         CurrentAppState.IsWorkSpaceOverlayEnabled = true;
@@ -476,7 +486,7 @@ public class WorkspaceViewModel : ViewModelBase
         this.CurrentImageRouter = new RoutingState();
         this.WorkspaceControlsRouter = new RoutingState();
 
-        ProgressIncrement  = ReactiveCommand.Create(() => this.SortProgress++);
+        ProgressIncrement = ReactiveCommand.Create(() => this.SortProgress++);
 
         GetImageDetailsSorted(ImageSortOrder);
 
@@ -504,7 +514,7 @@ public class WorkspaceViewModel : ViewModelBase
                 PreviousImageVM = null;
             }
         }
-        
+
         SetImageFilteredValue = ReactiveCommand.Create<string>(_ => _setImageFilterValue(_));
         // Pass through commands to control vm that navigate the main image
         var imageCommands = new ImageCommands()
@@ -514,7 +524,7 @@ public class WorkspaceViewModel : ViewModelBase
             ResetMainImagePosition = ReactiveCommand.Create(ResetImagePosition),
             SetImageFilteredValue = this.SetImageFilteredValue
         };
-        
+
 
         WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(this.ProjectConfig, this.CurrentAppState, imageCommands));
 
@@ -544,8 +554,9 @@ public class WorkspaceViewModel : ViewModelBase
         this.BetaReferenceImages = this.ProjectConfig.ReferenceImages.Skip(alphaCount).ToList();
 
         // ************************************************************************************
-        // I also need to dispose of these old ref view models, they chill in memory too 
-        // ************************************************************************************
+        // I also need to dispose of these old ref view models, they chill in memory too
+        // Actually GC mostly handles this fine, it might balloon if tons of images were selected but I don't think 
+        // that will happen + it would not really be large enough to care
 
         // Have to save the view models cause I need to notify the VM's that the collection changes
         // Other option is to just make a new VM every time..? Seems smelly to do that
@@ -554,6 +565,8 @@ public class WorkspaceViewModel : ViewModelBase
 
         WorkspaceAlphaReferenceRouter.Navigate.Execute(this.AlphaReferenceViewModel);
         WorkspaceBetaReferenceRouter.Navigate.Execute(this.BetaReferenceViewModel);
+
+        // ************************************************************************************
 
         // Handle rebuilding the image split when reference image count changes
         this.ProjectConfig.ReferenceImages.CollectionChanged += ManageReferenceSplit;
