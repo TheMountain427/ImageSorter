@@ -39,6 +39,10 @@ public class WorkspaceControlsViewModel : ViewModelBase
 
     public ICommand GoPreviousImage { get; }
 
+    public ICommand GoFirstImage { get; }
+
+    public ICommand GoLastImage { get; }
+
     public ICommand ResetImagePosition { get; }
 
     public ICommand SetImageFilteredValue { get; }
@@ -60,6 +64,7 @@ public class WorkspaceControlsViewModel : ViewModelBase
         this.GoPreviousImage = ImageCommands.NavigatePreviousMainImage;
         this.ResetImagePosition = ImageCommands.ResetMainImagePosition;
         this.SetImageFilteredValue = ImageCommands.SetImageFilteredValue;
-
+        this.GoFirstImage = ImageCommands.NavigateFirstImage;
+        this.GoLastImage = ImageCommands.NavigateLastImage;
     }
 }

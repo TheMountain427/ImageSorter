@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using static ImageSorter.Models.Enums;
 
 namespace ImageSorter.Models
 {
@@ -25,6 +26,9 @@ namespace ImageSorter.Models
         private ObservableCollection<string> _filterValues = new ObservableCollection<string> { "Unsorted" };
         private ImageHashSet _inputImages = new ImageHashSet();
         private ObservableCollection<ImageDetails> _referenceImages = new ObservableCollection<ImageDetails>();
+        private ImgOrder _imageSortOrder;
+        private int _currentImageIndex;
+
         [JsonIgnore]
         public bool JsonWriterEnabled { get; private set; } = false;
         [JsonIgnore]
@@ -102,6 +106,28 @@ namespace ImageSorter.Models
             set
             {
                 _referenceImages = value;
+                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
+                this.SetLastModifiedTime();
+            }
+        }
+
+        public ImgOrder ImageSortOrder
+        {
+            get => _imageSortOrder;
+            set
+            {
+                _imageSortOrder = value;
+                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
+                this.SetLastModifiedTime();
+            }
+        }
+
+        public int CurrentImageIndex
+        {
+            get => _currentImageIndex;
+            set
+            {
+                _currentImageIndex = value;
                 _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
                 this.SetLastModifiedTime();
             }

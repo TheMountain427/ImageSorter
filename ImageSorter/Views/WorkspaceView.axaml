@@ -55,11 +55,10 @@
 					<TextBlock Text="Filter by filter values check box"/>
 					<TextBlock Text="If output directory is missing on a recent project, the project won't load"/>
 					<TextBlock Text="Allow changing of output directory while in workspace view"/>
-					<TextBlock Text="Monitor input paths for addition of new images"/>
-					<TextBlock Text="Warning window on mismatch between ref filters and image filters"/>
+					<TextBlock Text="(ProjectConfig.ProjectImageWatchers already exists) Monitor input paths for addition of new images"/>
 					<TextBlock Text="Edit Preferences"/>
 					<TextBlock Text="Change Sort Order"/>
-					<TextBlock Text="Warning window on unsorted images"/>
+					<TextBlock Text="Go to first and go to last image control buttons"/>
 					<TextBlock Text="Warning window on project load about missing/fixed input images"/>
 					<TextBlock Text="Preview window on sort destinations"/>
 					<TextBlock Text="Thumbnail viewer, sort by sort values, with colors"/>
@@ -67,7 +66,14 @@
 					<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
 					<TextBlock Text="{ Binding CurrentImageIndex }"/>
 					<Button Content="Initiate Sort" Command="{ Binding CheckForImageSortIssues }"/>
-					
+
+					<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
+							  SelectedItem="{ Binding ImageSortOrder }"
+							  SelectedValueBinding="{ Binding }"
+							  DisplayMemberBinding="{ Binding OptionText }"
+							  x:CompileBindings="False"/>
+
+
 				</StackPanel>
 				<Panel MaxHeight="500"
 					   MaxWidth="500"
@@ -144,7 +150,7 @@
 			</SplitView.Pane>
 		</SplitView>
 
-	<!--Overlay has to be down here because images just ignore z-index when in routed views I guess-->
+		<!--Overlay has to be down here because images just ignore z-index when in routed views I guess-->
 		<Grid>
 			<rxui:RoutedViewHost Router="{ Binding OverlayRouter }" ZIndex="1">
 				<rxui:RoutedViewHost.ViewLocator>

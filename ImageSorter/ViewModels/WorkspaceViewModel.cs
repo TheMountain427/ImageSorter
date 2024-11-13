@@ -79,19 +79,31 @@ public class WorkspaceViewModel : ViewModelBase
         remove { _onIsSortWarningUpChange -= value; }
     }
 
-    private ImgOrder _imageSortOrder;
-    public ImgOrder ImageSortOrder
+    private ImgOrderOption _imageSortOrder;
+    public ImgOrderOption ImageSortOrder
     {
         get { return _imageSortOrder; }
-        protected set { this.RaiseAndSetIfChanged(ref _imageSortOrder, value); }
+        protected set
+        {
+            this.RaiseAndSetIfChanged(ref _imageSortOrder, value);
+            this.ProjectConfig.ImageSortOrder = value.OptionEnum;
+        }
     }
 
+    public ImgOrderOptions ImageOrderOptions { get; } = new ImgOrderOptions();
 
     private int _currentImageIndex;
     public int CurrentImageIndex
     {
         get { return _currentImageIndex; }
-        protected set { this.RaiseAndSetIfChanged(ref _currentImageIndex, value); }
+        protected set
+        {
+            // This is smelly but whatever. 
+            // this.ProjectConfig.CurrentImageIndex wasn't updating probably cause of 
+            // observables or something so just gunna force it.
+            this.RaiseAndSetIfChanged(ref _currentImageIndex, value);
+            this.ProjectConfig.CurrentImageIndex = value;
+        }
     }
     //public int NextImageIndex { get; protected set; }
     //public int PreviousImageIndex { get; protected set; }
@@ -101,53 +113,107 @@ public class WorkspaceViewModel : ViewModelBase
     public CurrentImageViewModel CurrentImageVM { get; protected set; }
     public CurrentImageViewModel PreviousImageVM { get; protected set; }
 
-    // Don't think about it
-    public void ChangeImageRight()
+    private void UpdateImageSortOrder(ImgOrderOption ImgOrderOption)
     {
-        if (NextImageVM is not null)
+        // Prevent this from running on workspace load
+        if (this.CurrentImageVM is not null)
         {
-            CurrentImageRouter.Navigate.Execute(NextImageVM);
+            // Sort order has changed
+            var newSortedImageDetails = GetImageDetailsSorted(ImgOrderOption.OptionEnum);
 
-            // If PreviousImageVM is not null, Dispose it since it will be out of the "cache"
-            PreviousImageVM?.Dispose();
+            var newCurrentImageDetailsIndex = newSortedImageDetails.IndexOf(this.CurrentImageVM.ImageDetails);
 
-            PreviousImageVM = CurrentImageVM;
-            CurrentImageVM = NextImageVM;
-            CurrentImageIndex = SortedImageDetails.IndexOf(CurrentImageVM.ImageDetails);
-
-            if (CurrentImageIndex < SortedImageDetails.Count - 1)
+            if (newSortedImageDetails[newCurrentImageDetailsIndex] is not null)
             {
-                NextImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageVM.CurrentIndex + 1], CurrentImageVM.CurrentIndex + 1);
-            }
-            else
-            {
-                NextImageVM = null;
+                this.SortedImageDetails = newSortedImageDetails;
+
+                // Going to use the NextImageVM to load the new CurrentImage spot and then alter the current index.
+                // This will prevent flashing the image, then we "ChangeImageRight" which will update everything to the correct spots
+                // This keeps the same image on screen, but its position in the sort could be different
+                this.NextImageVM?.Dispose();
+
+                this.NextImageVM = new CurrentImageViewModel(SortedImageDetails[newCurrentImageDetailsIndex], newCurrentImageDetailsIndex);
+                this.CurrentImageIndex = newCurrentImageDetailsIndex - 1;
+                ChangeToNextImage(ImageChangeParam.Single);
             }
         }
     }
 
-    public void ChangeImageLeft()
+    // Don't think about it
+    public void ChangeToNextImage(ImageChangeParam param)
     {
-        // Don't think about it
-        if (PreviousImageVM is not null)
+        if (this.NextImageVM is not null && SortedImageDetails is not null && SortedImageDetails.Count > 1)
         {
-            CurrentImageRouter.Navigate.Execute(PreviousImageVM);
-
-            
-            // If NextImageVM is not null, Dispose it since it will be out of the "cache"
-            NextImageVM?.Dispose();
-
-            NextImageVM = CurrentImageVM;
-            CurrentImageVM = PreviousImageVM;
-            CurrentImageIndex = SortedImageDetails.IndexOf(CurrentImageVM.ImageDetails);
-
-            if (CurrentImageIndex > 0)
+            // If param last image
+            if (param == ImageChangeParam.End && CurrentImageIndex != SortedImageDetails.Count - 1)
             {
-                PreviousImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageVM.CurrentIndex - 1], CurrentImageVM.CurrentIndex - 1);
+                this.NextImageVM?.Dispose();
+                this.NextImageVM = new CurrentImageViewModel(SortedImageDetails[SortedImageDetails.Count - 1], SortedImageDetails.Count - 1);
+            }
+
+            this.CurrentImageRouter.Navigate.Execute(NextImageVM);
+
+            // If PreviousImageVM is not null, Dispose it since it will be out of the "cache"
+            this.PreviousImageVM?.Dispose();
+            this.PreviousImageVM = CurrentImageVM;
+
+            // If param last image
+            if (param == ImageChangeParam.End)
+            {
+                this.PreviousImageVM?.Dispose();
+                this.PreviousImageVM = new CurrentImageViewModel(SortedImageDetails[SortedImageDetails.Count - 2], SortedImageDetails.Count - 2);
+            }
+
+            this.CurrentImageVM = NextImageVM;
+
+            this.CurrentImageIndex = SortedImageDetails.IndexOf(CurrentImageVM.ImageDetails);
+
+            if (CurrentImageIndex < SortedImageDetails.Count - 1)
+            {
+                this.NextImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageVM.CurrentIndex + 1], CurrentImageVM.CurrentIndex + 1);
             }
             else
             {
-                PreviousImageVM = null;
+                this.NextImageVM = null;
+            }
+        }
+    }
+
+    public void ChangeToPreviousImage(ImageChangeParam param)
+    {
+        // Don't think about it
+        if (this.PreviousImageVM is not null && SortedImageDetails is not null && SortedImageDetails.Count > 1)
+        {
+            // If param first image
+            if (param == ImageChangeParam.End && CurrentImageIndex != 0)
+            {
+                this.PreviousImageVM?.Dispose();
+                this.PreviousImageVM = new CurrentImageViewModel(SortedImageDetails[0], 0);
+            }
+
+            this.CurrentImageRouter.Navigate.Execute(PreviousImageVM);
+
+            // If NextImageVM is not null, Dispose it since it will be out of the "cache"
+            this.NextImageVM?.Dispose();
+            this.NextImageVM = CurrentImageVM;
+
+            // If param first image
+            if (param == ImageChangeParam.End)
+            {
+                this.NextImageVM?.Dispose();
+                this.NextImageVM = new CurrentImageViewModel(SortedImageDetails[1], 1);
+            }
+            
+            this.CurrentImageVM = PreviousImageVM;
+            this.CurrentImageIndex = SortedImageDetails.IndexOf(CurrentImageVM.ImageDetails);
+
+            if (this.CurrentImageIndex > 0)
+            {
+                this.PreviousImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageVM.CurrentIndex - 1], CurrentImageVM.CurrentIndex - 1);
+            }
+            else
+            {
+                this.PreviousImageVM = null;
             }
         }
 
@@ -158,13 +224,13 @@ public class WorkspaceViewModel : ViewModelBase
 
     }
 
-    public void GetImageDetailsSorted(ImgOrder ImgOrder)
+    private List<ImageDetails> GetImageDetailsSorted(ImgOrder ImgOrder)
     {
         if (ProjectConfig is not null && ProjectConfig.InputImages is not null)
         {
             var imgDetails = ProjectConfig.InputImages;
 
-            SortedImageDetails = ImgOrder switch
+            var sortedImageDetails = ImgOrder switch
             {
                 ImgOrder.AscFileName => imgDetails.SortByFileNameAscending().ToList(),
                 ImgOrder.DescFileName => imgDetails.SortByFileNameDescending().ToList(),
@@ -176,9 +242,11 @@ public class WorkspaceViewModel : ViewModelBase
                 ImgOrder.DescLastModifiedTime => imgDetails.SortByLastModifiedTimeDescending().ThenBy(x => x.FileName).ToList(),
                 _ => imgDetails.ToList()
             };
+
+            return sortedImageDetails;
         }
 
-
+        throw new ArgumentNullException("ProjectConfig or InputImages are null");
     }
 
     private void _setImageFilterValue(string FilterValue)
@@ -377,7 +445,7 @@ public class WorkspaceViewModel : ViewModelBase
         double imageCount = this.ProjectConfig.InputImages.Count;
         this.SortProgress = 0;
         var inProgessText = "Watch it! I'm trying to work here!";
-        
+
         double maxProgress = this.SortEngine.CalculateSortProgressMaximum(this.ProjectConfig);
 
         var progressVM = new InProgressViewModel(MinimumValue: 0,
@@ -462,7 +530,6 @@ public class WorkspaceViewModel : ViewModelBase
     }
 
 
-
     // **** Debug **** //
     public void Dbg_GoToProjectSelection()
     {
@@ -485,8 +552,7 @@ public class WorkspaceViewModel : ViewModelBase
 
     public void BtnCommand()
     {
-        CurrentAppState.IsWorkSpaceOverlayEnabled = true;
-        OverlayRouter.Navigate.Execute(new OverlayViewModel(this.CurrentAppState, new DebugViewModel(), this.CloseOverlayView, true));
+        this.CurrentImageIndex = 1;
     }
 
 
@@ -497,8 +563,7 @@ public class WorkspaceViewModel : ViewModelBase
         this.HostScreen = screen;
         this.CurrentAppState = appState;
         this.ProjectConfig = projectConfig;
-        this.ImageSortOrder = ImgOrder.DescFileName;
-        this.CurrentImageIndex = 0;
+        this.CurrentImageIndex = this.ProjectConfig.CurrentImageIndex;
         this.CurrentImageRouter = new RoutingState();
         this.WorkspaceControlsRouter = new RoutingState();
 
@@ -507,14 +572,27 @@ public class WorkspaceViewModel : ViewModelBase
         ProgressIncrement = ReactiveCommand.Create(() => this.SortProgress++);
         this.SortEngine = new SortEngine(this.ProgressIncrement);
 
-        GetImageDetailsSorted(ImageSortOrder);
+        // Try to load the image sort order from PorjectConfig, default to DescFileName
+        if (this.ImageOrderOptions.TryGetOrderOption(this.ProjectConfig.ImageSortOrder, out ImgOrderOption configOption))
+        {
+            this.ImageSortOrder = configOption;
+        }
+        else
+        {
+            this.ImageSortOrder = this.ImageOrderOptions.GetOrderOption(ImgOrder.DescFileName);
+        }
+
+
+        this.SortedImageDetails = GetImageDetailsSorted(ImageSortOrder.OptionEnum);
+
+        this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => UpdateImageSortOrder(_));
 
         if (SortedImageDetails is not null)
         {
             CurrentImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageIndex], CurrentImageIndex);
             CurrentImageRouter.Navigate.Execute(CurrentImageVM);
 
-            if (CurrentImageIndex < SortedImageDetails.Count)
+            if (CurrentImageIndex < SortedImageDetails.Count - 1)
             {
                 NextImageVM = new CurrentImageViewModel(SortedImageDetails[CurrentImageVM.CurrentIndex + 1], CurrentImageVM.CurrentIndex + 1);
             }
@@ -538,8 +616,11 @@ public class WorkspaceViewModel : ViewModelBase
         // Pass through commands to control vm that navigate the main image
         var imageCommands = new ImageCommands()
         {
-            NavigateNextMainImage = ReactiveCommand.Create(ChangeImageRight),
-            NavigatePreviousMainImage = ReactiveCommand.Create(ChangeImageLeft),
+            // Convert 0 and 1 CommandParameter binding to int > ImageChangeParam
+            NavigateNextMainImage = ReactiveCommand.Create<string>(_ => ChangeToNextImage((ImageChangeParam)int.Parse(_))),
+            NavigatePreviousMainImage = ReactiveCommand.Create<string>(_ => ChangeToPreviousImage((ImageChangeParam)int.Parse(_))),
+            NavigateFirstImage = ReactiveCommand.Create<string>(_ => ChangeToPreviousImage((ImageChangeParam)int.Parse(_))),
+            NavigateLastImage = ReactiveCommand.Create<string>(_ => ChangeToNextImage((ImageChangeParam)int.Parse(_))),
             ResetMainImagePosition = ReactiveCommand.Create(ResetImagePosition),
             SetImageFilteredValue = this.SetImageFilteredValue
         };

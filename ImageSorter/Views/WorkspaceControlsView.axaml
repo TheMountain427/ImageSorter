@@ -16,40 +16,62 @@
 				MaxWidth="500"
 				MaxHeight="200">
 			<Grid Name="WorkCtrl_MainGrid"
-				  RowDefinitions="Auto,*,auto">
+				  RowDefinitions="Auto,Auto,*,auto">
 				<Grid Name="WorkCtrl_UpperGrid"
 					  ColumnDefinitions="*,*,*,*"
 					  VerticalAlignment="Top"
-					  Grid.Row="0" >
-					<Button Name="WorkCtrl_ResetImageButton"
-							Content="Reset Image"
+					  Grid.Row="0">
+					<Button Name="WorkCtrl_FirstImageButton"
+							Content="First Image"
 							HorizontalContentAlignment="Center"
+							Command="{ Binding GoFirstImage }"
+							CommandParameter="1"
 							Grid.Column="0"
-							Command="{ Binding ResetImagePosition }"
 							Width="120"/>
 					<Button Name="WorkCtrl_PreviousImageButton"
 							Content="Previous Image"
 							HorizontalContentAlignment="Center"
 							Command="{ Binding GoPreviousImage }"
+							CommandParameter="0"
 							Grid.Column="1"
 							Width="120"/>
 					<Button Name="WorkCtrl_NextImageButton"
 							Content="Next Image"
 							HorizontalContentAlignment="Center"
 							Command="{ Binding GoNextImage }"
+							CommandParameter="0"
 							Grid.Column="2"
+							Width="120"/>
+					<Button Name="WorkCtrl_LastImageButton"
+							Content="Last Image"
+							HorizontalContentAlignment="Center"
+							Command="{ Binding GoLastImage }"
+							CommandParameter="1"
+							Grid.Column="3"
+							Width="120"/>
+				</Grid>
+				<Grid Name="WorkCtrl_MiddleGrid"
+					  ColumnDefinitions="*,*,*,*"
+					  VerticalAlignment="Top"
+					  Grid.Row="1">
+					<Button Name="WorkCtrl_ResetImageButton"
+							Content="Reset Image"
+							HorizontalContentAlignment="Center"
+							Grid.Column="0"
+							Command="{ Binding ResetImagePosition }"
+							HorizontalAlignment="Left"
 							Width="120"/>
 					<Button Name="WorkCtrl_EditFiltersButton"
 							Content="Edit Filters"
 							HorizontalContentAlignment="Center"
 							Command="{ Binding ToggleFilterSidePane }"
+							HorizontalAlignment="Right"
 							Grid.Column="3"
-							Width="120">
-					</Button>
+							Width="120"/>
 				</Grid>
 				<Rectangle Name="WorkCtrl_SeperatorRectangle"
 						   HorizontalAlignment="Stretch"
-						   Grid.Row="1"
+						   Grid.Row="2"
 						   Fill="LightGray"
 						   Height="10"
 						   VerticalAlignment="Center"
@@ -57,7 +79,7 @@
 				<ItemsControl Name="WorkCtrl_FilterWrapRepeater"
 							  ItemsSource="{ Binding ReferenceImages }"
 							  x:CompileBindings="False"
-							  Grid.Row="2">
+							  Grid.Row="3">
 					<ItemsControl.ItemsPanel>
 						<!--https://docs.avaloniaui.net/docs/concepts/custom-itemspanel-->
 						<ItemsPanelTemplate>
