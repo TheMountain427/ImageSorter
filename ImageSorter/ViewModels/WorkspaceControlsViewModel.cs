@@ -47,6 +47,15 @@ public class WorkspaceControlsViewModel : ViewModelBase
 
     public ICommand SetImageFilteredValue { get; }
 
+    public ICommand DebugCommand { get; }
+        
+    private bool _advanceSettingsOpen;
+    public bool AdvancedSettingsOpen
+    {
+        get { return _advanceSettingsOpen; }
+        set { this.RaiseAndSetIfChanged(ref _advanceSettingsOpen, value); }
+    }
+
     public void ToggleFilterSidePane()
     {
         CurrentAppState.FilterSidePanelOpen = !CurrentAppState.FilterSidePanelOpen;
@@ -66,5 +75,7 @@ public class WorkspaceControlsViewModel : ViewModelBase
         this.SetImageFilteredValue = ImageCommands.SetImageFilteredValue;
         this.GoFirstImage = ImageCommands.NavigateFirstImage;
         this.GoLastImage = ImageCommands.NavigateLastImage;
+
+        this.DebugCommand = ReactiveCommand.Create(() => AdvancedSettingsOpen = !AdvancedSettingsOpen);
     }
 }

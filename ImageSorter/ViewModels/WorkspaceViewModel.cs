@@ -550,9 +550,9 @@ public class WorkspaceViewModel : ViewModelBase
         MainRouter.Navigate.Execute(routableViewModel);
     }
 
+    public ICommand DebugCommand;
     public void BtnCommand()
     {
-        this.CurrentImageIndex = 1;
     }
 
 
@@ -677,5 +677,7 @@ public class WorkspaceViewModel : ViewModelBase
         // ????? tuple shit ????? and it works ?????
         // This just creates the command, tuple cause funny
         SortImageDetailsAsyncCommand = ReactiveCommand.CreateFromObservable<(double Counter, double ImageCount), Unit>(tuple => SortImageDetails(tuple.Counter, tuple.ImageCount));
+
+        this.WhenAnyValue(x => x.ProjectConfig.ReferenceImages).Subscribe(_ => BtnCommand());
     }
 }

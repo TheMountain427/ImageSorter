@@ -7,6 +7,69 @@
              x:Class="ImageSorter.Views.WorkspaceControlsView"
 			 x:DataType="vm:WorkspaceControlsViewModel">
 
+
+	<UserControl.Styles>
+
+		<!--Lower the min height cause we're not apes, set MinHeight in the Expander control to make it smaller
+			because setting it here won't override it-->
+		<Style Selector="Expander">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<DockPanel>
+						<ToggleButton x:Name="ExpanderHeader"
+									  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+									  Background="{TemplateBinding Background}"
+									  BorderBrush="{TemplateBinding BorderBrush}"
+									  BorderThickness="{TemplateBinding BorderThickness}"
+									  Content="{TemplateBinding Header}"
+									  ContentTemplate="{TemplateBinding HeaderTemplate}"
+									  IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+									  IsEnabled="{TemplateBinding IsEnabled}"
+									  Margin="0"
+									  Padding="0"
+									  Height="20"/>
+						<Border x:Name="ExpanderContent"
+								Padding="{DynamicResource ExpanderContentPadding}"
+								Background="{DynamicResource ExpanderDropDownBackground}"
+								BorderBrush="{DynamicResource ExpanderDropDownBorderBrush}"
+								IsVisible="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+							<ContentPresenter x:Name="PART_ContentPresenter"
+											  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+											  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+											  Content="{TemplateBinding Content}"
+											  ContentTemplate="{TemplateBinding ContentTemplate}" />
+						</Border>
+					</DockPanel>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+
+		<!--Remove the stupid expander chevron-->
+		<Style Selector="ToggleButton">
+			<Setter Property="HorizontalContentAlignment" Value="Left" />
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Border x:Name="ToggleButtonBackground">
+						<Grid ColumnDefinitions="Auto,*">
+							<ContentPresenter x:Name="PART_ContentPresenter"
+											  Margin="{TemplateBinding Padding}"
+											  HorizontalContentAlignment="Stretch"
+											  VerticalContentAlignment="Center"
+											  Background="Transparent"
+											  BorderBrush="Transparent"
+											  BorderThickness="0"
+											  Grid.Column="1"
+											  Content="{TemplateBinding Content}"
+											  ContentTemplate="{TemplateBinding ContentTemplate}"
+											  TextBlock.Foreground="{DynamicResource ExpanderForeground}"/>
+						</Grid>
+					</Border>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+
+	</UserControl.Styles>
+
 	<Grid>
 		<Border Name="WorkCtrl_Border"
 				BorderBrush="Black"
@@ -14,90 +77,148 @@
 				CornerRadius="2"
 				Padding="5"
 				MaxWidth="500"
-				MaxHeight="200">
-			<Grid Name="WorkCtrl_MainGrid"
-				  RowDefinitions="Auto,Auto,*,auto">
-				<Grid Name="WorkCtrl_UpperGrid"
-					  ColumnDefinitions="*,*,*,*"
-					  VerticalAlignment="Top"
-					  Grid.Row="0">
-					<Button Name="WorkCtrl_FirstImageButton"
-							Content="First Image"
-							HorizontalContentAlignment="Center"
-							Command="{ Binding GoFirstImage }"
-							CommandParameter="1"
-							Grid.Column="0"
-							Width="120"/>
-					<Button Name="WorkCtrl_PreviousImageButton"
-							Content="Previous Image"
-							HorizontalContentAlignment="Center"
-							Command="{ Binding GoPreviousImage }"
-							CommandParameter="0"
-							Grid.Column="1"
-							Width="120"/>
-					<Button Name="WorkCtrl_NextImageButton"
-							Content="Next Image"
-							HorizontalContentAlignment="Center"
-							Command="{ Binding GoNextImage }"
-							CommandParameter="0"
-							Grid.Column="2"
-							Width="120"/>
-					<Button Name="WorkCtrl_LastImageButton"
-							Content="Last Image"
-							HorizontalContentAlignment="Center"
-							Command="{ Binding GoLastImage }"
-							CommandParameter="1"
-							Grid.Column="3"
-							Width="120"/>
+				MaxHeight="5000">
+			<StackPanel>
+				<Expander ExpandDirection="Up"
+						  HorizontalAlignment="Stretch"
+						  VerticalAlignment="Top"
+						  IsVisible="{ Binding AdvancedSettingsOpen }"
+						  IsExpanded="True"
+						  Margin="0,1"
+						  MinHeight="20">
+					<Expander.Header>
+						<TextBlock Text="Advanced Settings"
+								   FontWeight="Bold"
+								   TextAlignment="Center"/>
+					</Expander.Header>
+					<StackPanel Spacing="3">
+
+						<Border BorderBrush="Black"
+								BorderThickness="2"
+								Width="{ Binding $parent.Bounds.Width }"
+								HorizontalAlignment="Stretch">
+							<StackPanel>
+								<Border BorderBrush="Black"
+										BorderThickness="2"
+										Width="{ Binding $parent.Bounds.Width }"
+										HorizontalAlignment="Stretch">
+									<TextBlock Text="Some Other Settings..."
+											   HorizontalAlignment="Center"/>
+								</Border>
+								<WrapPanel>
+									<TextBlock Text="I'm a setting!"/>
+								</WrapPanel>
+							</StackPanel>
+						</Border>
+						
+						<Border BorderBrush="Black"
+								BorderThickness="2"
+								Width="{ Binding $parent.Bounds.Width }"
+								HorizontalAlignment="Stretch">
+							<StackPanel>
+								<Border BorderBrush="Black"
+										BorderThickness="2"
+										Width="{ Binding $parent.Bounds.Width }"
+										HorizontalAlignment="Stretch">
+									<TextBlock Text="Filter Images By:"
+											   HorizontalAlignment="Center"/>
+								</Border>
+								<WrapPanel>
+									<CheckBox Content="I need a custom converter to divide width by 3 here"
+											  Width="{ Binding $parent[Border].Bounds.Width }"/>
+									<CheckBox Content="FilterValue"/>
+								</WrapPanel>
+							</StackPanel>
+						</Border>
+						
+						
+					</StackPanel>
+				</Expander>
+				<Grid Name="WorkCtrl_MainGrid"
+					  RowDefinitions="Auto,Auto,*,auto">
+					<Grid Name="WorkCtrl_UpperGrid"
+						  ColumnDefinitions="*,*,*,*"
+						  VerticalAlignment="Top"
+						  Grid.Row="0">
+						<Button Name="WorkCtrl_FirstImageButton"
+								Content="First Image"
+								HorizontalContentAlignment="Center"
+								Command="{ Binding GoFirstImage }"
+								CommandParameter="1"
+								Grid.Column="0"
+								Width="120"/>
+						<Button Name="WorkCtrl_PreviousImageButton"
+								Content="Previous Image"
+								HorizontalContentAlignment="Center"
+								Command="{ Binding GoPreviousImage }"
+								CommandParameter="0"
+								Grid.Column="1"
+								Width="120"/>
+						<Button Name="WorkCtrl_NextImageButton"
+								Content="Next Image"
+								HorizontalContentAlignment="Center"
+								Command="{ Binding GoNextImage }"
+								CommandParameter="0"
+								Grid.Column="2"
+								Width="120"/>
+						<Button Name="WorkCtrl_LastImageButton"
+								Content="Last Image"
+								HorizontalContentAlignment="Center"
+								Command="{ Binding GoLastImage }"
+								CommandParameter="1"
+								Grid.Column="3"
+								Width="120"/>
+					</Grid>
+					<Grid Name="WorkCtrl_MiddleGrid"
+						  ColumnDefinitions="*,*,*,*"
+						  VerticalAlignment="Top"
+						  Grid.Row="1">
+						<Button Name="WorkCtrl_ResetImageButton"
+								Content="Reset Image"
+								HorizontalContentAlignment="Center"
+								Grid.Column="0"
+								Command="{ Binding ResetImagePosition }"
+								HorizontalAlignment="Left"
+								Width="120"/>
+						<Button Name="WorkCtrl_EditFiltersButton"
+								Content="Edit Filters"
+								HorizontalContentAlignment="Center"
+								Command="{ Binding ToggleFilterSidePane }"
+								HorizontalAlignment="Right"
+								Grid.Column="3"
+								Width="120"/>
+					</Grid>
+					<Rectangle Name="WorkCtrl_SeperatorRectangle"
+							   HorizontalAlignment="Stretch"
+							   Grid.Row="2"
+							   Fill="LightGray"
+							   Height="10"
+							   VerticalAlignment="Center"
+							   Margin="-5,10"/>
+					<ItemsControl Name="WorkCtrl_FilterWrapRepeater"
+								  ItemsSource="{ Binding ReferenceImages }"
+								  x:CompileBindings="False"
+								  Grid.Row="3">
+						<ItemsControl.ItemsPanel>
+							<!--https://docs.avaloniaui.net/docs/concepts/custom-itemspanel-->
+							<ItemsPanelTemplate>
+								<WrapPanel HorizontalAlignment="Center"/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<!--https://docs.avaloniaui.net/docs/basics/data/data-binding/data-binding-syntax#string-formatting-->
+								<Button Name="{ Binding $self.Tag, Mode=OneWay, StringFormat=WorkCtrl_{0}Button }"
+										Content="{ Binding FilteredValue}"
+										Command="{ Binding $parent[UserControl].DataContext.SetImageFilteredValue }"
+										CommandParameter="{ Binding $self.Tag }"
+										Tag="{ Binding FilteredValue }"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
 				</Grid>
-				<Grid Name="WorkCtrl_MiddleGrid"
-					  ColumnDefinitions="*,*,*,*"
-					  VerticalAlignment="Top"
-					  Grid.Row="1">
-					<Button Name="WorkCtrl_ResetImageButton"
-							Content="Reset Image"
-							HorizontalContentAlignment="Center"
-							Grid.Column="0"
-							Command="{ Binding ResetImagePosition }"
-							HorizontalAlignment="Left"
-							Width="120"/>
-					<Button Name="WorkCtrl_EditFiltersButton"
-							Content="Edit Filters"
-							HorizontalContentAlignment="Center"
-							Command="{ Binding ToggleFilterSidePane }"
-							HorizontalAlignment="Right"
-							Grid.Column="3"
-							Width="120"/>
-				</Grid>
-				<Rectangle Name="WorkCtrl_SeperatorRectangle"
-						   HorizontalAlignment="Stretch"
-						   Grid.Row="2"
-						   Fill="LightGray"
-						   Height="10"
-						   VerticalAlignment="Center"
-						   Margin="-5,10"/>
-				<ItemsControl Name="WorkCtrl_FilterWrapRepeater"
-							  ItemsSource="{ Binding ReferenceImages }"
-							  x:CompileBindings="False"
-							  Grid.Row="3">
-					<ItemsControl.ItemsPanel>
-						<!--https://docs.avaloniaui.net/docs/concepts/custom-itemspanel-->
-						<ItemsPanelTemplate>
-							<WrapPanel HorizontalAlignment="Center"/>
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<!--https://docs.avaloniaui.net/docs/basics/data/data-binding/data-binding-syntax#string-formatting-->
-							<Button Name="{ Binding $self.Tag, Mode=OneWay, StringFormat=WorkCtrl_{0}Button }"
-									Content="{ Binding FilteredValue}"
-									Command="{ Binding $parent[UserControl].DataContext.SetImageFilteredValue }"
-									CommandParameter="{ Binding $self.Tag }"
-									Tag="{ Binding FilteredValue }"/>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-			</Grid>
+				<Button Content="Debug" Command="{ Binding DebugCommand }"/>
+			</StackPanel>
 		</Border>
 	</Grid>
 

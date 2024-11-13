@@ -66,12 +66,12 @@
 					<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
 					<TextBlock Text="{ Binding CurrentImageIndex }"/>
 					<Button Content="Initiate Sort" Command="{ Binding CheckForImageSortIssues }"/>
-
 					<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
 							  SelectedItem="{ Binding ImageSortOrder }"
 							  SelectedValueBinding="{ Binding }"
 							  DisplayMemberBinding="{ Binding OptionText }"
 							  x:CompileBindings="False"/>
+
 
 
 				</StackPanel>
@@ -90,17 +90,21 @@
 						</rxui:RoutedViewHost.ViewLocator>
 					</rxui:RoutedViewHost>
 				</Panel>
-				<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
-									 VerticalAlignment="Bottom"
-									 Grid.Row="2">
-					<rxui:RoutedViewHost.DefaultContent>
-						<Rectangle Fill="Black" Height="100" Width="300"/>
-					</rxui:RoutedViewHost.DefaultContent>
-					<rxui:RoutedViewHost.ViewLocator>
-						<app:AppViewLocator/>
-					</rxui:RoutedViewHost.ViewLocator>
-				</rxui:RoutedViewHost>
 			</Grid>
+			
+			<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
+								 VerticalAlignment="Bottom"
+								 HorizontalAlignment="Center"
+								 Grid.Row="2"
+								 Grid.ColumnSpan="5"
+								 ZIndex="5">
+				<rxui:RoutedViewHost.DefaultContent>
+					<Rectangle Fill="Black" Height="100" Width="300"/>
+				</rxui:RoutedViewHost.DefaultContent>
+				<rxui:RoutedViewHost.ViewLocator>
+					<app:AppViewLocator/>
+				</rxui:RoutedViewHost.ViewLocator>
+			</rxui:RoutedViewHost>
 
 			<GridSplitter Grid.Column="3"
 						  Background="Black"
