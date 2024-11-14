@@ -17,6 +17,8 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Diagnostics;
 using static ImageSorter.Models.Helpers;
+using Avalonia.Media.Imaging;
+using System.IO;
 
 namespace ImageSorter.ViewModels;
 
@@ -31,7 +33,7 @@ public class WorkspaceViewModel : ViewModelBase
 
     public RoutingState WorkspaceControlsRouter { get; } = new RoutingState();
 
-    public List<ImageDetails>? SortedImageDetails { get; protected set; }
+    public List<ImageDetails> SortedImageDetails { get; protected set; }
 
     public RoutingState WorkspaceFilterRouter { get; } = new RoutingState();
 
@@ -203,7 +205,7 @@ public class WorkspaceViewModel : ViewModelBase
                 this.NextImageVM?.Dispose();
                 this.NextImageVM = new CurrentImageViewModel(SortedImageDetails[1], 1);
             }
-            
+
             this.CurrentImageVM = PreviousImageVM;
             this.CurrentImageIndex = SortedImageDetails.IndexOf(CurrentImageVM.ImageDetails);
 
@@ -430,6 +432,7 @@ public class WorkspaceViewModel : ViewModelBase
 
         var sortPreviewVM = new SortPreviewViewModel(AppState: this.CurrentAppState,
                                                      ProjectConfig: this.ProjectConfig,
+                                                     SortedImageDetails: SortedImageDetails,
                                                      OnSuccessCommand: successCommand,
                                                      OnCancelCommand: cancelCommand);
 
@@ -529,6 +532,22 @@ public class WorkspaceViewModel : ViewModelBase
         });
     }
 
+    public void LoadThumbnails(List<ImageDetails> ImageDetails)
+    {
+        Task.Run(async () =>
+            {
+                await Task.Run(async () =>
+                {
+                    foreach (var detail in ImageDetails)
+                    {
+                        if (!string.IsNullOrEmpty(detail.FilePath))
+                        {
+                            await detail.LoadThumbnailAsync();
+                        }
+                    }
+                });
+            });
+    }
 
     // **** Debug **** //
     public void Dbg_GoToProjectSelection()
@@ -611,6 +630,12 @@ public class WorkspaceViewModel : ViewModelBase
                 PreviousImageVM = null;
             }
         }
+
+        if (SortedImageDetails is not null)
+        {
+            LoadThumbnails(this.SortedImageDetails);
+        }
+
 
         SetImageFilteredValue = ReactiveCommand.Create<string>(_ => _setImageFilterValue(_));
         // Pass through commands to control vm that navigate the main image

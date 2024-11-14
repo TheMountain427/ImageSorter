@@ -5,11 +5,13 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using static ImageSorter.Models.Enums;
 
@@ -44,14 +46,31 @@ namespace ImageSorter.Models
         [JsonIgnore]
         public Bitmap ImageBitmap { get; set; }
 
-        public ImageDetails()
+        [JsonIgnore]
+        private Bitmap _thumbnailBitmap;
+        [JsonIgnore]
+        public Bitmap ThumbnailBitmap
         {
-
+            get { return _thumbnailBitmap; }
+            set { this.RaiseAndSetIfChanged(ref _thumbnailBitmap, value); }
         }
 
-        public ImageDetails(string filePath)
+
+        public Stream LoadImageBitmap()
         {
-            CreateImageDetails(filePath);
+            if (File.Exists(this.FilePath))
+            {
+                return File.OpenRead(this.FilePath);
+            }
+
+            throw new ArgumentNullException();
+        }
+
+        public async Task LoadThumbnailAsync()
+        {
+            var imageStream = LoadImageBitmap();
+
+            this.ThumbnailBitmap = await Task.Run(() => Bitmap.DecodeToWidth(imageStream, 175));
         }
 
         private void CreateImageDetails(string filePath)
@@ -111,6 +130,16 @@ namespace ImageSorter.Models
             this.IsValid = true;
 
             return true;
+        }
+
+        public ImageDetails()
+        {
+
+        }
+
+        public ImageDetails(string filePath)
+        {
+            CreateImageDetails(filePath);
         }
     }
 }

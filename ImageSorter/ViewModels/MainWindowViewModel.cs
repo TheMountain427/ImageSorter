@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Media.Imaging;
 using DynamicData;
 using ImageSorter.Models;
 using ReactiveUI;
@@ -21,10 +22,23 @@ public class MainWindowViewModel : ReactiveObject, IScreen
 
     public ReactiveCommand<Unit, IRoutableViewModel> GoBack => Router.NavigateBack;
 
-    public static JsonSerializerOptions JsonOptions { get; private set; } = new JsonSerializerOptions {  WriteIndented = true };
+    public static JsonSerializerOptions JsonOptions { get; private set; } = new JsonSerializerOptions { WriteIndented = true };
 
     public AppState CurrentAppState { get; set; }
 
+    private double _windowWidth;
+    public double WindowWidth
+    {
+        get { return _windowWidth; }
+        set { this.RaiseAndSetIfChanged(ref _windowWidth, value); }
+    }
+
+    private double _windowHeight;
+    public double WindowHeight
+    {
+        get { return _windowHeight; }
+        set { this.RaiseAndSetIfChanged(ref _windowHeight, value); }
+    }
 
     public void FirstRunChecks()
     {
@@ -87,6 +101,23 @@ public class MainWindowViewModel : ReactiveObject, IScreen
     public MainWindowViewModel()
     {
         this.FirstRunChecks();
-        Router.Navigate.Execute(new ProjectSelectionViewModel(this, Router, CurrentAppState));
+
+        if (this.CurrentAppState is not null
+                && this.CurrentAppState.WindowHeight > 300
+                && this.CurrentAppState.WindowWidth > 300)
+        {
+            this.WindowHeight = this.CurrentAppState.WindowHeight;
+            this.WindowWidth = this.CurrentAppState.WindowWidth;
+        }
+        else
+        {
+            this.WindowHeight = 1000;
+            this.WindowWidth = 1500;
+        }
+
+        Router.Navigate.Execute(new ProjectSelectionViewModel(this, Router, this.CurrentAppState));
+
+        this.WhenAnyValue(x => x.WindowHeight).Subscribe(_ => this.CurrentAppState.WindowHeight = _);
+        this.WhenAnyValue(x => x.WindowWidth).Subscribe(_ => this.CurrentAppState.WindowWidth = _);
     }
 }

@@ -7,14 +7,49 @@
              x:Class="ImageSorter.Views.SortPreviewView"
 			 x:DataType="vm:SortPreviewViewModel">
 
-	<Grid>
-		<StackPanel>
-			<TextBlock Text="Sort Preview to be added..."/>
-			<StackPanel Orientation="Horizontal"
-						Spacing="5">
-				<Button Content="Continue" Command="{ Binding ContinueSort }"/>
-				<Button Content="Cancel" Command="{ Binding CancelSort }"/>
+	<Grid MaxWidth="{ Binding MaxViewWidth }"
+		  MaxHeight="{ Binding MaxViewHeight }"
+		  RowDefinitions="Auto,*,Auto">
+
+		<ScrollViewer Grid.Row="1">
+			<StackPanel>
+				<ItemsControl ItemsSource="{ Binding SortedImageDetails }">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Border BorderBrush="Black"
+									BorderThickness="2"
+									Width="200"
+									Margin="5,5,5,5"
+									IsHitTestVisible="True">
+								<StackPanel>
+									<Image Source="{ Binding ThumbnailBitmap }"
+										   Height="{ Binding ThumbnailBitmap.Size.Height }"
+										   Width="{ Binding ThumbnailBitmap.Size.Width }"
+										   IsVisible="{Binding ThumbnailBitmap, Converter={x:Static ObjectConverters.IsNotNull}}"
+										   Margin="5,5,5,5"/>
+									<TextBlock Text="{ Binding FileName }"
+											   FontSize="11"
+											   HorizontalAlignment="Center"
+											   TextWrapping="NoWrap"/>
+								</StackPanel>
+							</Border>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
 			</StackPanel>
+		</ScrollViewer>
+		<StackPanel Orientation="Horizontal"
+					Spacing="5"
+					VerticalAlignment="Bottom"
+					HorizontalAlignment="Center"
+					Grid.Row="2">
+			<Button Content="Continue" Command="{ Binding ContinueSort }"/>
+			<Button Content="Cancel" Command="{ Binding CancelSort }"/>
 		</StackPanel>
 	</Grid>
 </UserControl>

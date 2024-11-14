@@ -19,6 +19,8 @@ namespace ImageSorter.Models
         private string _currentProjectName;
         private string _currentProjectConfigPath;
         private bool _filterSidePanelOpen;
+        private double _windowWidth;
+        private double _windowHeight;
 
         public string LastReferenceImagePath { get; set; }
 
@@ -137,6 +139,26 @@ namespace ImageSorter.Models
             remove
             {
                 _onAppStateChanged -= value;
+            }
+        }
+
+        public double WindowWidth
+        {
+            get { return _windowWidth; }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _windowWidth, value);
+                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public double WindowHeight
+        {
+            get { return _windowHeight; }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _windowHeight, value);
+                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 

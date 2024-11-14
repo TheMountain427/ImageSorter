@@ -3,7 +3,10 @@
 using Avalonia.Media.Imaging;
 using ImageSorter.Models;
 using ReactiveUI;
+using System;
+using System.IO;
 using System.Reactive.Disposables;
+using System.Threading.Tasks;
 
 namespace ImageSorter.ViewModels;
 
@@ -39,7 +42,7 @@ public class CurrentImageViewModel : ViewModelBase, IActivatableViewModel
         this.CurrentIndex = CurrentIndex;
         this.ImageName = imageDetails.FileName;
         UrlPathSegment = $"CurrentImage[{CurrentIndex}]";
-        ImageBitmap = new Bitmap(this.ImagePath);
+        ImageBitmap = new Bitmap(imageDetails.LoadImageBitmap());
 
     }
 
