@@ -4,6 +4,7 @@ using Avalonia.Media.Imaging;
 using ImageSorter.Models;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Disposables;
 using System.Threading.Tasks;
@@ -15,16 +16,19 @@ public class CurrentImageViewModel : ViewModelBase, IActivatableViewModel
     public ViewModelActivator Activator { get; }
 
     public override string UrlPathSegment { get; }
-    public ImageDetails ImageDetails { get; }
-    public string ImageName { get; }
-    public string ImagePath { get; }
+
+    public ImageDetails? ImageDetails { get; }
+
+    public string? ImageName { get; }
 
     // This needs to be disposed when finished with. Call Dispose()
-    public Bitmap ImageBitmap { get; private set; }
+    public Bitmap? ImageBitmap { get; private set; }
 
     public int CurrentIndex { get; }
 
-    public CurrentImageViewModel(ImageDetails imageDetails, int CurrentIndex)
+    public bool CanNavigateTo { get; private set; }
+
+    public CurrentImageViewModel(List<ImageDetails> SortedImageDetails, int CurrentIndex)
     {
         // Need to dispose of the bitmap since it is an IDisposble
         // Will balloon memory if not disposed
@@ -36,13 +40,19 @@ public class CurrentImageViewModel : ViewModelBase, IActivatableViewModel
                 .DisposeWith(disposables);
         });
 
+        // Checking if their is a next image to load in the list is handled here now
+        if (CurrentIndex < SortedImageDetails.Count && CurrentIndex >= 0)
+        {
+            this.ImageDetails = SortedImageDetails[CurrentIndex];
+            this.CurrentIndex = CurrentIndex;
+            this.ImageName = this.ImageDetails.FileName;
+            ImageBitmap = new Bitmap(this.ImageDetails.LoadImageBitmap());
 
-        this.ImageDetails = imageDetails;
-        this.ImagePath = imageDetails.FilePath;
-        this.CurrentIndex = CurrentIndex;
-        this.ImageName = imageDetails.FileName;
+            // This boolean should be checked before attempting to navigate to this VM
+            this.CanNavigateTo = true;
+        }
+
         UrlPathSegment = $"CurrentImage[{CurrentIndex}]";
-        ImageBitmap = new Bitmap(imageDetails.LoadImageBitmap());
 
     }
 
