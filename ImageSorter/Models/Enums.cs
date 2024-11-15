@@ -21,10 +21,4 @@ public static class Enums
         Alpha = 0,
         Beta = 1
     }
-
-    public enum ImageChangeParam
-    {
-        Single = 0,
-        End = 1
-    }
 }

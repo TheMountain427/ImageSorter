@@ -11,8 +11,8 @@ public class ImageCommands
 {
     public ICommand NavigateNextMainImage { get; set; }
     public ICommand NavigatePreviousMainImage { get; set; }
-    public ICommand NavigateFirstImage { get; set; }
     public ICommand NavigateLastImage { get; set; }
+    public ICommand NavigateFirstImage { get; set; }
     public ICommand ResetMainImagePosition { get; set; }
     public ICommand SetImageFilteredValue { get; set; }
 
