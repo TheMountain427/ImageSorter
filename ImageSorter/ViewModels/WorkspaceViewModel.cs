@@ -121,7 +121,7 @@ public class WorkspaceViewModel : ViewModelBase
         if (this.CurrentImageVM is not null)
         {
             // Sort order has changed
-            this.SortedImageDetails = GetImageDetailsSorted(ImgOrderOption.OptionEnum);
+            this.SortedImageDetails = SortImageDetailsBy(this.SortedImageDetails, ImgOrderOption.OptionEnum).ToList();
 
             // Find our current main image in the sort index so we can return to it
             var newCurrentImageDetailsIndex = SortedImageDetails.IndexOf(this.CurrentImageVM.ImageDetails);
@@ -184,30 +184,8 @@ public class WorkspaceViewModel : ViewModelBase
 
     }
 
-    private List<ImageDetails> GetImageDetailsSorted(ImgOrder ImgOrder)
-    {
-        if (ProjectConfig is not null && ProjectConfig.InputImages is not null)
-        {
-            var imgDetails = ProjectConfig.InputImages;
 
-            var sortedImageDetails = ImgOrder switch
-            {
-                ImgOrder.AscFileName => imgDetails.SortByFileNameAscending().ToList(),
-                ImgOrder.DescFileName => imgDetails.SortByFileNameDescending().ToList(),
-                ImgOrder.AscFileSize => imgDetails.SortByFileSizeAscending().ThenBy(x => x.FileName).ToList(),
-                ImgOrder.DescFileSize => imgDetails.SortByFileSizeDescending().ThenBy(x => x.FileName).ToList(),
-                ImgOrder.AscFileCreatedTime => imgDetails.SortByFileCreationTimeAscending().ThenBy(x => x.FileName).ToList(),
-                ImgOrder.DescFileCreatedTime => imgDetails.SortByFileCreationTimeDescending().ThenBy(x => x.FileName).ToList(),
-                ImgOrder.AscLastModifiedTime => imgDetails.SortByLastModifiedTimeAscending().ThenBy(x => x.FileName).ToList(),
-                ImgOrder.DescLastModifiedTime => imgDetails.SortByLastModifiedTimeDescending().ThenBy(x => x.FileName).ToList(),
-                _ => imgDetails.ToList()
-            };
-
-            return sortedImageDetails;
-        }
-
-        throw new ArgumentNullException("ProjectConfig or InputImages are null");
-    }
+    
 
     private void _setImageFilterValue(string FilterValue)
     {
@@ -363,7 +341,7 @@ public class WorkspaceViewModel : ViewModelBase
         else
         {
             // No warnings, we can proceed to the sort preview
-            ShowPreview();
+            ShowPreSortPreview();
         }
 
     }
@@ -371,12 +349,12 @@ public class WorkspaceViewModel : ViewModelBase
     private void ShowPreviewAfterWarning(object sender, EventArgs e)
     {
         // Show the sort preview
-        ShowPreview();
+        ShowPreSortPreview();
         // Unsubscribe, we only want to be subscribed when the view is up
         this.OnIsSortWarningUpChange -= ShowPreviewAfterWarning;
     }
 
-    private void ShowPreview()
+    private void ShowPreSortPreview()
     {
         var successCommand = ReactiveCommand.Create(() =>
         {
@@ -388,6 +366,12 @@ public class WorkspaceViewModel : ViewModelBase
             this.CloseOverlayView.Execute(null);
         });
 
+        ShowPreview(successCommand, cancelCommand);
+
+    }
+
+    private void ShowPreview(ICommand successCommand, ICommand cancelCommand)
+    {
         var sortPreviewVM = new SortPreviewViewModel(AppState: this.CurrentAppState,
                                                      ProjectConfig: this.ProjectConfig,
                                                      SortedImageDetails: SortedImageDetails,
@@ -398,7 +382,6 @@ public class WorkspaceViewModel : ViewModelBase
                                                             ViewModelToDisplay: sortPreviewVM,
                                                             CloseOverlay: CloseOverlayView,
                                                             AllowClickOff: false));
-
     }
 
     private void BeginSortProcess()
@@ -457,7 +440,7 @@ public class WorkspaceViewModel : ViewModelBase
 
     // ????? tuple shit ????? and it works ?????
     // This is the base for the Async command that will sort the images in the background
-    // Has no need to be a tuple, in fact it is useless) but I am leaving it cause it's cool
+    // Has no need to be a tuple, (in fact it is useless) but I am leaving it cause it's cool
     // The tuple allows more than one variable to be passed in
     public ReactiveCommand<(double Counter, double ImageCount), Unit> SortImageDetailsAsyncCommand { get; }
     // This is the method to be called by SortImageDetailsAsyncCommand
@@ -532,6 +515,21 @@ public class WorkspaceViewModel : ViewModelBase
     {
     }
 
+        public void Dbg_Preview()
+    {
+        var successCommand = ReactiveCommand.Create(() =>
+        {
+            this.CloseOverlayView.Execute(null);
+        });
+
+        var cancelCommand = ReactiveCommand.Create(() =>
+        {
+            this.CloseOverlayView.Execute(null);
+        });
+
+        ShowPreview(successCommand, cancelCommand);
+
+    }
 
     private void ChangeMainImage(int NewCurrentImageIndex)
     {
@@ -639,7 +637,7 @@ public class WorkspaceViewModel : ViewModelBase
         }
 
 
-        this.SortedImageDetails = GetImageDetailsSorted(ImageSortOrder.OptionEnum);
+        this.SortedImageDetails = SortImageDetailsBy( this.ProjectConfig.InputImages, ImageSortOrder.OptionEnum).ToList();
         this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => UpdateImageSortOrder(_));
 
         // Setup the MainImage. ChangeMainImage() and CurrentImageVM handle it all based on index and SortedImageDetails
@@ -727,7 +725,8 @@ public class WorkspaceViewModel : ViewModelBase
         // ????? tuple shit ????? and it works ?????
         // This just creates the command, tuple cause funny
         SortImageDetailsAsyncCommand = ReactiveCommand.CreateFromObservable<(double Counter, double ImageCount), Unit>(tuple => SortImageDetails(tuple.Counter, tuple.ImageCount));
-
+        
         this.WhenAnyValue(x => x.ProjectConfig.ReferenceImages).Subscribe(_ => BtnCommand());
+
     }
 }
