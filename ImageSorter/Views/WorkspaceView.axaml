@@ -62,10 +62,12 @@
 					<TextBlock Text="Warning window on project load about missing/fixed input images"/>
 					<TextBlock Text="Preview window on sort destinations"/>
 					<TextBlock Text="Thumbnail viewer, sort by sort values, with colors"/>
+					<TextBlock Text="Progress bar on bottom dock panel for actions"/>
 					<Button Content="Click Me" Command="{ Binding BtnCommand }"/>
 					<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
 					<TextBlock Text="{ Binding CurrentImageIndex }"/>
 					<Button Content="Initiate Sort" Command="{ Binding CheckForImageSortIssues }"/>
+					<Button Content="Preview" Command="{ Binding Dbg_Preview }"/>
 					<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
 							  SelectedItem="{ Binding ImageSortOrder }"
 							  SelectedValueBinding="{ Binding }"

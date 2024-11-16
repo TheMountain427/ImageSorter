@@ -120,5 +120,28 @@ namespace ImageSorter.Models
         {
             return ImageDetails.Select(x => x.FilteredValue).Distinct();
         }
+
+        public static IEnumerable<ImageDetails> SortImageDetailsBy(IEnumerable<ImageDetails> ImageDetails, ImgOrder ImgOrder)
+        {
+            if (ImageDetails is not null)
+            {
+                var sortedImageDetails = ImgOrder switch
+                {
+                    ImgOrder.AscFileName => ImageDetails.OrderBy(x => x.FileName),
+                    ImgOrder.DescFileName => ImageDetails.OrderByDescending(x => x.FileName),
+                    ImgOrder.AscFileSize => ImageDetails.OrderBy(x => x.FileSize).ThenBy(x => x.FileName),
+                    ImgOrder.DescFileSize => ImageDetails.OrderByDescending(x => x.FileSize).ThenBy(x => x.FileName),
+                    ImgOrder.AscFileCreatedTime => ImageDetails.OrderBy(x => x.FileCreatedTime).ThenBy(x => x.FileName),
+                    ImgOrder.DescFileCreatedTime => ImageDetails.OrderByDescending(x => x.FileCreatedTime).ThenBy(x => x.FileName),
+                    ImgOrder.AscLastModifiedTime => ImageDetails.OrderBy(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
+                    ImgOrder.DescLastModifiedTime => ImageDetails.OrderByDescending(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
+                    _ => ImageDetails
+                };
+
+                return sortedImageDetails;
+            }
+
+            throw new ArgumentNullException("ProjectConfig or InputImages are null");
+        }
     }
 }
