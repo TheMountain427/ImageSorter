@@ -67,7 +67,7 @@
 					<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
 					<TextBlock Text="{ Binding CurrentImageIndex }"/>
 					<Button Content="Initiate Sort" Command="{ Binding CheckForImageSortIssues }"/>
-					<Button Content="Preview" Command="{ Binding Dbg_Preview }"/>
+					<Button Content="Overview" Command="{ Binding Dbg_Overview }"/>
 					<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
 							  SelectedItem="{ Binding ImageSortOrder }"
 							  SelectedValueBinding="{ Binding }"

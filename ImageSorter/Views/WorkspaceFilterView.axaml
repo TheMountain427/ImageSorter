@@ -28,8 +28,6 @@
 						Command="{ Binding AddFilter }"
 						Width="110"
 						HorizontalContentAlignment="Center"/>
-				<!--<Button Content="Apply"
-						Command="{ Binding ApplyFilters }"/>-->
 			</StackPanel>
 		</Grid>
 		<ItemsControl ItemsSource="{ Binding ReferenceImages }">

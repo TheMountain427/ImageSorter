@@ -366,13 +366,13 @@ public class WorkspaceViewModel : ViewModelBase
             this.CloseOverlayView.Execute(null);
         });
 
-        ShowPreview(successCommand, cancelCommand);
+        ShowOverview(successCommand, cancelCommand);
 
     }
 
-    private void ShowPreview(ICommand successCommand, ICommand cancelCommand)
+    private void ShowOverview(ICommand successCommand, ICommand cancelCommand)
     {
-        var sortPreviewVM = new SortPreviewViewModel(AppState: this.CurrentAppState,
+        var sortPreviewVM = new ImageOverviewViewModel(AppState: this.CurrentAppState,
                                                      ProjectConfig: this.ProjectConfig,
                                                      SortedImageDetails: SortedImageDetails,
                                                      OnSuccessCommand: successCommand,
@@ -515,7 +515,7 @@ public class WorkspaceViewModel : ViewModelBase
     {
     }
 
-        public void Dbg_Preview()
+        public void Dbg_Overview()
     {
         var successCommand = ReactiveCommand.Create(() =>
         {
@@ -527,7 +527,7 @@ public class WorkspaceViewModel : ViewModelBase
             this.CloseOverlayView.Execute(null);
         });
 
-        ShowPreview(successCommand, cancelCommand);
+        ShowOverview(successCommand, cancelCommand);
 
     }
 

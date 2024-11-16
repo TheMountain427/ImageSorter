@@ -4,34 +4,57 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ImageSorter.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="ImageSorter.Views.SortPreviewView"
-			 x:DataType="vm:SortPreviewViewModel">
+             x:Class="ImageSorter.Views.ImageOverviewView"
+			 x:DataType="vm:ImageOverviewViewModel">
 
-	<Grid MaxWidth="{ Binding MaxViewWidth }"
-		  MaxHeight="{ Binding MaxViewHeight }"
+	<Grid Width="{ Binding MaxViewWidth }"
+		  Height="{ Binding MaxViewHeight }"
 		  RowDefinitions="Auto,*,Auto">
-		<Expander HorizontalAlignment="Stretch"
-				  VerticalAlignment="Top"
-				  Grid.RowSpan="3"
-				  ZIndex="3"
-				  MaxHeight="200">
-			<Expander.Header>
-				<TextBlock Text="Filter by:"/>
-			</Expander.Header>
-			<Expander.Content>
-				<ListBox ItemsSource="{ Binding AvailableFilterValues }"
-						 SelectionMode="Toggle"
-						 Selection="{ Binding FilterBySelectionModel }">
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<TextBlock Text="{ Binding }"/>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
+		<DockPanel Background="Red"
+				   VerticalAlignment="Top"
+				   ZIndex="3"
+				   Width="{ Binding $parent[Grid].Bounds.Width }">
+			<!--<Expander HorizontalAlignment="Right"
+					  DockPanel.Dock="Right"
+					  MaxHeight="200">
+				<Expander.Header>
+					<TextBlock Text="Filter by:"/>
+				</Expander.Header>
+				<Expander.Content>
+					<ListBox ItemsSource="{ Binding AvailableFilterValues }"
+							 SelectionMode="Toggle"
+							 Selection="{ Binding FilterBy_SelectionModel }">
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{ Binding }"/>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</Expander.Content>
+			</Expander>-->
+			<Button Content="Filter by:"
+					DockPanel.Dock="Right"
+					HorizontalAlignment="Right"
+					Command="{ Binding ReselectListValues }">
+				<Button.Flyout>
+					<Flyout Placement="BottomEdgeAlignedRight"
+							Opened="Flyout_Opened"
+							Opening="Flyout_Closed">
+						<ListBox ItemsSource="{ Binding AvailableFilterValues }"
+								 SelectionMode="Multiple,Toggle"
+								 Selection="{ Binding FilterBy_SelectionModel }">
+							<ListBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{ Binding }"/>
+								</DataTemplate>
+							</ListBox.ItemTemplate>
+						</ListBox>
+					</Flyout>
+				</Button.Flyout>
+			</Button>
+		</DockPanel>
 
 
-			</Expander.Content>
-		</Expander>
 		<ScrollViewer Grid.Row="1">
 			<StackPanel>
 				<ItemsControl ItemsSource="{ Binding PreviewImageDetails }">

@@ -44,8 +44,7 @@
 										Have to use a code behind event instead at the moment.-->
 									<TextBox Text="{ Binding FilteredValue }"
 											 HorizontalAlignment="Center"
-											 TextChanged="FilterNameChanged"
-											 />
+											 TextChanged="FilterNameChanged"/>
 								</Grid>
 								<Image Source="{ Binding ImageBitmap }"/>
 							</StackPanel>
