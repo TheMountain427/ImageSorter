@@ -142,14 +142,14 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
         }
         else
         {
-            this.PreviewImageDetails = this._sortedImageDetails.ToList();
+            this.PreviewImageDetails = SortImageDetailsQueryableBy(this._sortedImageDetails, this.ImageSortOrder.OptionEnum).ToList();
         }
     }
 
     private void UpdateImageListOrder()
     {
-        //this.PreviewImageDetails = SortImageDetailsBy(this.PreviewImageDetails, this.ImageSortOrder.OptionEnum).ToList();
-        //this._sortedImageDetails = SortImageDetailsQueryableBy(this._sortedImageDetails, this.ImageSortOrder.OptionEnum);
+        // Just calling this because what we really want is SortImageDetailsQueryableBy(this._sortedImageDetails, this.ImageSortOrder.OptionEnum)
+        // But we need to handle if filters are selected. If we didn't call this, we would just have to basically copy that method here
         FilterImagesByValues();
     }
 

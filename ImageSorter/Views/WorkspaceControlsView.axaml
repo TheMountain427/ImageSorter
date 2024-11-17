@@ -116,18 +116,6 @@
 								Width="{ Binding $parent.Bounds.Width }"
 								HorizontalAlignment="Stretch">
 							<StackPanel>
-								<Border BorderBrush="Black"
-										BorderThickness="2"
-										Width="{ Binding $parent.Bounds.Width }"
-										HorizontalAlignment="Stretch">
-									<TextBlock Text="Filter Images By:"
-											   HorizontalAlignment="Center"/>
-								</Border>
-								<WrapPanel>
-									<CheckBox Content="I need a custom converter to divide width by 3 here, or I can bind to bounds.width"
-											  Width="{ Binding $parent[Border].Bounds.Width }"/>
-									<CheckBox Content="FilterValue"/>
-								</WrapPanel>
 							</StackPanel>
 						</Border>
 						

@@ -135,6 +135,8 @@ namespace ImageSorter.Models
                     ImgOrder.DescFileCreatedTime => ImageDetails.OrderByDescending(x => x.FileCreatedTime).ThenBy(x => x.FileName),
                     ImgOrder.AscLastModifiedTime => ImageDetails.OrderBy(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
                     ImgOrder.DescLastModifiedTime => ImageDetails.OrderByDescending(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
+                    ImgOrder.AscFilterValue => ImageDetails.OrderBy(x => x.FilteredValue).ThenBy(x => x.FileName),
+                    ImgOrder.DescFilterValue => ImageDetails.OrderByDescending(x => x.FilteredValue).ThenBy(x => x.FileName),
                     _ => ImageDetails
                 };
 

@@ -35,6 +35,8 @@ public class WorkspaceViewModel : ViewModelBase
 
     public List<ImageDetails> SortedImageDetails { get; protected set; }
 
+    private IQueryable<ImageDetails> _baseImageDetails { get; set; }
+
     public RoutingState WorkspaceFilterRouter { get; } = new RoutingState();
 
     public RoutingState WorkspaceAlphaReferenceRouter { get; } = new RoutingState();
@@ -107,10 +109,7 @@ public class WorkspaceViewModel : ViewModelBase
             this.ProjectConfig.CurrentImageIndex = value;
         }
     }
-    //public int NextImageIndex { get; protected set; }
-    //public int PreviousImageIndex { get; protected set; }
 
-    //public CurrentImageView NextMainImageView { get; protected set; }
     public CurrentImageViewModel NextImageVM { get; protected set; }
     public CurrentImageViewModel CurrentImageVM { get; protected set; }
     public CurrentImageViewModel PreviousImageVM { get; protected set; }
@@ -121,7 +120,7 @@ public class WorkspaceViewModel : ViewModelBase
         if (this.CurrentImageVM is not null)
         {
             // Sort order has changed
-            this.SortedImageDetails = SortImageDetailsBy(this.SortedImageDetails, ImgOrderOption.OptionEnum).ToList();
+            this.SortedImageDetails = SortImageDetailsBy(this._baseImageDetails, ImgOrderOption.OptionEnum).ToList();
 
             // Find our current main image in the sort index so we can return to it
             var newCurrentImageDetailsIndex = SortedImageDetails.IndexOf(this.CurrentImageVM.ImageDetails);
@@ -216,6 +215,7 @@ public class WorkspaceViewModel : ViewModelBase
         //OverlayRouter.NavigateBack.Execute();
         OverlayRouter.NavigationStack.Clear();
     }
+
     public ICommand CloseProgressOverlayView { get; }
     private void _closeProgressOverlayView()
     {
@@ -249,7 +249,7 @@ public class WorkspaceViewModel : ViewModelBase
         // Check if any images remain unsorted, create a line item if so
         if (filtersContainsUnsorted)
         {
-            var unsortedCount = this.SortedImageDetails.Where(x => x.FilteredValue == "Unsorted").Count();
+            var unsortedCount = this.ProjectConfig.InputImages.Where(x => x.FilteredValue == "Unsorted").Count();
 
             var unsortedConfirmationsText = new List<KeyValuePair<string, string>>()
             {
@@ -385,14 +385,6 @@ public class WorkspaceViewModel : ViewModelBase
         return false;
     }
 
-    private void GoToImageFromOverview(string FileName)
-    {
-        if (this.TrySetMainIndexByFileName(FileName))
-        {
-            OverlayRouter.NavigationStack.Clear();
-        }
-    }
-
     private void ShowOverview(ICommand successCommand, ICommand cancelCommand, ICommand? ImageClickCommand)
     {
         var imageClickCommand = ImageClickCommand is null ? null : ImageClickCommand;
@@ -482,7 +474,7 @@ public class WorkspaceViewModel : ViewModelBase
         return Observable.Start(() =>
         {
             // Seperate the images into groups based on filters
-            var sortedImageGroups = this.SortEngine.SortImageDetailsForOutput(this.SortedImageDetails, this.ProjectConfig.ReferenceImages, this.SortConfigs);
+            var sortedImageGroups = this.SortEngine.SortImageDetailsForOutput(this.ProjectConfig.InputImages, this.ProjectConfig.ReferenceImages, this.SortConfigs);
 
             // Get the filters that are actually being used since I didn't think far enough ahead 
             var outputNames = this.SortEngine.ConvertSortedGroupsToFilterOutputDirectories(sortedImageGroups);
@@ -505,7 +497,7 @@ public class WorkspaceViewModel : ViewModelBase
         });
     }
 
-    public void LoadThumbnails(List<ImageDetails> ImageDetails)
+    public void LoadThumbnails(IEnumerable<ImageDetails> ImageDetails)
     {
         Task.Run(async () =>
             {
@@ -545,6 +537,36 @@ public class WorkspaceViewModel : ViewModelBase
     public ICommand DebugCommand;
     public void BtnCommand()
     {
+    }
+    
+
+    private void GoToImageFromOverview(string FileName)
+    {
+        if (this.TrySetMainIndexByFileName(FileName))
+        {
+            //OverlayRouter.NavigationStack.Clear();
+            this.CloseOverlayView.Execute(null);
+        }
+    }
+
+    private void test(string FileName, ImgOrderOption ImgOrderOption)
+    {
+
+    }
+
+    public void OpenOverview()
+    {
+        var successCommand = ReactiveCommand.Create(() =>
+        {
+            this.CloseOverlayView.Execute(null);
+        });
+
+        var cancelCommand = ReactiveCommand.Create(() =>
+        {
+            this.CloseOverlayView.Execute(null);
+        });
+
+        //ShowOverview(successCommand, cancelCommand, ReactiveCommand.Create<string>(_ => GoToImageFromOverview(_)));
     }
 
     public void Dbg_Overview()
@@ -653,7 +675,6 @@ public class WorkspaceViewModel : ViewModelBase
         this.ProjectConfig = projectConfig;
         this.CurrentImageRouter = new RoutingState();
         this.WorkspaceControlsRouter = new RoutingState();
-
         // Create the sort engine
         // Pass on the ProgressIncrement for now
         ProgressIncrement = ReactiveCommand.Create(() => this.SortProgress++);
@@ -669,8 +690,9 @@ public class WorkspaceViewModel : ViewModelBase
             this.ImageSortOrder = this.ImageOrderOptions.GetOrderOption(ImgOrder.DescFileName);
         }
 
+        this._baseImageDetails = this.ProjectConfig.InputImages.AsQueryable();
 
-        this.SortedImageDetails = SortImageDetailsBy(this.ProjectConfig.InputImages, ImageSortOrder.OptionEnum).ToList();
+        this.SortedImageDetails = SortImageDetailsBy(this._baseImageDetails, ImageSortOrder.OptionEnum).ToList();
         this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => UpdateImageSortOrder(_));
 
         // Setup the MainImage. ChangeMainImage() and CurrentImageVM handle it all based on index and SortedImageDetails
@@ -687,9 +709,9 @@ public class WorkspaceViewModel : ViewModelBase
 
 
         // This should change at some point. Really shouldn't load all of them into memory tbh.
-        if (SortedImageDetails is not null)
+        if (_baseImageDetails is not null)
         {
-            LoadThumbnails(this.SortedImageDetails);
+            LoadThumbnails(this._baseImageDetails);
         }
 
 

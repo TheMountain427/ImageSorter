@@ -35,6 +35,8 @@ public class WorkspaceControlsViewModel : ViewModelBase
         protected set { this.RaiseAndSetIfChanged(ref _referenceImages, value); }
     }
 
+    public double ControlsContainerWidth { get; set; }
+
     public ICommand GoNextImage { get; }
 
     public ICommand GoPreviousImage { get; }
