@@ -14,32 +14,15 @@
 				   VerticalAlignment="Top"
 				   ZIndex="3"
 				   Width="{ Binding $parent[Grid].Bounds.Width }">
-			<!--<Expander HorizontalAlignment="Right"
-					  DockPanel.Dock="Right"
-					  MaxHeight="200">
-				<Expander.Header>
-					<TextBlock Text="Filter by:"/>
-				</Expander.Header>
-				<Expander.Content>
-					<ListBox ItemsSource="{ Binding AvailableFilterValues }"
-							 SelectionMode="Toggle"
-							 Selection="{ Binding FilterBy_SelectionModel }">
-						<ListBox.ItemTemplate>
-							<DataTemplate>
-								<TextBlock Text="{ Binding }"/>
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-				</Expander.Content>
-			</Expander>-->
+			
 			<Button Content="Filter by:"
 					DockPanel.Dock="Right"
 					HorizontalAlignment="Right"
 					Command="{ Binding ReselectListValues }">
 				<Button.Flyout>
 					<Flyout Placement="BottomEdgeAlignedRight"
-							Opened="Flyout_Opened"
-							Opening="Flyout_Closed">
+							Opening="FilterByFlyout_Opening"
+							Opened="FilterByFlyout_Opened">
 						<ListBox ItemsSource="{ Binding AvailableFilterValues }"
 								 SelectionMode="Multiple,Toggle"
 								 Selection="{ Binding FilterBy_SelectionModel }">
@@ -52,15 +35,34 @@
 					</Flyout>
 				</Button.Flyout>
 			</Button>
+
+
+			<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
+					  SelectedItem="{ Binding ImageSortOrder }"
+					  SelectedValueBinding="{ Binding }"
+					  DisplayMemberBinding="{ Binding OptionText }"
+					  x:CompileBindings="False"
+					  DockPanel.Dock="Right"/>
 		</DockPanel>
 
 
 		<ScrollViewer Grid.Row="1">
 			<StackPanel>
+				<StackPanel.Transitions>
+					<Transitions>
+						<DoubleTransition Property="Opacity" Duration="0:0:2"/>
+					</Transitions>
+				</StackPanel.Transitions>
 				<ItemsControl ItemsSource="{ Binding PreviewImageDetails }">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
-							<WrapPanel/>
+							<WrapPanel>
+								<WrapPanel.Transitions>
+									<Transitions>
+										<DoubleTransition Property="Opacity" Duration="0:0:2"/>
+									</Transitions>
+								</WrapPanel.Transitions>
+							</WrapPanel>
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
@@ -70,7 +72,9 @@
 									Width="200"
 									Margin="5,5,5,5"
 									IsHitTestVisible="True">
-								<Button>
+								<Button Command="{ Binding $parent[UserControl].DataContext.ImageClickCommand }"
+										CommandParameter="{ Binding FileName }"
+										x:CompileBindings="False">
 									<Button.Content>
 										<StackPanel>
 											<TextBlock Text="{ Binding FilteredValue }"

@@ -45,7 +45,9 @@ public class ImgOrderOptions
             new ImgOrderOption("Creation Time Ascending", ImgOrder.AscFileCreatedTime),
             new ImgOrderOption("Creation Time Descending", ImgOrder.DescFileCreatedTime),
             new ImgOrderOption("Last Modified Time Ascending", ImgOrder.AscLastModifiedTime),
-            new ImgOrderOption("Last Modified Time Descending", ImgOrder.DescLastModifiedTime)
+            new ImgOrderOption("Last Modified Time Descending", ImgOrder.DescLastModifiedTime),
+            new ImgOrderOption("Filter Value Ascending", ImgOrder.AscFilterValue),
+            new ImgOrderOption("Filter Value Descending", ImgOrder.DescFilterValue)
         };
     }
 }

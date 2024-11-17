@@ -124,7 +124,7 @@
 											   HorizontalAlignment="Center"/>
 								</Border>
 								<WrapPanel>
-									<CheckBox Content="I need a custom converter to divide width by 3 here"
+									<CheckBox Content="I need a custom converter to divide width by 3 here, or I can bind to bounds.width"
 											  Width="{ Binding $parent[Border].Bounds.Width }"/>
 									<CheckBox Content="FilterValue"/>
 								</WrapPanel>

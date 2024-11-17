@@ -366,22 +366,48 @@ public class WorkspaceViewModel : ViewModelBase
             this.CloseOverlayView.Execute(null);
         });
 
-        ShowOverview(successCommand, cancelCommand);
+        ShowOverview(successCommand, cancelCommand, null);
 
     }
 
-    private void ShowOverview(ICommand successCommand, ICommand cancelCommand)
+    private bool TrySetMainIndexByFileName(string? FileName)
     {
+        if (!string.IsNullOrEmpty(FileName))
+        {
+            var imageDetail = this.SortedImageDetails.FirstOrDefault(x => x.FileName == FileName);
+
+            if (imageDetail is not null)
+            {
+                this.CurrentImageIndex = this.SortedImageDetails.IndexOf(imageDetail);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void GoToImageFromOverview(string FileName)
+    {
+        if (this.TrySetMainIndexByFileName(FileName))
+        {
+            OverlayRouter.NavigationStack.Clear();
+        }
+    }
+
+    private void ShowOverview(ICommand successCommand, ICommand cancelCommand, ICommand? ImageClickCommand)
+    {
+        var imageClickCommand = ImageClickCommand is null ? null : ImageClickCommand;
+
         var sortPreviewVM = new ImageOverviewViewModel(AppState: this.CurrentAppState,
                                                      ProjectConfig: this.ProjectConfig,
                                                      SortedImageDetails: SortedImageDetails,
                                                      OnSuccessCommand: successCommand,
-                                                     OnCancelCommand: cancelCommand);
+                                                     OnCancelCommand: cancelCommand,
+                                                     ImageClickCommand: imageClickCommand);
 
         OverlayRouter.Navigate.Execute(new OverlayViewModel(AppState: CurrentAppState,
                                                             ViewModelToDisplay: sortPreviewVM,
                                                             CloseOverlay: CloseOverlayView,
-                                                            AllowClickOff: false));
+                                                            AllowClickOff: true));
     }
 
     private void BeginSortProcess()
@@ -527,7 +553,8 @@ public class WorkspaceViewModel : ViewModelBase
             this.CloseOverlayView.Execute(null);
         });
 
-        ShowOverview(successCommand, cancelCommand);
+       
+        ShowOverview(successCommand, cancelCommand,  ReactiveCommand.Create<string>(_ => GoToImageFromOverview(_)));
 
     }
 

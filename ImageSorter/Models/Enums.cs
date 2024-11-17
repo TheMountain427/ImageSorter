@@ -13,7 +13,9 @@ public static class Enums
         AscFileCreatedTime = 5,
         DescFileCreatedTime = 6,
         AscLastModifiedTime = 7,
-        DescLastModifiedTime = 8
+        DescLastModifiedTime = 8,
+        AscFilterValue= 9,
+        DescFilterValue = 10
     }
 
     public enum ReferenceViewIdentifier

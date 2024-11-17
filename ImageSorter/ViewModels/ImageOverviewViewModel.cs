@@ -64,7 +64,19 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
     // Store selected items from filter list. Workaround since Flyout deselects its selections when it reopens
     // Additonally, the SelectionModel forgets what was selected so we have to store them somewhere
     // This is the true sorce of what is actually selected
-    private HashSet<int> _selectedFilterIndexes { get; set; } = new HashSet<int>();
+    private HashSet<int> _filterByIndexesSelected { get; set; } = new HashSet<int>();
+
+    public ImgOrderOptions ImageOrderOptions { get; } = new ImgOrderOptions();
+
+    private ImgOrderOption _imageSortOrder;
+    public ImgOrderOption ImageSortOrder
+    {
+        get { return _imageSortOrder; }
+        protected set
+        {
+            this.RaiseAndSetIfChanged(ref _imageSortOrder, value);
+        }
+    }
 
     public void ContinueSort()
     {
@@ -77,26 +89,26 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
     }
 
 
-    private void _calculateMaxViewHeight(double WindowHeight)
+    private void CalculateMaxViewHeight(double WindowHeight)
     {
         this.MaxViewHeight = WindowHeight * 0.8;
     }
 
-    private void _calculateMaxViewWidth(double WindowWidth)
+    private void CalculateMaxViewWidth(double WindowWidth)
     {
         this.MaxViewWidth = WindowWidth * 0.8;
     }
-    
+
 
     // ** REFACTOR **
-    private void _filterPreviewImagesBy(object? sender, SelectionModelSelectionChangedEventArgs e)
+    private void FilterPreviewImagesBy(object? sender, SelectionModelSelectionChangedEventArgs e)
     {
         // Handle selections and deselections of items
         if (e.SelectedIndexes is not null && e.SelectedIndexes.Count != 0)
         {
             foreach (int index in e.SelectedIndexes)
             {
-                this._selectedFilterIndexes.Add(index);
+                this._filterByIndexesSelected.Add(index);
             }
         }
 
@@ -104,31 +116,50 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
         {
             foreach (int index in e.DeselectedIndexes)
             {
-                this._selectedFilterIndexes.Remove(index);
+                this._filterByIndexesSelected.Remove(index);
             }
         }
 
+        FilterImagesByValues();
+    }
+
+    private void FilterImagesByValues()
+    {
         // Get the filters from their index
-        if (this._selectedFilterIndexes.Count != 0 && AvailableFilterValues is not null)
+        if (this._filterByIndexesSelected.Count != 0 && AvailableFilterValues is not null)
         {
-            var filterToSortBy = this._selectedFilterIndexes.Where(index => index >= 0 && index < AvailableFilterValues?.Count)
+            var filterToSortBy = this._filterByIndexesSelected.Where(index => index >= 0 && index < AvailableFilterValues?.Count)
                                        .Select(index => AvailableFilterValues[index]).ToList();
 
             // Filter the view by the sorted images
             if (filterToSortBy.Count != 0)
             {
-                this.PreviewImageDetails = this._sortedImageDetails.Where(image => filterToSortBy.Any(filter => filter == image.FilteredValue)).ToList();
+                //this.PreviewImageDetails = this._sortedImageDetails.Where(image => filterToSortBy.Any(filter => filter == image.FilteredValue)).ToList();
+                this.PreviewImageDetails = SortImageDetailsQueryableBy(this._sortedImageDetails, this.ImageSortOrder.OptionEnum)
+                                                .Where(image => filterToSortBy.Any(filter => filter == image.FilteredValue))
+                                                .ToList();
             }
         }
+        else
+        {
+            this.PreviewImageDetails = this._sortedImageDetails.ToList();
+        }
+    }
+
+    private void UpdateImageListOrder()
+    {
+        //this.PreviewImageDetails = SortImageDetailsBy(this.PreviewImageDetails, this.ImageSortOrder.OptionEnum).ToList();
+        //this._sortedImageDetails = SortImageDetailsQueryableBy(this._sortedImageDetails, this.ImageSortOrder.OptionEnum);
+        FilterImagesByValues();
     }
 
     // Reopening flyout removes all selections, this puts them back
     public void ReselectListValues()
     {
-        Debug.WriteLine($"SelectionModel selected indexes{string.Join(',',this.FilterBy_SelectionModel.SelectedIndexes)}");
-        if (this._selectedFilterIndexes.Count != 0)
+        Debug.WriteLine($"SelectionModel selected indexes{string.Join(',', this.FilterBy_SelectionModel.SelectedIndexes)}");
+        if (this._filterByIndexesSelected.Count != 0)
         {
-            foreach (var item in this._selectedFilterIndexes)
+            foreach (var item in this._filterByIndexesSelected)
             {
                 this.FilterBy_SelectionModel.Select(item);
             }
@@ -140,30 +171,35 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
     {
         if (value == false)
         {
-            this.FilterBy_SelectionModel.SelectionChanged -= _filterPreviewImagesBy;
+            this.FilterBy_SelectionModel.SelectionChanged -= FilterPreviewImagesBy;
         }
         else
         {
-            this.FilterBy_SelectionModel.SelectionChanged += _filterPreviewImagesBy;
+            this.FilterBy_SelectionModel.SelectionChanged += FilterPreviewImagesBy;
         }
     }
 
-    public ImageOverviewViewModel(AppState AppState, ProjectConfig ProjectConfig, List<ImageDetails> SortedImageDetails, ICommand OnSuccessCommand, ICommand OnCancelCommand)
+    public ICommand? ImageClickCommand { get; }
+
+    public ImageOverviewViewModel(AppState AppState, ProjectConfig ProjectConfig, List<ImageDetails> SortedImageDetails, ICommand OnSuccessCommand, ICommand OnCancelCommand, ICommand? ImageClickCommand)
     {
 
         this.CurrentAppState = AppState;
         this.ProjectConfig = ProjectConfig;
         this.ContinueSortCommand = OnSuccessCommand;
         this.CancelSortCommand = OnCancelCommand;
+        this.ImageSortOrder = this.ImageOrderOptions.GetOrderOption(this.ProjectConfig.ImageSortOrder);
 
-        this._sortedImageDetails = SortImageDetailsBy(SortedImageDetails, this.ProjectConfig.ImageSortOrder).AsQueryable();
+        this._sortedImageDetails = SortImageDetailsBy(SortedImageDetails, this.ImageSortOrder.OptionEnum).AsQueryable();
+
+        this.ImageClickCommand = ImageClickCommand;
 
         // Set up the Filter ListBox selection handler
         this.FilterBy_SelectionModel = new SelectionModel<string>();
         // Allow multiple selections in the list box
         this.FilterBy_SelectionModel.SingleSelect = false;
-        this.FilterBy_SelectionModel.SelectionChanged += _filterPreviewImagesBy;
-        
+        this.FilterBy_SelectionModel.SelectionChanged += FilterPreviewImagesBy;
+
         this.PreviewImageDetails = _sortedImageDetails.ToList();
 
         // ToList() as a workaround for https://github.com/AvaloniaUI/Avalonia/issues/12344
@@ -179,8 +215,13 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
 
 
             // Dispose these cause they rely on on outside binding...?
-            this.CurrentAppState.WhenAnyValue(x => x.WindowWidth).Subscribe(_ => _calculateMaxViewWidth(_)).DisposeWith(disposables);
-            this.CurrentAppState.WhenAnyValue(x => x.WindowHeight).Subscribe(_ => _calculateMaxViewHeight(_)).DisposeWith(disposables);
+            this.CurrentAppState.WhenAnyValue(x => x.WindowWidth).Subscribe(_ => CalculateMaxViewWidth(_)).DisposeWith(disposables);
+            this.CurrentAppState.WhenAnyValue(x => x.WindowHeight).Subscribe(_ => CalculateMaxViewHeight(_)).DisposeWith(disposables);
+
+            // I guess I am supposed to actually put all of these here
+            // Putting it here does not call it on ViewModel construction
+            this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => UpdateImageListOrder());
+
         });
     }
 

@@ -17,20 +17,22 @@ public partial class ImageOverviewView : ReactiveUserControl<ImageOverviewViewMo
         AvaloniaXamlLoader.Load(this);
     }
 
-    public void Flyout_Opened(object sender, EventArgs eventArgs)
-    {
-        if (DataContext is ImageOverviewViewModel vm)
-        {
-            vm.ToggleSelectionModelChangedSubscription(true);
-        }
-    }
 
-    public void Flyout_Closed(object sender, EventArgs eventArgs)
+    // These two handle toggling the SelectionModel Changed event
+    // for the Flyout Listbox workaround
+    public void FilterByFlyout_Opening(object sender, EventArgs eventArgs)
     {
         if (DataContext is ImageOverviewViewModel vm)
         {
             vm.ToggleSelectionModelChangedSubscription(false);
         }
+    }
 
+    public void FilterByFlyout_Opened(object sender, EventArgs eventArgs)
+    {
+        if (DataContext is ImageOverviewViewModel vm)
+        {
+            vm.ToggleSelectionModelChangedSubscription(true);
+        }
     }
 }
