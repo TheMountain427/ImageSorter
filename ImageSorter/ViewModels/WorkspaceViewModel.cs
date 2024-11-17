@@ -185,7 +185,7 @@ public class WorkspaceViewModel : ViewModelBase
     }
 
 
-    
+
 
     private void _setImageFilterValue(string FilterValue)
     {
@@ -398,16 +398,22 @@ public class WorkspaceViewModel : ViewModelBase
         var imageClickCommand = ImageClickCommand is null ? null : ImageClickCommand;
 
         var sortPreviewVM = new ImageOverviewViewModel(AppState: this.CurrentAppState,
-                                                     ProjectConfig: this.ProjectConfig,
-                                                     SortedImageDetails: SortedImageDetails,
-                                                     OnSuccessCommand: successCommand,
-                                                     OnCancelCommand: cancelCommand,
-                                                     ImageClickCommand: imageClickCommand);
+                                                       ProjectConfig: this.ProjectConfig,
+                                                       SortedImageDetails: SortedImageDetails,
+                                                       OnSuccessCommand: successCommand,
+                                                       OnCancelCommand: cancelCommand,
+                                                       ImageClickCommand: imageClickCommand);
+                
+        var overlayVM = new OverlayViewModel(AppState: CurrentAppState,
+                                             ViewModelToDisplay: sortPreviewVM,
+                                             CloseOverlay: CloseOverlayView,
+                                             AllowClickOff: true);
 
-        OverlayRouter.Navigate.Execute(new OverlayViewModel(AppState: CurrentAppState,
-                                                            ViewModelToDisplay: sortPreviewVM,
-                                                            CloseOverlay: CloseOverlayView,
-                                                            AllowClickOff: true));
+        // Pre-activating the VM prevents it from stuttering in
+        sortPreviewVM.Activator.Activate();
+        overlayVM.Activator.Activate();
+
+        OverlayRouter.Navigate.Execute(overlayVM);
     }
 
     private void BeginSortProcess()
@@ -541,7 +547,7 @@ public class WorkspaceViewModel : ViewModelBase
     {
     }
 
-        public void Dbg_Overview()
+    public void Dbg_Overview()
     {
         var successCommand = ReactiveCommand.Create(() =>
         {
@@ -553,8 +559,8 @@ public class WorkspaceViewModel : ViewModelBase
             this.CloseOverlayView.Execute(null);
         });
 
-       
-        ShowOverview(successCommand, cancelCommand,  ReactiveCommand.Create<string>(_ => GoToImageFromOverview(_)));
+
+        ShowOverview(successCommand, cancelCommand, ReactiveCommand.Create<string>(_ => GoToImageFromOverview(_)));
 
     }
 
@@ -664,7 +670,7 @@ public class WorkspaceViewModel : ViewModelBase
         }
 
 
-        this.SortedImageDetails = SortImageDetailsBy( this.ProjectConfig.InputImages, ImageSortOrder.OptionEnum).ToList();
+        this.SortedImageDetails = SortImageDetailsBy(this.ProjectConfig.InputImages, ImageSortOrder.OptionEnum).ToList();
         this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => UpdateImageSortOrder(_));
 
         // Setup the MainImage. ChangeMainImage() and CurrentImageVM handle it all based on index and SortedImageDetails
@@ -752,7 +758,7 @@ public class WorkspaceViewModel : ViewModelBase
         // ????? tuple shit ????? and it works ?????
         // This just creates the command, tuple cause funny
         SortImageDetailsAsyncCommand = ReactiveCommand.CreateFromObservable<(double Counter, double ImageCount), Unit>(tuple => SortImageDetails(tuple.Counter, tuple.ImageCount));
-        
+
         this.WhenAnyValue(x => x.ProjectConfig.ReferenceImages).Subscribe(_ => BtnCommand());
 
     }

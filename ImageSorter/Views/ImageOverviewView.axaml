@@ -7,6 +7,21 @@
              x:Class="ImageSorter.Views.ImageOverviewView"
 			 x:DataType="vm:ImageOverviewViewModel">
 
+	<UserControl.Resources>
+		<!--Figure out how to call this from code with ReactiveUI-->
+		<!--https://docs.avaloniaui.net/docs/guides/graphics-and-animation/keyframe-animations#running-animation-from-the-code-behind-->
+		<Animation x:Key="Ani"
+                   x:SetterTargetType="Border"
+                   Duration="0:0:3">
+			<KeyFrame Cue="0%">
+				<Setter Property="Opacity" Value="0.0"/>
+			</KeyFrame>
+			<KeyFrame Cue="100%">
+				<Setter Property="Opacity" Value="1.0"/>
+			</KeyFrame>
+		</Animation>
+	</UserControl.Resources>
+
 	<Grid Width="{ Binding MaxViewWidth }"
 		  Height="{ Binding MaxViewHeight }"
 		  RowDefinitions="Auto,*,Auto">
@@ -14,7 +29,7 @@
 				   VerticalAlignment="Top"
 				   ZIndex="3"
 				   Width="{ Binding $parent[Grid].Bounds.Width }">
-			
+
 			<Button Content="Filter by:"
 					DockPanel.Dock="Right"
 					HorizontalAlignment="Right"
@@ -48,21 +63,10 @@
 
 		<ScrollViewer Grid.Row="1">
 			<StackPanel>
-				<StackPanel.Transitions>
-					<Transitions>
-						<DoubleTransition Property="Opacity" Duration="0:0:2"/>
-					</Transitions>
-				</StackPanel.Transitions>
 				<ItemsControl ItemsSource="{ Binding PreviewImageDetails }">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
-							<WrapPanel>
-								<WrapPanel.Transitions>
-									<Transitions>
-										<DoubleTransition Property="Opacity" Duration="0:0:2"/>
-									</Transitions>
-								</WrapPanel.Transitions>
-							</WrapPanel>
+							<WrapPanel/>
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
@@ -70,8 +74,43 @@
 							<Border BorderBrush="Black"
 									BorderThickness="2"
 									Width="200"
-									Margin="5,5,5,5"
-									IsHitTestVisible="True">
+									Margin="5,5,5,5">
+
+								<!--Don't flash in images when they load/order changes-->
+								<!--Change border background on overlay view for less flashbang-->
+								<!--https://docs.avaloniaui.net/docs/guides/graphics-and-animation/keyframe-animations-->
+								<!--https://reference.avaloniaui.net/api/Avalonia.Media/Transform/-->
+								<Border.Styles>
+									<Style Selector="Border">
+										<Style.Animations>
+											<!--Uncomment this one for a funny-->
+											<!--<Animation Duration="0:0:5" Easing="ElasticEaseIn">
+												<KeyFrame Cue="0%">
+													<Setter Property="TranslateTransform.Y" Value="700"/>
+													<Setter Property="RotateTransform.Angle" Value="360"/>
+												</KeyFrame>
+												<KeyFrame Cue="50%">
+													<Setter Property="RotateTransform.Angle" Value="180"/>
+												</KeyFrame>
+												<KeyFrame Cue="100%">
+													<Setter Property="TranslateTransform.Y" Value="0"/>
+													<Setter Property="RotateTransform.Angle" Value="0"/>
+												</KeyFrame>
+											</Animation>-->
+											
+											<Animation Duration="0:0:2">
+												<KeyFrame Cue="0%">
+													<Setter Property="Opacity" Value="0.0"/>
+												</KeyFrame>
+												<KeyFrame Cue="100%">
+													<Setter Property="Opacity" Value="1.0"/>
+												</KeyFrame>
+											</Animation>
+										</Style.Animations>
+									</Style>
+								</Border.Styles>
+
+
 								<Button Command="{ Binding $parent[UserControl].DataContext.ImageClickCommand }"
 										CommandParameter="{ Binding FileName }"
 										x:CompileBindings="False">

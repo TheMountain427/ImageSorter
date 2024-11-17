@@ -1,5 +1,7 @@
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
+using Avalonia.Controls.Documents;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
@@ -17,7 +19,7 @@ public partial class ImageOverviewView : ReactiveUserControl<ImageOverviewViewMo
         AvaloniaXamlLoader.Load(this);
     }
 
-
+   
     // These two handle toggling the SelectionModel Changed event
     // for the Flyout Listbox workaround
     public void FilterByFlyout_Opening(object sender, EventArgs eventArgs)
@@ -35,4 +37,5 @@ public partial class ImageOverviewView : ReactiveUserControl<ImageOverviewViewMo
             vm.ToggleSelectionModelChangedSubscription(true);
         }
     }
+
 }

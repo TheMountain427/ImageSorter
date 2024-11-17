@@ -2,14 +2,18 @@
 
 using ImageSorter.Models;
 using ReactiveUI;
+using System;
+using System.Reactive.Disposables;
 using System.Windows.Input;
 
 namespace ImageSorter.ViewModels;
 
 
 // Overlay VM that will darken the background and pass another view to center screen
-public class OverlayViewModel : ViewModelBase
+public class OverlayViewModel : ViewModelBase, IActivatableViewModel
 {
+    public ViewModelActivator Activator { get; }
+
     public override string UrlPathSegment { get; } = "Overlay";
 
     public ICommand CloseOverlay { get; }
@@ -26,5 +30,16 @@ public class OverlayViewModel : ViewModelBase
         this.AllowClickOff = AllowClickOff;
 
         this.OverlayRouter.Navigate.Execute(ViewModelToDisplay);
+
+        Activator = new ViewModelActivator();
+        this.WhenActivated(disposables =>
+        {
+            Disposable
+                .Create(() => this.HandleDeactivation())
+                .DisposeWith(disposables);
+
+        });
     }
+
+    private void HandleDeactivation() { }
 }

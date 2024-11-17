@@ -22,12 +22,15 @@
 					IsVisible="True"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Top"/>
-			<Border Background="White"
+			<Border Background="GhostWhite"
 					BorderBrush="Black"
 					BorderThickness="2"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center">
 				<rxui:RoutedViewHost Router="{ Binding OverlayRouter }">
+					<rxui:RoutedViewHost.PageTransition>
+						<CrossFade Duration="0:0:0.8"/>
+					</rxui:RoutedViewHost.PageTransition>
 					<rxui:RoutedViewHost.ViewLocator>
 						<app:AppViewLocator/>
 					</rxui:RoutedViewHost.ViewLocator>

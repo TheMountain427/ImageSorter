@@ -24,6 +24,7 @@
 			<!--https://reference.avaloniaui.net/api/Avalonia.Animation/-->
 			<rxui:RoutedViewHost.PageTransition>
 
+				<!--<CrossFade Duration="0:0:5"/>-->
 				<!--<PageSlide>
 					<PageSlide.Duration> 0:0:.2 -->
 				<!--Hours:Minutes:Seconds-->
