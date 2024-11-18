@@ -12,7 +12,7 @@
 				   IsVisible="{ Binding CurrentAppState.DebugMode }"/>
 		<TextBlock Text="{ Binding ImageDetails.FilteredValue }"
 				   IsVisible="{ Binding CurrentAppState.DebugMode }"/>
-		<Image Source="{ Binding ImageBitmap }"/>
+			<Image Source="{ Binding ImageBitmap }"/>
 	</StackPanel>
 
 </UserControl>
