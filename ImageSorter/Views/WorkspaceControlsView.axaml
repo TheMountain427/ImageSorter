@@ -7,6 +7,11 @@
              x:Class="ImageSorter.Views.WorkspaceControlsView"
 			 x:DataType="vm:WorkspaceControlsViewModel">
 
+	<UserControl.Resources>
+		<StreamGeometry x:Key="MenAtWork">
+			M218 114c-10.2-4.2-63.5-17-64-29.8-.2-5 9.1-27.6 44.7-19.4 21.9 5 20.1 26.4 17.7 35.6-1.2 4.4-7.4 7.1-9.9 10.9m-5.5 6c-16.1 40.9-64.6 28.2-50.4-17.3M148 160c-5.2 20.2-8.6 95.8-15 111.7-7.7 18.8-26.2 42.9-39 58.6l10.4 7.7m87.6 0c-1.7.2-15.4-1-16-1.4s0-80.4-17-113.1L169.5 163M146 159c-43.7-.4-54 23.3-8.2 43M172 165c14.1 18.1 24.9 42.3 39 59M96 203c54.7 8.5 94.7 10.4 149 17m13.6-14.7c0 5.3-11 29.1-6.5 33.7 15 15.6 75.7 4.3 45.7-23.6-8.4-7.8-21.9-10.9-36.1-12.4Z
+		</StreamGeometry>
+	</UserControl.Resources>
 
 	<UserControl.Styles>
 
@@ -102,15 +107,40 @@
 										BorderThickness="2"
 										Width="{ Binding $parent.Bounds.Width }"
 										HorizontalAlignment="Stretch">
-									<TextBlock Text="Some Other Settings..."
+									<TextBlock Text="!UNDER CONSTRUCTION!"
 											   HorizontalAlignment="Center"/>
 								</Border>
+								<Border>
+									<StackPanel Orientation="Horizontal"
+												HorizontalAlignment="Center">
+										<TextBlock>
+											<Path Fill="Black"
+												  Stretch="Uniform"
+												  Width="30"
+												  HorizontalAlignment="Center"
+												  VerticalAlignment="Center"
+												  Data="{ StaticResource MenAtWork }"/>
+										</TextBlock>
+										<TextBlock Text="    ! MEN AT WORK !    " 
+												   VerticalAlignment="Center"
+												   FontWeight="ExtraBold"/>
+										<TextBlock>
+											<Path Fill="Black"
+												  Stretch="Uniform"
+												  Width="30"
+												  HorizontalAlignment="Center"
+												  VerticalAlignment="Center"
+												  Data="{ StaticResource MenAtWork }"/>
+										</TextBlock>
+									</StackPanel>
+								</Border>
 								<WrapPanel>
-									<TextBlock Text="I'm a setting!"/>
+									<TextBlock Text="I'm a setting!             "/>
+									<TextBlock Text="Change output directory here"/>
 								</WrapPanel>
 							</StackPanel>
 						</Border>
-						
+
 						<Border BorderBrush="Black"
 								BorderThickness="2"
 								Width="{ Binding $parent.Bounds.Width }"
@@ -118,16 +148,50 @@
 							<StackPanel>
 							</StackPanel>
 						</Border>
-						
-						
+
+
+						<Button Content="Initiate Sort"
+								Command="{ Binding BeginSortCommand }"/>
 					</StackPanel>
 				</Expander>
 				<Grid Name="WorkCtrl_MainGrid"
 					  RowDefinitions="Auto,Auto,*,auto">
-					<Grid Name="WorkCtrl_UpperGrid"
-						  ColumnDefinitions="*,*,*,*"
+					<Grid Name="WorkCtrl_TopGrid"
 						  VerticalAlignment="Top"
 						  Grid.Row="0">
+						<ItemsControl Name="WorkCtrl_FilterWrapRepeater"
+									  ItemsSource="{ Binding ReferenceImages }"
+									  x:CompileBindings="False"
+									  Grid.Row="0">
+							<ItemsControl.ItemsPanel>
+								<!--https://docs.avaloniaui.net/docs/concepts/custom-itemspanel-->
+								<ItemsPanelTemplate>
+									<WrapPanel HorizontalAlignment="Center"/>
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<!--https://docs.avaloniaui.net/docs/basics/data/data-binding/data-binding-syntax#string-formatting-->
+									<Button Name="{ Binding $self.Tag, Mode=OneWay, StringFormat=WorkCtrl_{0}Button }"
+											Content="{ Binding FilteredValue}"
+											Command="{ Binding $parent[UserControl].DataContext.SetImageFilteredValue }"
+											CommandParameter="{ Binding $self.Tag }"
+											Tag="{ Binding FilteredValue }"/>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</Grid>
+					<Rectangle Name="WorkCtrl_SeperatorRectangle"
+							   HorizontalAlignment="Stretch"
+							   Grid.Row="1"
+							   Fill="LightGray"
+							   Height="10"
+							   VerticalAlignment="Center"
+							   Margin="-5,10"/>
+					<Grid Name="WorkCtrl_MiddleGrid"
+						  ColumnDefinitions="*,*,*,*"
+						  VerticalAlignment="Top"
+						  Grid.Row="2">
 						<Button Name="WorkCtrl_FirstImageButton"
 								Content="First Image"
 								HorizontalContentAlignment="Center"
@@ -153,55 +217,40 @@
 								Grid.Column="3"
 								Width="120"/>
 					</Grid>
-					<Grid Name="WorkCtrl_MiddleGrid"
-						  ColumnDefinitions="*,*,*,*"
+					<Grid Name="WorkCtrl_BottomGrid"
+						  ColumnDefinitions="*,Auto,*"
 						  VerticalAlignment="Top"
-						  Grid.Row="1">
-						<Button Name="WorkCtrl_ResetImageButton"
-								Content="Reset Image"
+						  Grid.Row="3"
+						  Margin="0,10,0,0">
+						<Button Name="WorkCtrl_OpenAdditonalsButton"
+								Content="Sort?"
 								HorizontalContentAlignment="Center"
 								Grid.Column="0"
-								Command="{ Binding ResetImagePosition }"
+								Command="{ Binding OpenAdditonalsViewThing }"
 								HorizontalAlignment="Left"
 								Width="120"/>
+						<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
+								  SelectedItem="{ Binding ImageSortOrder }"
+								  SelectedValueBinding="{ Binding }"
+								  DisplayMemberBinding="{ Binding OptionText }"
+								  x:CompileBindings="True"
+								  Grid.Column="1"
+								  HorizontalAlignment="Center"
+								  Focusable="False"/>
 						<Button Name="WorkCtrl_EditFiltersButton"
 								Content="Edit Filters"
 								HorizontalContentAlignment="Center"
 								Command="{ Binding ToggleFilterSidePane }"
 								HorizontalAlignment="Right"
-								Grid.Column="3"
+								Grid.Column="2"
 								Width="120"/>
 					</Grid>
-					<Rectangle Name="WorkCtrl_SeperatorRectangle"
-							   HorizontalAlignment="Stretch"
-							   Grid.Row="2"
-							   Fill="LightGray"
-							   Height="10"
-							   VerticalAlignment="Center"
-							   Margin="-5,10"/>
-					<ItemsControl Name="WorkCtrl_FilterWrapRepeater"
-								  ItemsSource="{ Binding ReferenceImages }"
-								  x:CompileBindings="False"
-								  Grid.Row="3">
-						<ItemsControl.ItemsPanel>
-							<!--https://docs.avaloniaui.net/docs/concepts/custom-itemspanel-->
-							<ItemsPanelTemplate>
-								<WrapPanel HorizontalAlignment="Center"/>
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<!--https://docs.avaloniaui.net/docs/basics/data/data-binding/data-binding-syntax#string-formatting-->
-								<Button Name="{ Binding $self.Tag, Mode=OneWay, StringFormat=WorkCtrl_{0}Button }"
-										Content="{ Binding FilteredValue}"
-										Command="{ Binding $parent[UserControl].DataContext.SetImageFilteredValue }"
-										CommandParameter="{ Binding $self.Tag }"
-										Tag="{ Binding FilteredValue }"/>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
 				</Grid>
-				<Button Content="Debug" Command="{ Binding DebugCommand }"/>
+				<Button Content="Debug"
+						Command="{ Binding DebugCommand }"
+						IsVisible="{ Binding CurrentAppState.DebugMode }"/>
+
+
 			</StackPanel>
 		</Border>
 	</Grid>

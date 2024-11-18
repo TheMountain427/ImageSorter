@@ -155,7 +155,7 @@ namespace ImageSorter.Models
             LastModifiedTime = DateTime.UtcNow;
         }
 
-        public void SetLastModifiedOnAppClose(object sender, ControlledApplicationLifetimeExitEventArgs e)
+        public void SetLastModifiedOnAppClose(object? sender, ControlledApplicationLifetimeExitEventArgs e)
         {
             LastModifiedTime = DateTime.UtcNow;
         }

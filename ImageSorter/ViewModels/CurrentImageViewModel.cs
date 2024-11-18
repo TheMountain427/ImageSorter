@@ -28,7 +28,7 @@ public class CurrentImageViewModel : ViewModelBase, IActivatableViewModel
 
     public bool CanNavigateTo { get; private set; }
 
-    public CurrentImageViewModel(List<ImageDetails> SortedImageDetails, int CurrentIndex)
+    public CurrentImageViewModel(AppState CurrentAppState, List<ImageDetails> SortedImageDetails, int CurrentIndex) : base (CurrentAppState)
     {
         // Need to dispose of the bitmap since it is an IDisposble
         // Will balloon memory if not disposed

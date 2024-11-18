@@ -18,8 +18,7 @@
 		<Grid>
 			<Button Content="Dbg_HideOverlay"
 					Command="{ Binding CloseOverlay }"
-					IsEnabled="True"
-					IsVisible="True"
+					IsVisible="{ Binding CurrentAppState.DebugMode }"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Top"/>
 			<Border Background="GhostWhite"

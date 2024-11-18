@@ -29,11 +29,18 @@ public class WorkspaceViewModel : ViewModelBase
 
     public ProjectConfig ProjectConfig { get; protected set; }
 
+    private AppState _aps { get; }
+
     public RoutingState CurrentImageRouter { get; } = new RoutingState();
 
     public RoutingState WorkspaceControlsRouter { get; } = new RoutingState();
-
-    public List<ImageDetails> SortedImageDetails { get; protected set; }
+    
+    private List<ImageDetails> _sortedImageDetails;
+    public List<ImageDetails> SortedImageDetails
+    {
+        get { return _sortedImageDetails; }
+        set { this.RaiseAndSetIfChanged(ref _sortedImageDetails, value); }
+    }
 
     private IQueryable<ImageDetails> _baseImageDetails { get; set; }
 
@@ -44,6 +51,8 @@ public class WorkspaceViewModel : ViewModelBase
     public RoutingState WorkspaceBetaReferenceRouter { get; } = new RoutingState();
 
     public RoutingState OverlayRouter { get; } = new RoutingState();
+
+    public RoutingState ThumbnailRouter { get; } = new RoutingState();
 
     public List<ImageDetails> AlphaReferenceImages { get; set; }
 
@@ -114,10 +123,10 @@ public class WorkspaceViewModel : ViewModelBase
     public CurrentImageViewModel CurrentImageVM { get; protected set; }
     public CurrentImageViewModel PreviousImageVM { get; protected set; }
 
-    private void UpdateImageSortOrder(ImgOrderOption ImgOrderOption)
+    private void UpdateImageSortOrder(ImgOrderOption? ImgOrderOption)
     {
         // Prevent this from running on workspace load
-        if (this.CurrentImageVM is not null)
+        if (ImgOrderOption is not null && this.CurrentImageVM is not null)
         {
             // Sort order has changed
             this.SortedImageDetails = SortImageDetailsBy(this._baseImageDetails, ImgOrderOption.OptionEnum).ToList();
@@ -193,7 +202,7 @@ public class WorkspaceViewModel : ViewModelBase
     }
 
 
-    private void ManageReferenceSplit(object sender, EventArgs e)
+    private void ManageReferenceSplit(object? sender, EventArgs e)
     {
         // Make alpha have the greater number of refs if the total reference count is odd
         int alphaCount = this.ProjectConfig.ReferenceImages.Count / 2 + (this.ProjectConfig.ReferenceImages.Count % 2);
@@ -322,19 +331,18 @@ public class WorkspaceViewModel : ViewModelBase
             });
 
             // Create the warning view
-            var sortConfirmationVM = new SortConfirmationViewModel(SortConfirmations: sortConfirmations,
-                                                                   CloseOverlay: this.CloseOverlayView,
-                                                                   OnSuccessCommand: processWarningOptions,
-                                                                   OnCancelCommand: cancelCommand);
+            var sortConfirmationVM = new SortConfirmationViewModel(_aps, SortConfirmations: sortConfirmations,
+                                                                         CloseOverlay: this.CloseOverlayView,
+                                                                         OnSuccessCommand: processWarningOptions,
+                                                                         OnCancelCommand: cancelCommand);
 
             // Mark this as up, we will have a handler that will show preview if continue is selected
             this.IsSortWarningUp = true;
 
             // Create and navigate to the overlay view
-            OverlayRouter.Navigate.Execute(new OverlayViewModel(AppState: CurrentAppState,
-                                                                ViewModelToDisplay: sortConfirmationVM,
-                                                                CloseOverlay: CloseOverlayView,
-                                                                AllowClickOff: false));
+            OverlayRouter.Navigate.Execute(new OverlayViewModel(_aps, ViewModelToDisplay: sortConfirmationVM,
+                                                                      CloseOverlay: CloseOverlayView,
+                                                                      AllowClickOff: false));
             // Subscribe to watch for OnSuccessCommand to run and mark IsSortWarningUp = 
             this.OnIsSortWarningUpChange += ShowPreviewAfterWarning;
         }
@@ -346,7 +354,7 @@ public class WorkspaceViewModel : ViewModelBase
 
     }
 
-    private void ShowPreviewAfterWarning(object sender, EventArgs e)
+    private void ShowPreviewAfterWarning(object? sender, EventArgs e)
     {
         // Show the sort preview
         ShowPreSortPreview();
@@ -389,17 +397,19 @@ public class WorkspaceViewModel : ViewModelBase
     {
         var imageClickCommand = ImageClickCommand is null ? null : ImageClickCommand;
 
-        var sortPreviewVM = new ImageOverviewViewModel(AppState: this.CurrentAppState,
-                                                       ProjectConfig: this.ProjectConfig,
-                                                       SortedImageDetails: SortedImageDetails,
-                                                       OnSuccessCommand: successCommand,
-                                                       OnCancelCommand: cancelCommand,
-                                                       ImageClickCommand: imageClickCommand);
+        // Oh my god your constructor is huge
+        var sortPreviewVM = new ImageOverviewViewModel(_aps, ProjectConfig: this.ProjectConfig,
+                                                             SortedImageDetails: SortedImageDetails,
+                                                             OnSuccessCommand: successCommand,
+                                                             OnCancelCommand: cancelCommand,
+                                                             ImageClickCommand: imageClickCommand,
+                                                             ChangeSortOrder: ReactiveCommand.Create<ImgOrderOption>(_ => this.ImageSortOrder = _),
+                                                             ImageOrderOptions: this.ImageOrderOptions,
+                                                             ImageSortOrder: this.ImageSortOrder);
                 
-        var overlayVM = new OverlayViewModel(AppState: CurrentAppState,
-                                             ViewModelToDisplay: sortPreviewVM,
-                                             CloseOverlay: CloseOverlayView,
-                                             AllowClickOff: true);
+        var overlayVM = new OverlayViewModel(_aps, ViewModelToDisplay: sortPreviewVM,
+                                                   CloseOverlay: CloseOverlayView,
+                                                   AllowClickOff: true);
 
         // Pre-activating the VM prevents it from stuttering in
         sortPreviewVM.Activator.Activate();
@@ -416,18 +426,17 @@ public class WorkspaceViewModel : ViewModelBase
 
         double maxProgress = this.SortEngine.CalculateSortProgressMaximum(this.ProjectConfig);
 
-        var progressVM = new InProgressViewModel(MinimumValue: 0,
-                                                MaximumValue: maxProgress,
-                                                ValueToWatch: this.WhenAnyValue(x => x.SortProgress), // pass an IObservable<double>, so it can be monitored
-                                                InProgressText: inProgessText,
-                                                PauseOnCompletion: true,
-                                                OnSuccessCommand: this.CloseProgressOverlayView,
-                                                CompletionMessage: "I'm done!");
+        var progressVM = new InProgressViewModel(_aps, MinimumValue: 0,
+                                                       MaximumValue: maxProgress,
+                                                       ValueToWatch: this.WhenAnyValue(x => x.SortProgress), // pass an IObservable<double>, so it can be monitored
+                                                       InProgressText: inProgessText,
+                                                       PauseOnCompletion: true,
+                                                       OnSuccessCommand: this.CloseProgressOverlayView,
+                                                       CompletionMessage: "I'm done!");
 
-        OverlayRouter.Navigate.Execute(new OverlayViewModel(AppState: CurrentAppState,
-                                                            ViewModelToDisplay: progressVM,
-                                                            CloseOverlay: this.CloseProgressOverlayView,
-                                                            AllowClickOff: false));
+        OverlayRouter.Navigate.Execute(new OverlayViewModel(_aps, ViewModelToDisplay: progressVM,
+                                                                  CloseOverlay: this.CloseProgressOverlayView,
+                                                                  AllowClickOff: false));
         // Here we need to come up with a semi fake sort progess maximum.
         // Because I made the progress view and damnit I'm going to use it
         // this.ProjectConfig.InputImages.Count  ->  easy, worth 1 point since we will loop to move them
@@ -517,7 +526,7 @@ public class WorkspaceViewModel : ViewModelBase
     // **** Debug **** //
     public void Dbg_GoToProjectSelection()
     {
-        if (IsDebug)
+        if (_aps.DebugMode)
         {
             _goToProjectSelectionByName();
         }
@@ -525,7 +534,7 @@ public class WorkspaceViewModel : ViewModelBase
 
     private void _goToProjectSelection()
     {
-        MainRouter.NavigateAndReset.Execute(new ProjectSelectionViewModel(this.HostScreen, this.MainRouter, this.CurrentAppState));
+        MainRouter.NavigateAndReset.Execute(new ProjectSelectionViewModel(_aps, this.HostScreen, this.MainRouter));
     }
 
     private void _goToProjectSelectionByName()
@@ -539,6 +548,16 @@ public class WorkspaceViewModel : ViewModelBase
     {
     }
     
+    private void ShiftCurrentIndexByValue(int shift)
+    {
+        var potentialIndex = this.CurrentImageIndex + shift;
+
+        // Stay within bounds
+        if (potentialIndex >= 0 && potentialIndex < this.SortedImageDetails.Count)
+        {
+            this.CurrentImageIndex = potentialIndex;
+        }
+    }
 
     private void GoToImageFromOverview(string FileName)
     {
@@ -566,7 +585,7 @@ public class WorkspaceViewModel : ViewModelBase
             this.CloseOverlayView.Execute(null);
         });
 
-        //ShowOverview(successCommand, cancelCommand, ReactiveCommand.Create<string>(_ => GoToImageFromOverview(_)));
+        ShowOverview(successCommand, cancelCommand, ReactiveCommand.Create<string>(_ => GoToImageFromOverview(_)));
     }
 
     public void Dbg_Overview()
@@ -626,7 +645,7 @@ public class WorkspaceViewModel : ViewModelBase
             this.PreviousImageVM?.Dispose();
             this.PreviousImageVM = CurrentImageVM;
             this.CurrentImageVM = NextImageVM;
-            this.NextImageVM = new CurrentImageViewModel(this.SortedImageDetails, this.CurrentImageIndex + 1);
+            this.NextImageVM = new CurrentImageViewModel(_aps, this.SortedImageDetails, this.CurrentImageIndex + 1);
         }
 
         void DecrementMainImageView()
@@ -636,7 +655,7 @@ public class WorkspaceViewModel : ViewModelBase
             this.NextImageVM?.Dispose();
             this.NextImageVM = this.CurrentImageVM;
             this.CurrentImageVM = this.PreviousImageVM;
-            this.PreviousImageVM = new CurrentImageViewModel(this.SortedImageDetails, this.CurrentImageIndex - 1);
+            this.PreviousImageVM = new CurrentImageViewModel(_aps, this.SortedImageDetails, this.CurrentImageIndex - 1);
         }
 
         void ReinitializeMainImageVM()
@@ -645,7 +664,7 @@ public class WorkspaceViewModel : ViewModelBase
 
             // Use the NextImageVM to load our new VM
             this.NextImageVM?.Dispose();
-            this.NextImageVM = new CurrentImageViewModel(this.SortedImageDetails, this.CurrentImageIndex);
+            this.NextImageVM = new CurrentImageViewModel(_aps, this.SortedImageDetails, this.CurrentImageIndex);
 
             // Just in case. Should never happen though (I think)
             if (this.NextImageVM.CanNavigateTo == false)
@@ -662,16 +681,16 @@ public class WorkspaceViewModel : ViewModelBase
             this.CurrentImageVM = this.NextImageVM;
 
             // Set up new next and previous (if able)
-            this.NextImageVM = new CurrentImageViewModel(this.SortedImageDetails, this.CurrentImageIndex + 1);
-            this.PreviousImageVM = new CurrentImageViewModel(this.SortedImageDetails, this.CurrentImageIndex - 1);
+            this.NextImageVM = new CurrentImageViewModel(_aps, this.SortedImageDetails, this.CurrentImageIndex + 1);
+            this.PreviousImageVM = new CurrentImageViewModel(_aps, this.SortedImageDetails, this.CurrentImageIndex - 1);
         }
     }
 
-    public WorkspaceViewModel(IScreen screen, RoutingState router, AppState appState, ProjectConfig projectConfig)
+    public WorkspaceViewModel(IScreen screen, RoutingState router, AppState CurrentAppState, ProjectConfig projectConfig) : base (CurrentAppState)
     {
+        _aps = this.CurrentAppState;
         this.MainRouter = router;
         this.HostScreen = screen;
-        this.CurrentAppState = appState;
         this.ProjectConfig = projectConfig;
         this.CurrentImageRouter = new RoutingState();
         this.WorkspaceControlsRouter = new RoutingState();
@@ -692,7 +711,7 @@ public class WorkspaceViewModel : ViewModelBase
 
         this._baseImageDetails = this.ProjectConfig.InputImages.AsQueryable();
 
-        this.SortedImageDetails = SortImageDetailsBy(this._baseImageDetails, ImageSortOrder.OptionEnum).ToList();
+        this.SortedImageDetails = SortImageDetailsBy(this._baseImageDetails, this.ImageSortOrder.OptionEnum).ToList();
         this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => UpdateImageSortOrder(_));
 
         // Setup the MainImage. ChangeMainImage() and CurrentImageVM handle it all based on index and SortedImageDetails
@@ -724,15 +743,19 @@ public class WorkspaceViewModel : ViewModelBase
             NavigatePreviousMainImage = ReactiveCommand.Create<string>(_ => ChangeToPreviousImage()),
             NavigateLastImage = ReactiveCommand.Create<string>(_ => GoToLastImage()),
             NavigateFirstImage = ReactiveCommand.Create<string>(_ => GoToFirstImage()),
-            ResetMainImagePosition = ReactiveCommand.Create(ResetImagePosition),
-            SetImageFilteredValue = this.SetImageFilteredValue
+            ResetMainImagePosition = ReactiveCommand.Create(() => ResetImagePosition()),
+            SetImageFilteredValue = this.SetImageFilteredValue,
+            BeginImageSorting = ReactiveCommand.Create(() => CheckForImageSortIssues()),
+            ChangeImageSortOrder = ReactiveCommand.Create<ImgOrderOption>(_ => this.ImageSortOrder = _),
+            ImageOrderOptions = this.ImageOrderOptions,
+            ImageSortOrder = this.ImageSortOrder
         };
 
 
-        WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(this.ProjectConfig, this.CurrentAppState, imageCommands));
+        WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(_aps, this.ProjectConfig, imageCommands));
 
         // Side pane that allows modification of filter amounts
-        WorkspaceFilterRouter.Navigate.Execute(new WorkspaceFilterViewModel(this.ProjectConfig, this.CurrentAppState));
+        WorkspaceFilterRouter.Navigate.Execute(new WorkspaceFilterViewModel(_aps, this.ProjectConfig));
 
 
         // Time for some magic collections. Need to split the reference collection to both sides
@@ -763,8 +786,8 @@ public class WorkspaceViewModel : ViewModelBase
 
         // Have to save the view models cause I need to notify the VM's that the collection changes
         // Other option is to just make a new VM every time..? Seems smelly to do that
-        this.AlphaReferenceViewModel = new WorkspaceReferenceImageViewModel(this.CurrentAppState, this.ProjectConfig, AlphaReferenceImages, ReferenceViewIdentifier.Alpha);
-        this.BetaReferenceViewModel = new WorkspaceReferenceImageViewModel(this.CurrentAppState, this.ProjectConfig, BetaReferenceImages, ReferenceViewIdentifier.Beta);
+        this.AlphaReferenceViewModel = new WorkspaceReferenceImageViewModel(_aps, this.ProjectConfig, AlphaReferenceImages, ReferenceViewIdentifier.Alpha);
+        this.BetaReferenceViewModel = new WorkspaceReferenceImageViewModel(_aps, this.ProjectConfig, BetaReferenceImages, ReferenceViewIdentifier.Beta);
 
         WorkspaceAlphaReferenceRouter.Navigate.Execute(this.AlphaReferenceViewModel);
         WorkspaceBetaReferenceRouter.Navigate.Execute(this.BetaReferenceViewModel);
@@ -782,6 +805,14 @@ public class WorkspaceViewModel : ViewModelBase
         SortImageDetailsAsyncCommand = ReactiveCommand.CreateFromObservable<(double Counter, double ImageCount), Unit>(tuple => SortImageDetails(tuple.Counter, tuple.ImageCount));
 
         this.WhenAnyValue(x => x.ProjectConfig.ReferenceImages).Subscribe(_ => BtnCommand());
-
+        
+        var thumbnailVM = new WorkspaceThumbnailViewModel(_aps, CurrentImageIndex: this.CurrentImageIndex,
+                                                                SortedImageDetails: this.SortedImageDetails,
+                                                                CurrentImageIndexObservable: this.WhenAnyValue(x => x.CurrentImageIndex),
+                                                                SortedImageDetialsObservable: this.WhenAnyValue(x => x.SortedImageDetails),
+                                                                ImageShiftCommand: ReactiveCommand.Create<int>(_ => ShiftCurrentIndexByValue(_)));
+        
+        thumbnailVM.Activator.Activate();
+        ThumbnailRouter.Navigate.Execute(thumbnailVM);
     }
 }

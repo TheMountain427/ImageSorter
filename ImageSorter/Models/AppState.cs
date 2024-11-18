@@ -10,6 +10,9 @@ namespace ImageSorter.Models
 {
     public class AppState : ReactiveObject
     {
+        public bool DebugMode { get; } = false;
+
+
         private string _currentAppDirectory;
         private string _appStateFileName = "AppState.json";
         private string _appStateFilePath;
@@ -23,6 +26,7 @@ namespace ImageSorter.Models
         private double _windowHeight;
 
         public string LastReferenceImagePath { get; set; }
+
 
         [JsonIgnore]
         private bool _isWorkSpaceOverlayEnabled = false;

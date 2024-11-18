@@ -28,7 +28,7 @@ public class WorkspaceControlsViewModel : ViewModelBase
     private ImageCommands ImageCommands { get; }
 
     // Probably should be read only
-    private ObservableCollection<ImageDetails> _referenceImages;
+    private ObservableCollection<ImageDetails> _referenceImages = new ObservableCollection<ImageDetails>();
     public ObservableCollection<ImageDetails> ReferenceImages
     {
         get { return _referenceImages; }
@@ -50,7 +50,15 @@ public class WorkspaceControlsViewModel : ViewModelBase
     public ICommand SetImageFilteredValue { get; }
 
     public ICommand DebugCommand { get; }
-        
+    
+    public ImgOrderOptions ImageOrderOptions { get; set; }
+
+    private ImgOrderOption _imageSortOrder;
+    public ImgOrderOption ImageSortOrder
+    {
+        get { return _imageSortOrder; }
+        set { this.RaiseAndSetIfChanged(ref _imageSortOrder, value); }
+    }
     private bool _advanceSettingsOpen;
     public bool AdvancedSettingsOpen
     {
@@ -63,10 +71,13 @@ public class WorkspaceControlsViewModel : ViewModelBase
         CurrentAppState.FilterSidePanelOpen = !CurrentAppState.FilterSidePanelOpen;
     }
 
-    public WorkspaceControlsViewModel(ProjectConfig ProjectConfig, AppState AppState, ImageCommands ImageCommands)
+    public ICommand BeginSortCommand { get; }
+
+    public ICommand OpenAdditonalsViewThing { get; }
+
+    public WorkspaceControlsViewModel(AppState CurrentAppState, ProjectConfig ProjectConfig, ImageCommands ImageCommands) : base (CurrentAppState)
     {
         this.ProjectConfig = ProjectConfig;
-        this.CurrentAppState = AppState;
         this.ImageCommands = ImageCommands;
 
         this.ReferenceImages = this.ProjectConfig.ReferenceImages;
@@ -77,7 +88,13 @@ public class WorkspaceControlsViewModel : ViewModelBase
         this.SetImageFilteredValue = ImageCommands.SetImageFilteredValue;
         this.GoFirstImage = ImageCommands.NavigateFirstImage;
         this.GoLastImage = ImageCommands.NavigateLastImage;
+        this.BeginSortCommand = ImageCommands.BeginImageSorting;
+        this.ImageOrderOptions = ImageCommands.ImageOrderOptions;
+        this.ImageSortOrder = ImageCommands.ImageSortOrder;
 
+        this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => ImageCommands.ChangeImageSortOrder.Execute(_));
+
+        this.OpenAdditonalsViewThing = ReactiveCommand.Create(() => AdvancedSettingsOpen = !AdvancedSettingsOpen);
         this.DebugCommand = ReactiveCommand.Create(() => AdvancedSettingsOpen = !AdvancedSettingsOpen);
     }
 }

@@ -11,7 +11,7 @@ public abstract class ViewModelBase : ReactiveObject, IRoutableViewModel
 {
     public IScreen HostScreen { get; set; }
 
-    public abstract string UrlPathSegment { get; }
+    public abstract string? UrlPathSegment { get; }
 
     public RoutingState MainRouter { get; set; }
 
@@ -27,5 +27,10 @@ public abstract class ViewModelBase : ReactiveObject, IRoutableViewModel
     private void _goToViewByUrl(string urlPathSegment)
     {
         MainRouter.Navigate.Execute(MainRouter.NavigationStack.FirstOrDefault(x => x.UrlPathSegment == urlPathSegment));
+    }
+
+    public ViewModelBase(AppState AppState)
+    {
+        this.CurrentAppState = AppState;
     }
 }

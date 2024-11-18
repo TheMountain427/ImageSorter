@@ -6,6 +6,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -239,7 +240,7 @@ public class ProjectSelectionViewModel : ViewModelBase
     }
 
 
-
+    
     private void InitializeProject()
     {
         if (didLoadRecentProject)
@@ -532,7 +533,7 @@ public class ProjectSelectionViewModel : ViewModelBase
 
 
 
-    private async void GetRecentProjects(AppState appState)
+    private void GetRecentProjects(AppState appState)
     {
         if (appState is not null && appState.ProjectConfigsPath is not null)
         {
@@ -654,13 +655,13 @@ public class ProjectSelectionViewModel : ViewModelBase
 
 
 
-    public ProjectSelectionViewModel(IScreen screen, RoutingState router, AppState appState)
+#pragma warning disable CS8618 // You're not helping as much as you think
+    public ProjectSelectionViewModel(AppState CurrentAppState, IScreen screen, RoutingState router) : base (CurrentAppState)
     {
         MainRouter = router;
         HostScreen = screen;
-        CurrentAppState = appState;
 
-        GetRecentProjects(appState);
+        GetRecentProjects(CurrentAppState);
         // Try to load selected recent project config
         this.WhenAnyValue(x => x.SelectedRecentProject).Subscribe(_ => TryLoadRecentProject());
 
@@ -680,5 +681,6 @@ public class ProjectSelectionViewModel : ViewModelBase
 
 
     }
+#pragma warning restore CS8618 
 
 }

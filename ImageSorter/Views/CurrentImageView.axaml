@@ -8,8 +8,10 @@
 			 x:DataType="vm:CurrentImageViewModel">
 
 	<StackPanel>
-		<TextBlock Text="{ Binding ImageName }"/>
-		<TextBlock Text="{ Binding ImageDetails.FilteredValue }"/>
+		<TextBlock Text="{ Binding ImageName }"
+				   IsVisible="{ Binding CurrentAppState.DebugMode }"/>
+		<TextBlock Text="{ Binding ImageDetails.FilteredValue }"
+				   IsVisible="{ Binding CurrentAppState.DebugMode }"/>
 		<Image Source="{ Binding ImageBitmap }"/>
 	</StackPanel>
 

@@ -46,9 +46,9 @@ public class WorkspaceFilterViewModel : ViewModelBase
         this.CurrentAppState.FilterSidePanelOpen = !this.CurrentAppState.FilterSidePanelOpen;
     }
 
-    public WorkspaceFilterViewModel(ProjectConfig projectConfig, AppState appState)
+    public WorkspaceFilterViewModel(AppState CurrentAppState, ProjectConfig projectConfig) : base (CurrentAppState)
     {
-        this.CurrentAppState = appState;
+        this.CurrentAppState = CurrentAppState;
         this.ProjectConfig = projectConfig;
         this.ReferenceImages = this.ProjectConfig.ReferenceImages;
     }

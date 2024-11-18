@@ -1,5 +1,6 @@
 ﻿
 
+using ImageSorter.Models;
 using ReactiveUI;
 using System;
 using System.Windows.Input;
@@ -10,7 +11,7 @@ public class InProgressViewModel : ViewModelBase
 {
     public override string UrlPathSegment { get; } = "InProgressView";
 
-    public string InProgressText { get; }
+    public string? InProgressText { get; }
 
     public double ProgressMinimum { get; }
 
@@ -18,7 +19,7 @@ public class InProgressViewModel : ViewModelBase
 
     public bool PauseOnCompletion { get; }
 
-    public string CompletionMessage { get; }
+    public string? CompletionMessage { get; }
 
     public ICommand OnSuccessCommand { get; }
 
@@ -47,7 +48,7 @@ public class InProgressViewModel : ViewModelBase
     }
 
     // Will toggle from InProgress message to Completion message if set up that way
-    private string _progressMessage;
+    private string? _progressMessage;
     public string ProgressMessage
     {
         get { return _progressMessage; }
@@ -95,7 +96,8 @@ public class InProgressViewModel : ViewModelBase
 
     }
 
-    public InProgressViewModel(double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand)
+    public InProgressViewModel(AppState CurrentAppState, double MinimumValue, double MaximumValue,
+                               IObservable<double> ValueToWatch, ICommand OnSuccessCommand) : base (CurrentAppState)
     {
         this.ProgressMinimum = MinimumValue;
         this.ProgressMaximum = MaximumValue;
@@ -115,33 +117,33 @@ public class InProgressViewModel : ViewModelBase
 
 
 
-    public InProgressViewModel(double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand, string InProgressText)
-        : this(MinimumValue, MaximumValue, ValueToWatch, OnSuccessCommand)
+    public InProgressViewModel(AppState CurrentAppState, double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand, string InProgressText)
+        : this(CurrentAppState, MinimumValue, MaximumValue, ValueToWatch, OnSuccessCommand)
     {
         this.InProgressText = InProgressText;
         this.ProgressMessage = this.InProgressText;
     }
 
-    public InProgressViewModel(double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand, string InProgressText, bool PauseOnCompletion)
-        : this(MinimumValue, MaximumValue, ValueToWatch, OnSuccessCommand, InProgressText)
+    public InProgressViewModel(AppState CurrentAppState, double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand, string InProgressText, bool PauseOnCompletion)
+        : this(CurrentAppState, MinimumValue, MaximumValue, ValueToWatch, OnSuccessCommand, InProgressText)
     {
         this.PauseOnCompletion = PauseOnCompletion;
     }
 
-    public InProgressViewModel(double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand, string InProgressText, bool PauseOnCompletion, string CompletionMessage)
-        : this(MinimumValue, MaximumValue, ValueToWatch, OnSuccessCommand, InProgressText, PauseOnCompletion)
+    public InProgressViewModel(AppState CurrentAppState, double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand, string InProgressText, bool PauseOnCompletion, string CompletionMessage)
+        : this(CurrentAppState,MinimumValue, MaximumValue, ValueToWatch, OnSuccessCommand, InProgressText, PauseOnCompletion)
     {
         this.CompletionMessage = CompletionMessage;
     }
 
-    public InProgressViewModel(double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand, bool PauseOnCompletion)
-        : this(MinimumValue, MaximumValue, ValueToWatch, OnSuccessCommand)
+    public InProgressViewModel(AppState CurrentAppState, double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand, bool PauseOnCompletion)
+        : this(CurrentAppState,MinimumValue, MaximumValue, ValueToWatch, OnSuccessCommand)
     {
         this.PauseOnCompletion = PauseOnCompletion;
     }
 
-    public InProgressViewModel(double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand, bool PauseOnCompletion, string CompletionMessage)
-        : this(MinimumValue, MaximumValue, ValueToWatch, OnSuccessCommand, PauseOnCompletion)
+    public InProgressViewModel(AppState CurrentAppState, double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand, bool PauseOnCompletion, string CompletionMessage)
+        : this(CurrentAppState, MinimumValue, MaximumValue, ValueToWatch, OnSuccessCommand, PauseOnCompletion)
     {
         this.CompletionMessage = CompletionMessage;
     }

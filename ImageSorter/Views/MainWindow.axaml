@@ -10,7 +10,7 @@
 		Width="{ Binding WindowWidth, Mode=TwoWay }"
         x:Class="ImageSorter.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="ImageSorter.Views"
+        Title="Image Sorter"
 		x:DataType="vm:MainWindowViewModel">
 
 

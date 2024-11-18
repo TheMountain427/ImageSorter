@@ -6,6 +6,8 @@
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="1000"
              x:Class="ImageSorter.Views.WorkspaceFilterView"
 			 x:DataType="vm:WorkspaceFilterViewModel">
+	
+	
 	<StackPanel Spacing="5">
 		<Grid ColumnDefinitions="Auto,*">
 			<Button Name="SideFilters_ClosePanelButton"

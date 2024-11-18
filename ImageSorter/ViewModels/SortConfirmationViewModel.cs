@@ -16,20 +16,20 @@ public class SortConfirmationViewModel : ViewModelBase
     public List<SortConfirmation> SortConfirmations { get; }
 
     private bool _canContinue;
-    public bool CanContinue 
+    public bool CanContinue
     {
         get { return _canContinue; }
         set { this.RaiseAndSetIfChanged(ref _canContinue, value); }
     }
 
     public AccessibleString ContinueButton { get; set; } = new AccessibleString("Continue");
-    
+
     public ICommand CloseOverlay { get; }
 
-    public ICommand OnCancelCommand { get; }
+    public ICommand? OnCancelCommand { get; }
 
     // uh this needs to always take a List<string>, not sure how to make that clear though
-    public ICommand OnSuccessCommand { get; }
+    public ICommand? OnSuccessCommand { get; }
 
     // Stinky, only contains SortConfirmations that require a selection
     private List<List<AccessibleBool>> _requiredOptionsSeperated { get; } = new List<List<AccessibleBool>>();
@@ -75,14 +75,9 @@ public class SortConfirmationViewModel : ViewModelBase
 
     }
 
-    public SortConfirmationViewModel(IEnumerable<SortConfirmation> SortConfirmations, ICommand CloseOverlay, ICommand OnSuccessCommand, ICommand OnCancelCommand) 
-        : this(SortConfirmations, CloseOverlay)
-    {
-        this.OnSuccessCommand = OnSuccessCommand;
-        this.OnCancelCommand = OnCancelCommand;
-    }
 
-    public SortConfirmationViewModel(IEnumerable<SortConfirmation> SortConfirmations, ICommand CloseOverlay)
+    public SortConfirmationViewModel(AppState CurrentAppState, IEnumerable<SortConfirmation> SortConfirmations, ICommand CloseOverlay) 
+                                     : base(CurrentAppState)
     {
         this.SortConfirmations = (List<SortConfirmation>)SortConfirmations;
         this.CloseOverlay = CloseOverlay;
@@ -137,5 +132,13 @@ public class SortConfirmationViewModel : ViewModelBase
         {
             CanContinue = true;
         }
+    }
+
+    public SortConfirmationViewModel(AppState CurrentAppState, IEnumerable<SortConfirmation> SortConfirmations, 
+                                     ICommand CloseOverlay, ICommand OnSuccessCommand, ICommand OnCancelCommand)
+                                     : this (CurrentAppState, SortConfirmations, CloseOverlay)
+    {
+        this.OnSuccessCommand = OnSuccessCommand;
+        this.OnCancelCommand = OnCancelCommand;
     }
 }

@@ -136,7 +136,7 @@
 
 			</Border>
 
-			<StackPanel IsEnabled="{ Binding IsDebug }" IsVisible="{ Binding IsDebug }">
+			<StackPanel IsVisible="{ Binding CurrentAppState.DebugMode }">
 				<Button Content="Debug: SelectProject" Command="{ Binding dbgSetProjectSettings }"/>
 				<Button Content="Debug: GoToWorkspace" Command="{ Binding dbgGoToWorkspace }"/>
 			</StackPanel>

@@ -14,7 +14,7 @@ namespace ImageSorter.Models
         private JsonSerializerOptions JsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
         // Event handler for writing app state to json on change
-        public void WriteAppState(object sender, EventArgs e)
+        public void WriteAppState(object? sender, EventArgs e)
         {
             if (sender is AppState appState)
             {

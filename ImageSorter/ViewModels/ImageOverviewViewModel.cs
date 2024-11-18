@@ -66,16 +66,13 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
     // This is the true sorce of what is actually selected
     private HashSet<int> _filterByIndexesSelected { get; set; } = new HashSet<int>();
 
-    public ImgOrderOptions ImageOrderOptions { get; } = new ImgOrderOptions();
+    public ImgOrderOptions ImageOrderOptions { get; } 
 
     private ImgOrderOption _imageSortOrder;
     public ImgOrderOption ImageSortOrder
     {
         get { return _imageSortOrder; }
-        protected set
-        {
-            this.RaiseAndSetIfChanged(ref _imageSortOrder, value);
-        }
+        protected set{ this.RaiseAndSetIfChanged(ref _imageSortOrder, value); }
     }
 
     public void ContinueSort()
@@ -181,14 +178,15 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
 
     public ICommand? ImageClickCommand { get; }
 
-    public ImageOverviewViewModel(AppState AppState, ProjectConfig ProjectConfig, List<ImageDetails> SortedImageDetails, ICommand OnSuccessCommand, ICommand OnCancelCommand, ICommand? ImageClickCommand)
+    public ImageOverviewViewModel(AppState CurrentAppState, ProjectConfig ProjectConfig, List<ImageDetails> SortedImageDetails, 
+                                  ICommand OnSuccessCommand, ICommand OnCancelCommand, ICommand? ImageClickCommand,
+                                  ICommand ChangeSortOrder, ImgOrderOptions ImageOrderOptions,ImgOrderOption ImageSortOrder) : base (CurrentAppState)
     {
-
-        this.CurrentAppState = AppState;
         this.ProjectConfig = ProjectConfig;
         this.ContinueSortCommand = OnSuccessCommand;
         this.CancelSortCommand = OnCancelCommand;
-        this.ImageSortOrder = this.ImageOrderOptions.GetOrderOption(this.ProjectConfig.ImageSortOrder);
+        this.ImageOrderOptions = ImageOrderOptions;
+        this.ImageSortOrder = ImageSortOrder;
 
         this._sortedImageDetails = SortImageDetailsBy(SortedImageDetails, this.ImageSortOrder.OptionEnum).AsQueryable();
 
@@ -205,6 +203,7 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
         // ToList() as a workaround for https://github.com/AvaloniaUI/Avalonia/issues/12344
         this.AvailableFilterValues = this.PreviewImageDetails.Select(x => x.FilteredValue).Distinct().ToList();
 
+        this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => ChangeSortOrder.Execute(_));
 
         Activator = new ViewModelActivator();
         this.WhenActivated(disposables =>

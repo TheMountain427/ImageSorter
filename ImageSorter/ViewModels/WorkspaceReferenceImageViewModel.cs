@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -19,7 +20,7 @@ namespace ImageSorter.ViewModels;
 
 public class WorkspaceReferenceImageViewModel : ViewModelBase
 {
-    public override string UrlPathSegment { get; }
+    public override string? UrlPathSegment { get; }
 
     public ProjectConfig ProjectConfig { get; }
 
@@ -207,9 +208,12 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
         }
     }
 
-    public WorkspaceReferenceImageViewModel(AppState appState, ProjectConfig projectConfig, IEnumerable<ImageDetails> referenceImages, ReferenceViewIdentifier referenceViewID)
+#pragma warning disable CS8618 // Shut the fuck up _referenceImages isn't null when exiting
+    public WorkspaceReferenceImageViewModel(AppState CurrentAppState, ProjectConfig projectConfig, IEnumerable<ImageDetails> referenceImages,
+#pragma warning restore CS8618 
+                                            ReferenceViewIdentifier referenceViewID) : base (CurrentAppState)
     {
-        this.CurrentAppState = appState;
+        this.CurrentAppState = CurrentAppState;
         this.ProjectConfig = projectConfig;
         this.ReferenceViewID = referenceViewID;
 

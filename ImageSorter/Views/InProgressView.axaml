@@ -9,7 +9,9 @@
 
 	<Grid>
 		<StackPanel>
-			<Button Content="Debug" Command="{ Binding DebugCommand }"/>
+			<Button Content="Debug"
+					Command="{ Binding DebugCommand }"
+					IsVisible="{ Binding CurrentAppState.DebugMode }"/>
 			<Border BorderBrush="Black"
 					BorderThickness="2"
 					CornerRadius="2">

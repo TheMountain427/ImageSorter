@@ -4,6 +4,7 @@ using DynamicData;
 using ImageSorter.Models;
 using ReactiveUI;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -11,6 +12,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+#pragma warning disable CS8602 
+#pragma warning disable CS8618 // Actual dog shit, ignores [MemberNotNull(nameof(CurrentAppState))]
 namespace ImageSorter.ViewModels;
 
 public class MainWindowViewModel : ReactiveObject, IScreen
@@ -20,7 +23,7 @@ public class MainWindowViewModel : ReactiveObject, IScreen
 
     public ReactiveCommand<Unit, IRoutableViewModel> GoNext { get; }
 
-    public ReactiveCommand<Unit, IRoutableViewModel> GoBack => Router.NavigateBack;
+    public ReactiveCommand<Unit, IRoutableViewModel?> GoBack => Router.NavigateBack;
 
     public static JsonSerializerOptions JsonOptions { get; private set; } = new JsonSerializerOptions { WriteIndented = true };
 
@@ -39,8 +42,9 @@ public class MainWindowViewModel : ReactiveObject, IScreen
         get { return _windowHeight; }
         set { this.RaiseAndSetIfChanged(ref _windowHeight, value); }
     }
-
-    public void FirstRunChecks()
+    
+    [MemberNotNull(nameof(CurrentAppState))]
+    private void FirstRunChecks()
     {
         var currentDirectory = Environment.CurrentDirectory;
 
@@ -115,9 +119,22 @@ public class MainWindowViewModel : ReactiveObject, IScreen
             this.WindowWidth = 1500;
         }
 
-        Router.Navigate.Execute(new ProjectSelectionViewModel(this, Router, this.CurrentAppState));
+        Router.Navigate.Execute(new ProjectSelectionViewModel(CurrentAppState!, this, this.Router));
 
-        this.WhenAnyValue(x => x.WindowHeight).Subscribe(_ => this.CurrentAppState.WindowHeight = _);
-        this.WhenAnyValue(x => x.WindowWidth).Subscribe(_ => this.CurrentAppState.WindowWidth = _);
+        this.WhenAnyValue(x => x.WindowHeight).Subscribe(_ => this.CurrentAppState!.WindowHeight = _);
+        this.WhenAnyValue(x => x.WindowWidth).Subscribe(_ => this.CurrentAppState!.WindowWidth = _);
     }
 }
+
+
+
+
+
+
+
+
+
+
+// shit is useless here
+#pragma warning restore CS8618
+#pragma warning restore CS8602

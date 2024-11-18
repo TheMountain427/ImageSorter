@@ -17,6 +17,20 @@
 				<ColumnDefinition Width="2"/>
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
+
+			<rxui:RoutedViewHost Router="{ Binding ThumbnailRouter }"
+								 VerticalAlignment="Top"
+								 HorizontalAlignment="Center"
+								 Grid.ColumnSpan="5"
+								 ZIndex="5">
+				<rxui:RoutedViewHost.DefaultContent>
+					<Rectangle Fill="Black" Height="100" Width="300"/>
+				</rxui:RoutedViewHost.DefaultContent>
+				<rxui:RoutedViewHost.ViewLocator>
+					<app:AppViewLocator/>
+				</rxui:RoutedViewHost.ViewLocator>
+			</rxui:RoutedViewHost>
+
 			<ScrollViewer Name="Workspace_Alpha_RefScrollView"
 						  Grid.Column="0">
 				<StackPanel Name="Workspace_Alpha_RefStackPanel">
@@ -24,14 +38,12 @@
 						<Button Name="Workspace_Alpha_RefResetSplitButton"
 								Content="Reset Split"
 								HorizontalAlignment="Left"
-								IsEnabled="True"
-								IsVisible="True"
+						        IsVisible="{ Binding CurrentAppState.DebugMode }"
 								DockPanel.Dock="Left"/>
 						<Button Name="Workspace_Alpha_RefEqualizeSplitButton"
 								Content="Set Equal to -&gt;"
 								HorizontalAlignment="Right"
-								IsEnabled="True"
-								IsVisible="True"
+						        IsVisible="{ Binding CurrentAppState.DebugMode }"
 								DockPanel.Dock="Right"/>
 					</DockPanel>
 					<rxui:RoutedViewHost Name="Workspace_Alpha_RefRouter"
@@ -46,34 +58,34 @@
 						  Background="Black"
 						  ResizeDirection="Columns"
 						  IsEnabled="True"
-						  IsVisible="True"
-						  />
+						  IsVisible="True"/>
 
 			<Grid RowDefinitions="*,*,*"
 				  Grid.Column="2">
 				<StackPanel Grid.Row="0">
-					<TextBlock Text="Filter by filter values check box"/>
-					<TextBlock Text="If output directory is missing on a recent project, the project won't load"/>
-					<TextBlock Text="Allow changing of output directory while in workspace view"/>
-					<TextBlock Text="(ProjectConfig.ProjectImageWatchers already exists) Monitor input paths for addition of new images"/>
-					<TextBlock Text="Edit Preferences"/>
-					<TextBlock Text="Change Sort Order"/>
-					<TextBlock Text="Go to first and go to last image control buttons"/>
-					<TextBlock Text="Warning window on project load about missing/fixed input images"/>
-					<TextBlock Text="Preview window on sort destinations"/>
-					<TextBlock Text="Thumbnail viewer, sort by sort values, with colors"/>
-					<TextBlock Text="Progress bar on bottom dock panel for actions"/>
-					<Button Content="Click Me" Command="{ Binding BtnCommand }"/>
-					<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
-					<TextBlock Text="{ Binding CurrentImageIndex }"/>
-					<Button Content="Initiate Sort" Command="{ Binding CheckForImageSortIssues }"/>
-					<Button Content="Overview" Command="{ Binding Dbg_Overview }"/>
-					<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
-							  SelectedItem="{ Binding ImageSortOrder }"
-							  SelectedValueBinding="{ Binding }"
-							  DisplayMemberBinding="{ Binding OptionText }"
-							  x:CompileBindings="False"/>
-
+					<Border IsVisible="{ Binding CurrentAppState.DebugMode }">
+						<StackPanel>
+							<TextBlock Text="Filter by filter values check box"/>
+							<TextBlock Text="If output directory is missing on a recent project, the project won't load"/>
+							<TextBlock Text="Allow changing of output directory while in workspace view"/>
+							<TextBlock Text="(ProjectConfig.ProjectImageWatchers already exists) Monitor input paths for addition of new images"/>
+							<TextBlock Text="Edit Preferences"/>
+							<TextBlock Text="Warning window on project load about missing/fixed input images"/>
+							<TextBlock Text="Preview window on sort destinations"/>
+							<TextBlock Text="Thumbnail viewer, sort by sort values, with colors"/>
+							<TextBlock Text="Progress bar on bottom dock panel for actions"/>
+							<Button Content="Click Me" Command="{ Binding BtnCommand }"/>
+							<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
+							<TextBlock Text="{ Binding CurrentImageIndex }"/>
+							<Button Content="Initiate Sort" Command="{ Binding CheckForImageSortIssues }"/>
+							<Button Content="Overview" Command="{ Binding Dbg_Overview }"/>
+							<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
+									  SelectedItem="{ Binding ImageSortOrder }"
+									  SelectedValueBinding="{ Binding }"
+									  DisplayMemberBinding="{ Binding OptionText }"
+									  x:CompileBindings="False"/>
+						</StackPanel>
+					</Border>
 
 
 				</StackPanel>
@@ -93,11 +105,10 @@
 					</rxui:RoutedViewHost>
 				</Panel>
 			</Grid>
-			
+
 			<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
 								 VerticalAlignment="Bottom"
 								 HorizontalAlignment="Center"
-								 Grid.Row="2"
 								 Grid.ColumnSpan="5"
 								 ZIndex="5">
 				<rxui:RoutedViewHost.DefaultContent>
@@ -119,15 +130,13 @@
 					<DockPanel>
 						<Button Name="Workspace_Beta_RefResetSplitButton"
 								Content="Reset Split"
-								IsEnabled="True"
-								IsVisible="True"
+						        IsVisible="{ Binding CurrentAppState.DebugMode }"
 								HorizontalAlignment="Right"
 								DockPanel.Dock="Right"/>
 						<Button Name="Workspace_Beta_RefEqualizeSplitButton"
 								Content="Set Equal to &lt;-"
 								HorizontalAlignment="Left"
-								IsEnabled="True"
-								IsVisible="True"
+						        IsVisible="{ Binding CurrentAppState.DebugMode }"
 								DockPanel.Dock="Left"/>
 					</DockPanel>
 					<rxui:RoutedViewHost Name="Workspace_Beta_RefRouter"
