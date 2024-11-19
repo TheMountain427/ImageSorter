@@ -12,21 +12,68 @@ namespace ImageSorter.Models
     {
         public bool DebugMode { get; } = true;
 
-
-        private string _currentAppDirectory;
         private string _appStateFileName = "AppState.json";
-        private string _appStateFilePath;
+        public string AppStateFileName
+        {
+            get { return _appStateFileName; }
+            set { this.RaiseAndSetIfChanged(ref _appStateFileName, value); }
+        }
+
         private string _projectConfigDirectory = "ProjectConfigs";
-        private string _projectConfigsPath;
-        private List<string> _recentProjectNames;
-        private string _currentProjectName;
-        private string _currentProjectConfigPath;
-        private bool _filterSidePanelOpen;
-        private double _windowWidth;
-        private double _windowHeight;
+        public string ProjectConfigDirectory
+        {
+            get { return _projectConfigDirectory; }
+            set { this.RaiseAndSetIfChanged(ref _projectConfigDirectory, value); }
+        }
 
-        public string LastReferenceImagePath { get; set; }
+        private string _currentAppDirectory = "";
+        public string CurrentAppDirectory
+        {
+            get { return _currentAppDirectory; }
+            set { this.RaiseAndSetIfChanged(ref _currentAppDirectory, value); }
+        }
 
+        private string _appStateFilePath = "";
+        public string AppStateFilePath
+        {
+            get { return _appStateFilePath; }
+            set { this.RaiseAndSetIfChanged(ref _appStateFilePath, value); }
+        }
+
+        private string _projectConfigsPath = "";
+        public string ProjectConfigsPath
+        {
+            get { return _projectConfigsPath; }
+            set { this.RaiseAndSetIfChanged(ref _projectConfigsPath, value); }
+        }
+
+        private string _currentProjectName = "";
+        public string CurrentProjectName
+        {
+            get { return _currentProjectName; }
+            set { this.RaiseAndSetIfChanged(ref _currentProjectName, value); }
+        }
+
+        private string _currentProjectConfigPath = "";
+        public string CurrentProjectConfigPath
+        {
+            get { return _currentProjectConfigPath; }
+            set { this.RaiseAndSetIfChanged(ref _currentProjectConfigPath, value); }
+        }
+
+        private string _lastReferenceImagePath = "";
+        public string LastReferenceImagePath
+        {
+            get { return _lastReferenceImagePath; }
+            set { this.RaiseAndSetIfChanged(ref _lastReferenceImagePath, value); }
+        }
+
+        private List<string> _recentProjectNames = new List<string>();
+        public List<string> RecentProjectNames
+        {
+            get { return _recentProjectNames; }
+            set { this.RaiseAndSetIfChanged(ref _recentProjectNames, value); }
+        }
 
         [JsonIgnore]
         private bool _isWorkSpaceOverlayEnabled = false;
@@ -37,139 +84,34 @@ namespace ImageSorter.Models
             set { this.RaiseAndSetIfChanged(ref _isWorkSpaceOverlayEnabled, value); }
         }
 
-        [JsonIgnore]
-        public bool JsonWriterEnabled { get; private set; } = false;
 
-
-        public string CurrentAppDirectory
-        {
-            get => _currentAppDirectory;
-            set
-            {
-                _currentAppDirectory = value;
-                _onAppStateChanged?.Invoke(this, EventArgs.Empty); // Instead of new EventArgs() for performance
-            }
-        }
-
-        public string AppStateFileName
-        {
-            get => _appStateFileName;
-            set
-            {
-                _appStateFileName = value;
-                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public string AppStateFilePath
-        {
-            get => _appStateFilePath;
-            set
-            {
-                _appStateFilePath = value;
-                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public string ProjectConfigDirectory
-        {
-            get => _projectConfigDirectory;
-            set
-            {
-                _projectConfigDirectory = value;
-                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public string ProjectConfigsPath
-        {
-            get => _projectConfigsPath;
-            set
-            {
-                _projectConfigsPath = value;
-                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-
-        public List<string> RecentProjectNames
-        {
-            get => _recentProjectNames;
-            set
-            {
-                _recentProjectNames = value;
-                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-
-        public string CurrentProjectName
-        {
-            get => _currentProjectName;
-            set
-            {
-                _currentProjectName = value;
-                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public string CurrentProjectConfigPath
-        {
-            get => _currentProjectConfigPath;
-            set
-            {
-                _currentProjectConfigPath = value;
-                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
+        private bool _filterSidePanelOpen;
         public bool FilterSidePanelOpen
         {
-            get => _filterSidePanelOpen;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _filterSidePanelOpen, value);
-                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
-            }
+            get { return _filterSidePanelOpen; }
+            set { this.RaiseAndSetIfChanged(ref _filterSidePanelOpen, value); }
         }
 
-        private EventHandler _onAppStateChanged;
-        public event EventHandler OnAppStateChanged
-        {
-            add
-            {
-                _onAppStateChanged += value;
-            }
-            remove
-            {
-                _onAppStateChanged -= value;
-            }
-        }
-
+        private double _windowWidth;
         public double WindowWidth
         {
             get { return _windowWidth; }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _windowWidth, value);
-                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
-            }
+            set { this.RaiseAndSetIfChanged(ref _windowWidth, value); }
         }
 
+        private double _windowHeight;
         public double WindowHeight
         {
             get { return _windowHeight; }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _windowHeight, value);
-                _onAppStateChanged?.Invoke(this, EventArgs.Empty);
-            }
+            set { this.RaiseAndSetIfChanged(ref _windowHeight, value); }
         }
+        
+        [JsonIgnore]
+        public bool JsonWriterEnabled { get; private set; } = false;
 
         public void SetJsonWriterState(bool value)
         {
             this.JsonWriterEnabled = value;
         }
-
     }
 }

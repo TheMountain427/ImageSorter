@@ -24,5 +24,13 @@ namespace ImageSorter.Models
                 }
             }
         }
+
+        public void WriteAppState(AppState appState)
+        {
+            if (appState.JsonWriterEnabled)
+            {
+                File.WriteAllText(appState.AppStateFilePath, JsonSerializer.Serialize(appState, this.JsonOptions));
+            }
+        }
     }
 }
