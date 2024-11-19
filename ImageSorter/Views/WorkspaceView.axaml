@@ -6,10 +6,34 @@
 			 xmlns:paz="using:Avalonia.Controls.PanAndZoom"
              xmlns:vm="clr-namespace:ImageSorter.ViewModels"
              xmlns:app="clr-namespace:ImageSorter"
+			 xmlns:math="using:ImageSorter.Models.MathConverters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ImageSorter.Views.WorkspaceView"
              x:DataType="vm:WorkspaceViewModel">
 	<Grid>
+		
+		<paz:ZoomBorder Name="CurrentImageZoomBorder"
+						Stretch="None"
+						ZoomSpeed="1.2"
+						Background=""
+						ClipToBounds="True"
+						Focusable="True"
+						VerticalAlignment="Stretch"
+						HorizontalAlignment="Stretch"
+						ZIndex="0">
+			<rxui:RoutedViewHost Router="{ Binding CurrentImageRouter }">
+				<rxui:RoutedViewHost.PageTransition>
+					<CrossFade Duration="0:0:0.5"/>
+				</rxui:RoutedViewHost.PageTransition>
+				<rxui:RoutedViewHost.DefaultContent>
+					<TextBlock Text="I should be the current image"/>
+				</rxui:RoutedViewHost.DefaultContent>
+				<rxui:RoutedViewHost.ViewLocator>
+					<app:AppViewLocator />
+				</rxui:RoutedViewHost.ViewLocator>
+			</rxui:RoutedViewHost>
+		</paz:ZoomBorder>
+		
 		<Grid IsEnabled="{ Binding !CurrentAppState.IsWorkSpaceOverlayEnabled }">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*"/>
@@ -90,28 +114,6 @@
 
 
 				</StackPanel>
-					<paz:ZoomBorder Name="CurrentImageZoomBorder" 
-									Stretch="None" 
-									ZoomSpeed="1.2"
-									Background="SlateBlue" 
-									ClipToBounds="True" 
-									Focusable="True"
-									VerticalAlignment="Stretch"
-									HorizontalAlignment="Stretch"
-									Grid.Row="1"
-									ZIndex="10">
-					<rxui:RoutedViewHost Router="{ Binding CurrentImageRouter }">
-						<rxui:RoutedViewHost.PageTransition>
-							<CrossFade Duration="0:0:0.5"/>
-						</rxui:RoutedViewHost.PageTransition>
-						<rxui:RoutedViewHost.DefaultContent>
-							<TextBlock Text="I should be the current image"/>
-						</rxui:RoutedViewHost.DefaultContent>
-						<rxui:RoutedViewHost.ViewLocator>
-							<app:AppViewLocator />
-						</rxui:RoutedViewHost.ViewLocator>
-					</rxui:RoutedViewHost>
-					</paz:ZoomBorder>
 			</Grid>
 
 			<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
