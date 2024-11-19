@@ -66,7 +66,11 @@ public partial class WorkspaceView : ReactiveUserControl<WorkspaceViewModel>
             _zoomBorder.KeyDown += CurrentImageZoomBorder_KeyDown;
 
             //_zoomBorder.PointerEntered += FocusCurrentImageZoomBorder;
-            _zoomBorder.ZoomChanged += ZoomBorder_ZoomChanged;
+
+            if (_zoomBorder.DataContext is WorkspaceViewModel vm && vm.CurrentAppState.DebugMode)
+            {
+                _zoomBorder.ZoomChanged += ZoomBorder_ZoomChanged;
+            }
         }
 
 

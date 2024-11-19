@@ -10,7 +10,7 @@ namespace ImageSorter.Models
 {
     public class AppState : ReactiveObject
     {
-        public bool DebugMode { get; } = false;
+        public bool DebugMode { get; } = true;
 
 
         private string _currentAppDirectory;

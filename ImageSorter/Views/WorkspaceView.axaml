@@ -85,37 +85,6 @@
 						  IsEnabled="True"
 						  IsVisible="True"/>
 
-			<Grid RowDefinitions="*,auto,*"
-				  Grid.Column="2">
-				<StackPanel Grid.Row="0">
-					<Border IsVisible="{ Binding CurrentAppState.DebugMode }">
-						<StackPanel>
-							<TextBlock Text="Filter by filter values check box"/>
-							<TextBlock Text="If output directory is missing on a recent project, the project won't load"/>
-							<TextBlock Text="Allow changing of output directory while in workspace view"/>
-							<TextBlock Text="(ProjectConfig.ProjectImageWatchers already exists) Monitor input paths for addition of new images"/>
-							<TextBlock Text="Edit Preferences"/>
-							<TextBlock Text="Warning window on project load about missing/fixed input images"/>
-							<TextBlock Text="Preview window on sort destinations"/>
-							<TextBlock Text="Thumbnail viewer, sort by sort values, with colors"/>
-							<TextBlock Text="Progress bar on bottom dock panel for actions"/>
-							<Button Content="Click Me" Command="{ Binding BtnCommand }"/>
-							<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
-							<TextBlock Text="{ Binding CurrentImageIndex }"/>
-							<Button Content="Initiate Sort" Command="{ Binding CheckForImageSortIssues }"/>
-							<Button Content="Overview" Command="{ Binding Dbg_Overview }"/>
-							<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
-									  SelectedItem="{ Binding ImageSortOrder }"
-									  SelectedValueBinding="{ Binding }"
-									  DisplayMemberBinding="{ Binding OptionText }"
-									  x:CompileBindings="False"/>
-						</StackPanel>
-					</Border>
-
-
-				</StackPanel>
-			</Grid>
-
 			<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
 								 VerticalAlignment="Bottom"
 								 HorizontalAlignment="Center"
@@ -183,5 +152,42 @@
 				</rxui:RoutedViewHost.ViewLocator>
 			</rxui:RoutedViewHost>
 		</Grid>
+
+		<Expander IsVisible="{ Binding CurrentAppState.DebugMode }"
+				  ExpandDirection="Up"
+				  HorizontalAlignment="Right"
+				  VerticalAlignment="Bottom"
+				  ZIndex="1000">
+			<Expander.Header>
+				<TextBlock Text="WorkspaceDebugControls"/>
+			</Expander.Header>
+			<Expander.Content>
+				<ScrollViewer>
+					<StackPanel>
+						<TextBlock Text="Filter by filter values check box"/>
+						<TextBlock Text="If output directory is missing on a recent project, the project won't load"/>
+						<TextBlock Text="Allow changing of output directory while in workspace view"/>
+						<TextBlock Text="(ProjectConfig.ProjectImageWatchers already exists) Monitor input paths for addition of new images"/>
+						<TextBlock Text="Edit Preferences"/>
+						<TextBlock Text="Warning window on project load about missing/fixed input images"/>
+						<TextBlock Text="Preview window on sort destinations"/>
+						<TextBlock Text="Thumbnail viewer, sort by sort values, with colors"/>
+						<TextBlock Text="Progress bar on bottom dock panel for actions"/>
+						<Button Content="Click Me" Command="{ Binding BtnCommand }"/>
+						<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
+						<TextBlock Text="{ Binding CurrentImageIndex, StringFormat='CurrentImageIndex: {0}' }"/>
+						<Button Content="Initiate Sort" Command="{ Binding CheckForImageSortIssues }"/>
+						<Button Content="Overview" Command="{ Binding Dbg_Overview }"/>
+						<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
+								  SelectedItem="{ Binding ImageSortOrder }"
+								  SelectedValueBinding="{ Binding }"
+								  DisplayMemberBinding="{ Binding OptionText }"
+								  x:CompileBindings="False"/>
+					</StackPanel>
+
+				</ScrollViewer>
+			</Expander.Content>
+		</Expander>
+		
 	</Grid>
 </UserControl>
