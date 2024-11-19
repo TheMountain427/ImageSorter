@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:ImageSorter.ViewModels"
-			 xmlns:math="using:ImageSorter.Models"
+			 xmlns:math="using:ImageSorter.Models.MathConverters"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="200"
              x:Class="ImageSorter.Views.WorkspaceThumbnailView"
 			 x:DataType="vm:WorkspaceThumbnailViewModel">
@@ -19,7 +19,8 @@
 			<StackPanel>
 				<Border BorderBrush="Black"
 						BorderThickness="2"
-						CornerRadius="2">
+						CornerRadius="2"
+						Width="480">
 					<Grid ColumnDefinitions="*,*,*,*,*">
 
 						<Border Grid.Column="0"
@@ -36,7 +37,7 @@
 										<Image Name="PreviousThumbnail_2"
 											   Source="{ Binding Previous_2_ImageDetails.ThumbnailBitmap }"
 											   Opacity="80"
-											   Height="{ Binding #PreviousThumbnail_1.Bounds.Height, Converter={x:Static math:MathConverters.ThumbnailMakeSmaller}} }"/>
+											   Height="{ Binding #PreviousThumbnail_1.Bounds.Height, Converter={x:Static math:MathConverter.Smaller80Percent}} }"/>
 									</StackPanel>
 								</Button.Content>
 							</Button>
@@ -56,7 +57,7 @@
 										<Image Name="PreviousThumbnail_1"
 											   Source="{ Binding Previous_1_ImageDetails.ThumbnailBitmap }"
 											   Opacity="50"
-											   Height="{ Binding #CurrentThumbnail.Bounds.Height, Converter={x:Static math:MathConverters.ThumbnailMakeSmaller}} }"/>
+											   Height="{ Binding #CurrentThumbnail.Bounds.Height, Converter={x:Static math:MathConverter.Smaller80Percent}} }"/>
 									</StackPanel>
 								</Button.Content>
 							</Button>
@@ -92,7 +93,7 @@
 												   IsVisible="{ Binding CurrentAppState.DebugMode }"/>
 										<Image Name="NextThumbnail_1"
 											   Source="{ Binding Next_1_ImageDetails.ThumbnailBitmap }"
-											   Height="{ Binding #CurrentThumbnail.Bounds.Height, Converter={x:Static math:MathConverters.ThumbnailMakeSmaller}} }"
+											   Height="{ Binding #CurrentThumbnail.Bounds.Height, Converter={x:Static math:MathConverter.Smaller80Percent}} }"
 											   Opacity="50"/>
 									</StackPanel>
 								</Button.Content>
@@ -112,7 +113,7 @@
 												   IsVisible="{ Binding CurrentAppState.DebugMode }"/>
 										<Image Name="NextThumbnail_2"
 											   Source="{ Binding Next_2_ImageDetails.ThumbnailBitmap }"
-											   Height="{ Binding #NextThumbnail_1.Bounds.Height, Converter={x:Static math:MathConverters.ThumbnailMakeSmaller}} }"
+											   Height="{ Binding #NextThumbnail_1.Bounds.Height, Converter={x:Static math:MathConverter.Smaller80Percent}} }"
 											   Opacity="80"/>
 									</StackPanel>
 								</Button.Content>

@@ -48,7 +48,7 @@ public class SortConfirmation : ReactiveObject
             // Observable collections are dumb so lets do reactive, like we are supposed to
             var confirmationOption = new ConfirmationOption(pair);
 
-            // Subscrive to the boolean changed event
+            // Subscribe to the boolean changed event
             confirmationOption.OptionSelection.Changed.Subscribe(_ => HandleSinglularSelection(_));
             this.ConfirmationOptions.Add(confirmationOption);
             

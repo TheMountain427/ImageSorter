@@ -6,10 +6,60 @@
 			 xmlns:paz="using:Avalonia.Controls.PanAndZoom"
              xmlns:vm="clr-namespace:ImageSorter.ViewModels"
              xmlns:app="clr-namespace:ImageSorter"
+			 xmlns:math="using:ImageSorter.Models.MathConverters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ImageSorter.Views.WorkspaceView"
              x:DataType="vm:WorkspaceViewModel">
 	<Grid>
+		
+		<paz:ZoomBorder Name="CurrentImageZoomBorder"
+						Stretch="None"
+						ZoomSpeed="1.2"
+						Background=""
+						ClipToBounds="True"
+						Focusable="True"
+						VerticalAlignment="Stretch"
+						HorizontalAlignment="Stretch"
+						ZIndex="0">
+			<rxui:RoutedViewHost Router="{ Binding CurrentImageRouter }">
+				<rxui:RoutedViewHost.PageTransition>
+					<CrossFade Duration="0:0:0.5"/>
+				</rxui:RoutedViewHost.PageTransition>
+				<rxui:RoutedViewHost.DefaultContent>
+					<TextBlock Text="I should be the current image"/>
+				</rxui:RoutedViewHost.DefaultContent>
+				<rxui:RoutedViewHost.ViewLocator>
+					<app:AppViewLocator />
+				</rxui:RoutedViewHost.ViewLocator>
+			</rxui:RoutedViewHost>
+		</paz:ZoomBorder>
+
+
+		<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
+							 VerticalAlignment="{ Binding CurrentAppState.ControlsVerticalAlign }"
+							 HorizontalAlignment="{ Binding CurrentAppState.ControlsHorizontalAlign }"
+							 ZIndex="5">
+			<rxui:RoutedViewHost.DefaultContent>
+				<Rectangle Fill="Black" Height="100" Width="300"/>
+			</rxui:RoutedViewHost.DefaultContent>
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:AppViewLocator/>
+			</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
+
+
+		<rxui:RoutedViewHost Router="{ Binding ThumbnailRouter }"
+							 VerticalAlignment="{ Binding CurrentAppState.ThumbnailVerticalAlign }"
+							 HorizontalAlignment="{ Binding CurrentAppState.ThumbnailHorizontalAlign }"
+							 ZIndex="5">
+			<rxui:RoutedViewHost.DefaultContent>
+				<Rectangle Fill="Black" Height="100" Width="300"/>
+			</rxui:RoutedViewHost.DefaultContent>
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:AppViewLocator/>
+			</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
+		
 		<Grid IsEnabled="{ Binding !CurrentAppState.IsWorkSpaceOverlayEnabled }">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*"/>
@@ -18,19 +68,6 @@
 				<ColumnDefinition Width="2"/>
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-
-			<rxui:RoutedViewHost Router="{ Binding ThumbnailRouter }"
-								 VerticalAlignment="Top"
-								 HorizontalAlignment="Center"
-								 Grid.ColumnSpan="5"
-								 ZIndex="5">
-				<rxui:RoutedViewHost.DefaultContent>
-					<Rectangle Fill="Black" Height="100" Width="300"/>
-				</rxui:RoutedViewHost.DefaultContent>
-				<rxui:RoutedViewHost.ViewLocator>
-					<app:AppViewLocator/>
-				</rxui:RoutedViewHost.ViewLocator>
-			</rxui:RoutedViewHost>
 
 			<ScrollViewer Name="Workspace_Alpha_RefScrollView"
 						  Grid.Column="0">
@@ -60,72 +97,6 @@
 						  ResizeDirection="Columns"
 						  IsEnabled="True"
 						  IsVisible="True"/>
-
-			<Grid RowDefinitions="*,auto,*"
-				  Grid.Column="2">
-				<StackPanel Grid.Row="0">
-					<Border IsVisible="{ Binding CurrentAppState.DebugMode }">
-						<StackPanel>
-							<TextBlock Text="Filter by filter values check box"/>
-							<TextBlock Text="If output directory is missing on a recent project, the project won't load"/>
-							<TextBlock Text="Allow changing of output directory while in workspace view"/>
-							<TextBlock Text="(ProjectConfig.ProjectImageWatchers already exists) Monitor input paths for addition of new images"/>
-							<TextBlock Text="Edit Preferences"/>
-							<TextBlock Text="Warning window on project load about missing/fixed input images"/>
-							<TextBlock Text="Preview window on sort destinations"/>
-							<TextBlock Text="Thumbnail viewer, sort by sort values, with colors"/>
-							<TextBlock Text="Progress bar on bottom dock panel for actions"/>
-							<Button Content="Click Me" Command="{ Binding BtnCommand }"/>
-							<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
-							<TextBlock Text="{ Binding CurrentImageIndex }"/>
-							<Button Content="Initiate Sort" Command="{ Binding CheckForImageSortIssues }"/>
-							<Button Content="Overview" Command="{ Binding Dbg_Overview }"/>
-							<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
-									  SelectedItem="{ Binding ImageSortOrder }"
-									  SelectedValueBinding="{ Binding }"
-									  DisplayMemberBinding="{ Binding OptionText }"
-									  x:CompileBindings="False"/>
-						</StackPanel>
-					</Border>
-
-
-				</StackPanel>
-					<paz:ZoomBorder Name="CurrentImageZoomBorder" 
-									Stretch="None" 
-									ZoomSpeed="1.2"
-									Background="SlateBlue" 
-									ClipToBounds="True" 
-									Focusable="True"
-									VerticalAlignment="Stretch"
-									HorizontalAlignment="Stretch"
-									Grid.Row="1"
-									ZIndex="10">
-					<rxui:RoutedViewHost Router="{ Binding CurrentImageRouter }">
-						<rxui:RoutedViewHost.PageTransition>
-							<CrossFade Duration="0:0:0.5"/>
-						</rxui:RoutedViewHost.PageTransition>
-						<rxui:RoutedViewHost.DefaultContent>
-							<TextBlock Text="I should be the current image"/>
-						</rxui:RoutedViewHost.DefaultContent>
-						<rxui:RoutedViewHost.ViewLocator>
-							<app:AppViewLocator />
-						</rxui:RoutedViewHost.ViewLocator>
-					</rxui:RoutedViewHost>
-					</paz:ZoomBorder>
-			</Grid>
-
-			<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
-								 VerticalAlignment="Bottom"
-								 HorizontalAlignment="Center"
-								 Grid.ColumnSpan="5"
-								 ZIndex="5">
-				<rxui:RoutedViewHost.DefaultContent>
-					<Rectangle Fill="Black" Height="100" Width="300"/>
-				</rxui:RoutedViewHost.DefaultContent>
-				<rxui:RoutedViewHost.ViewLocator>
-					<app:AppViewLocator/>
-				</rxui:RoutedViewHost.ViewLocator>
-			</rxui:RoutedViewHost>
 
 			<GridSplitter Grid.Column="3"
 						  Background="Black"
@@ -181,5 +152,42 @@
 				</rxui:RoutedViewHost.ViewLocator>
 			</rxui:RoutedViewHost>
 		</Grid>
+
+		<Expander IsVisible="{ Binding CurrentAppState.DebugMode }"
+				  ExpandDirection="Up"
+				  HorizontalAlignment="Right"
+				  VerticalAlignment="Bottom"
+				  ZIndex="1000">
+			<Expander.Header>
+				<TextBlock Text="WorkspaceDebugControls"/>
+			</Expander.Header>
+			<Expander.Content>
+				<ScrollViewer>
+					<StackPanel>
+						<TextBlock Text="Filter by filter values check box"/>
+						<TextBlock Text="If output directory is missing on a recent project, the project won't load"/>
+						<TextBlock Text="Allow changing of output directory while in workspace view"/>
+						<TextBlock Text="(ProjectConfig.ProjectImageWatchers already exists) Monitor input paths for addition of new images"/>
+						<TextBlock Text="Edit Preferences"/>
+						<TextBlock Text="Warning window on project load about missing/fixed input images"/>
+						<TextBlock Text="Preview window on sort destinations"/>
+						<TextBlock Text="Thumbnail viewer, sort by sort values, with colors"/>
+						<TextBlock Text="Progress bar on bottom dock panel for actions"/>
+						<Button Content="Click Me" Command="{ Binding BtnCommand }"/>
+						<Button Content="Debug: GoToProjectSelection" Command="{ Binding Dbg_GoToProjectSelection }" IsEnabled="True"/>
+						<TextBlock Text="{ Binding CurrentImageIndex, StringFormat='CurrentImageIndex: {0}' }"/>
+						<Button Content="Initiate Sort" Command="{ Binding CheckForImageSortIssues }"/>
+						<Button Content="Overview" Command="{ Binding Dbg_Overview }"/>
+						<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
+								  SelectedItem="{ Binding ImageSortOrder }"
+								  SelectedValueBinding="{ Binding }"
+								  DisplayMemberBinding="{ Binding OptionText }"
+								  x:CompileBindings="False"/>
+					</StackPanel>
+
+				</ScrollViewer>
+			</Expander.Content>
+		</Expander>
+		
 	</Grid>
 </UserControl>

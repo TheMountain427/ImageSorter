@@ -3,9 +3,9 @@
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
 
-namespace ImageSorter.Models;
+namespace ImageSorter.Models.MathConverters;
 
-public static class MathConverters
+public static class MathConverter
 {
     // How to use
     // Add this to the top:
@@ -56,10 +56,16 @@ public static class MathConverters
             return output;
         });
 
-    public static FuncValueConverter<double, double> ThumbnailMakeSmaller { get; } =
+    public static FuncValueConverter<double, double> Smaller80Percent { get; } =
     new FuncValueConverter<double, double>(exp =>
     {
         return exp * 0.8;
+    });
+
+    public static FuncValueConverter<double, double> Smaller60Percent { get; } =
+    new FuncValueConverter<double, double>(exp =>
+    {
+        return exp * 0.6;
     });
 
 }

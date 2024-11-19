@@ -121,7 +121,7 @@
 												  VerticalAlignment="Center"
 												  Data="{ StaticResource MenAtWork }"/>
 										</TextBlock>
-										<TextBlock Text="    ! MEN AT WORK !    " 
+										<TextBlock Text="    ! MEN AT WORK !    "
 												   VerticalAlignment="Center"
 												   FontWeight="ExtraBold"/>
 										<TextBlock>
@@ -146,6 +146,124 @@
 								Width="{ Binding $parent.Bounds.Width }"
 								HorizontalAlignment="Stretch">
 							<StackPanel>
+								<Border BorderBrush="Black"
+										BorderThickness="2"
+										HorizontalAlignment="Stretch">
+									<TextBlock Text="Change Thumbnail Viewer Position"
+											   FontWeight="Bold"
+											   HorizontalAlignment="Center"/>
+								</Border>
+								<Border BorderBrush="Black"
+										BorderThickness="2"
+										HorizontalAlignment="Stretch">
+									<StackPanel>
+										<StackPanel HorizontalAlignment="Center">
+											<TextBlock Text="Horizontal Position"
+													   HorizontalAlignment="Center"/>
+											<StackPanel Orientation="Horizontal"
+														Spacing="5"
+														HorizontalAlignment="Center"
+														VerticalAlignment="Center">
+												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.RightOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailHorizontalSettings.RightOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.RightOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionSelection.AccessibleText }"/>
+											</StackPanel>
+										</StackPanel>
+										<StackPanel HorizontalAlignment="Center">
+											<TextBlock Text="Horizontal Position"
+													   HorizontalAlignment="Center"/>
+											<StackPanel Orientation="Horizontal"
+														Spacing="5"
+														HorizontalAlignment="Center"
+														VerticalAlignment="Center">
+												<CheckBox Content="{ Binding ThumbnailVerticalSettings.TopOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailVerticalSettings.TopOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.TopOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ThumbnailVerticalSettings.CenterOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailVerticalSettings.CenterOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.CenterOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ThumbnailVerticalSettings.BottomOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailVerticalSettings.BottomOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.BottomOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ThumbnailVerticalSettings.StretchOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailVerticalSettings.StretchOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.StretchOption.OptionSelection.AccessibleText }"/>
+											</StackPanel>
+										</StackPanel>
+									</StackPanel>
+								</Border>
+							</StackPanel>
+						</Border>
+						
+						<Border BorderBrush="Black"
+								BorderThickness="2"
+								Width="{ Binding $parent.Bounds.Width }"
+								HorizontalAlignment="Stretch">
+							<StackPanel>
+								<Border BorderBrush="Black"
+										BorderThickness="2"
+										HorizontalAlignment="Stretch">
+									<TextBlock Text="Change Controls Viewer Position"
+											   FontWeight="Bold"
+											   HorizontalAlignment="Center"/>
+								</Border>
+								<Border BorderBrush="Black"
+										BorderThickness="2"
+										HorizontalAlignment="Stretch">
+									<StackPanel>
+										<StackPanel HorizontalAlignment="Center">
+											<TextBlock Text="Horizontal Position"
+													   HorizontalAlignment="Center"/>
+											<StackPanel Orientation="Horizontal"
+														Spacing="5"
+														HorizontalAlignment="Center"
+														VerticalAlignment="Center">
+												<CheckBox Content="{ Binding ControlsHorizontalSettings.RightOption.OptionText }"
+														  IsChecked="{ Binding ControlsHorizontalSettings.RightOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.RightOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsHorizontalSettings.CenterOption.OptionText }"
+														  IsChecked="{ Binding ControlsHorizontalSettings.CenterOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.CenterOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsHorizontalSettings.LeftOption.OptionText }"
+														  IsChecked="{ Binding ControlsHorizontalSettings.LeftOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.LeftOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsHorizontalSettings.StretchOption.OptionText }"
+														  IsChecked="{ Binding ControlsHorizontalSettings.StretchOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.StretchOption.OptionSelection.AccessibleText }"/>
+											</StackPanel>
+										</StackPanel>
+										<StackPanel HorizontalAlignment="Center">
+											<TextBlock Text="Horizontal Position"
+													   HorizontalAlignment="Center"/>
+											<StackPanel Orientation="Horizontal"
+														Spacing="5"
+														HorizontalAlignment="Center"
+														VerticalAlignment="Center">
+												<CheckBox Content="{ Binding ControlsVerticalSettings.BottomOption.OptionText }"
+														  IsChecked="{ Binding ControlsVerticalSettings.BottomOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.BottomOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsVerticalSettings.CenterOption.OptionText }"
+														  IsChecked="{ Binding ControlsVerticalSettings.CenterOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.CenterOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsVerticalSettings.TopOption.OptionText }"
+														  IsChecked="{ Binding ControlsVerticalSettings.TopOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.TopOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsVerticalSettings.StretchOption.OptionText }"
+														  IsChecked="{ Binding ControlsVerticalSettings.StretchOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.StretchOption.OptionSelection.AccessibleText }"/>
+											</StackPanel>
+										</StackPanel>
+									</StackPanel>
+								</Border>
 							</StackPanel>
 						</Border>
 

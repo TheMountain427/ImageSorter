@@ -35,6 +35,11 @@ public partial class WorkspaceView : ReactiveUserControl<WorkspaceViewModel>
         }
     }
 
+    private void ZoomBorder_ZoomChanged(object sender, ZoomChangedEventArgs e)
+    {
+        Debug.WriteLine($"[ZoomChanged] {e.ZoomX} {e.ZoomY} {e.OffsetX} {e.OffsetY}");
+    }
+
     // Focus the zoom border when mouse goes over it
     // Not sure about this one, might be annoying if trying to type in a text box
     //private void FocusCurrentImageZoomBorder(object? sender, PointerEventArgs e)
@@ -59,8 +64,13 @@ public partial class WorkspaceView : ReactiveUserControl<WorkspaceViewModel>
         if (_zoomBorder is not null)
         {
             _zoomBorder.KeyDown += CurrentImageZoomBorder_KeyDown;
+
             //_zoomBorder.PointerEntered += FocusCurrentImageZoomBorder;
 
+            if (_zoomBorder.DataContext is WorkspaceViewModel vm && vm.CurrentAppState.DebugMode)
+            {
+                _zoomBorder.ZoomChanged += ZoomBorder_ZoomChanged;
+            }
         }
 
 
