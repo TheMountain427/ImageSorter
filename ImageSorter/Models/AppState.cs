@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Layout;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,7 +106,35 @@ namespace ImageSorter.Models
             get { return _windowHeight; }
             set { this.RaiseAndSetIfChanged(ref _windowHeight, value); }
         }
-        
+
+        private HorizontalAlignment _thumbnailHorizontalAlign = HorizontalAlignment.Center;
+        public HorizontalAlignment ThumbnailHorizontalAlign
+        {
+            get { return _thumbnailHorizontalAlign; }
+            set { this.RaiseAndSetIfChanged(ref _thumbnailHorizontalAlign, value); }
+        }
+
+        private VerticalAlignment _thumbnailVerticalAlign = VerticalAlignment.Top;
+        public VerticalAlignment ThumbnailVerticalAlign
+        {
+            get { return _thumbnailVerticalAlign; }
+            set { this.RaiseAndSetIfChanged(ref _thumbnailVerticalAlign, value); }
+        }
+
+        private HorizontalAlignment _controlsHorizontalAlign = HorizontalAlignment.Center;
+        public HorizontalAlignment ControlsHorizontalAlign
+        {
+            get { return _controlsHorizontalAlign; }
+            set { this.RaiseAndSetIfChanged(ref _controlsHorizontalAlign, value); }
+        }
+
+        private VerticalAlignment _controlsVerticalAlign = VerticalAlignment.Bottom;
+        public VerticalAlignment ControlsVerticalAlign
+        {
+            get { return _controlsVerticalAlign; }
+            set { this.RaiseAndSetIfChanged(ref _controlsVerticalAlign, value); }
+        }
+
         [JsonIgnore]
         public bool JsonWriterEnabled { get; private set; } = false;
 

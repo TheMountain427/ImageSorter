@@ -53,6 +53,14 @@ public class WorkspaceControlsViewModel : ViewModelBase
     
     public ImgOrderOptions ImageOrderOptions { get; set; }
 
+    public HorizontalToggles ThumbnailHorizontalSettings { get; set; } = new HorizontalToggles();
+
+    public VerticalToggles ThumbnailVerticalSettings { get; set; } = new VerticalToggles();
+
+    public HorizontalToggles ControlsHorizontalSettings { get; set; } = new HorizontalToggles();
+
+    public VerticalToggles ControlsVerticalSettings { get; set; } = new VerticalToggles();
+
     private ImgOrderOption _imageSortOrder;
     public ImgOrderOption ImageSortOrder
     {
@@ -96,5 +104,18 @@ public class WorkspaceControlsViewModel : ViewModelBase
 
         this.OpenAdditonalsViewThing = ReactiveCommand.Create(() => AdvancedSettingsOpen = !AdvancedSettingsOpen);
         this.DebugCommand = ReactiveCommand.Create(() => AdvancedSettingsOpen = !AdvancedSettingsOpen);
+
+       
+        this.ThumbnailHorizontalSettings.SetSelectedOption(this.CurrentAppState.ThumbnailHorizontalAlign);
+        this.ThumbnailHorizontalSettings.WhenAnyValue(x => x.SelectedOption).Subscribe(_ => this.CurrentAppState.ThumbnailHorizontalAlign = _);
+       
+        this.ThumbnailVerticalSettings.SetSelectedOption(this.CurrentAppState.ThumbnailVerticalAlign);
+        this.ThumbnailVerticalSettings.WhenAnyValue(x => x.SelectedOption).Subscribe(_ => this.CurrentAppState.ThumbnailVerticalAlign = _);
+       
+        this.ControlsHorizontalSettings.SetSelectedOption(this.CurrentAppState.ControlsHorizontalAlign);
+        this.ControlsHorizontalSettings.WhenAnyValue(x => x.SelectedOption).Subscribe(_ => this.CurrentAppState.ControlsHorizontalAlign = _);
+       
+        this.ControlsVerticalSettings.SetSelectedOption(this.CurrentAppState.ControlsVerticalAlign);
+        this.ControlsVerticalSettings.WhenAnyValue(x => x.SelectedOption).Subscribe(_ => this.CurrentAppState.ControlsVerticalAlign = _);
     }
 }

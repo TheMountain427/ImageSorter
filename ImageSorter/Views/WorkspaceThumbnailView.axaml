@@ -19,7 +19,8 @@
 			<StackPanel>
 				<Border BorderBrush="Black"
 						BorderThickness="2"
-						CornerRadius="2">
+						CornerRadius="2"
+						Width="480">
 					<Grid ColumnDefinitions="*,*,*,*,*">
 
 						<Border Grid.Column="0"

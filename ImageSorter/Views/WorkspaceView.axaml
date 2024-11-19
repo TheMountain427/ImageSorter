@@ -33,6 +33,32 @@
 				</rxui:RoutedViewHost.ViewLocator>
 			</rxui:RoutedViewHost>
 		</paz:ZoomBorder>
+
+
+		<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
+							 VerticalAlignment="{ Binding CurrentAppState.ControlsVerticalAlign }"
+							 HorizontalAlignment="{ Binding CurrentAppState.ControlsHorizontalAlign }"
+							 ZIndex="5">
+			<rxui:RoutedViewHost.DefaultContent>
+				<Rectangle Fill="Black" Height="100" Width="300"/>
+			</rxui:RoutedViewHost.DefaultContent>
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:AppViewLocator/>
+			</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
+
+
+		<rxui:RoutedViewHost Router="{ Binding ThumbnailRouter }"
+							 VerticalAlignment="{ Binding CurrentAppState.ThumbnailVerticalAlign }"
+							 HorizontalAlignment="{ Binding CurrentAppState.ThumbnailHorizontalAlign }"
+							 ZIndex="5">
+			<rxui:RoutedViewHost.DefaultContent>
+				<Rectangle Fill="Black" Height="100" Width="300"/>
+			</rxui:RoutedViewHost.DefaultContent>
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:AppViewLocator/>
+			</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
 		
 		<Grid IsEnabled="{ Binding !CurrentAppState.IsWorkSpaceOverlayEnabled }">
 			<Grid.ColumnDefinitions>
@@ -42,19 +68,6 @@
 				<ColumnDefinition Width="2"/>
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-
-			<rxui:RoutedViewHost Router="{ Binding ThumbnailRouter }"
-								 VerticalAlignment="Top"
-								 HorizontalAlignment="Center"
-								 Grid.ColumnSpan="5"
-								 ZIndex="5">
-				<rxui:RoutedViewHost.DefaultContent>
-					<Rectangle Fill="Black" Height="100" Width="300"/>
-				</rxui:RoutedViewHost.DefaultContent>
-				<rxui:RoutedViewHost.ViewLocator>
-					<app:AppViewLocator/>
-				</rxui:RoutedViewHost.ViewLocator>
-			</rxui:RoutedViewHost>
 
 			<ScrollViewer Name="Workspace_Alpha_RefScrollView"
 						  Grid.Column="0">
@@ -84,19 +97,6 @@
 						  ResizeDirection="Columns"
 						  IsEnabled="True"
 						  IsVisible="True"/>
-
-			<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
-								 VerticalAlignment="Bottom"
-								 HorizontalAlignment="Center"
-								 Grid.ColumnSpan="5"
-								 ZIndex="5">
-				<rxui:RoutedViewHost.DefaultContent>
-					<Rectangle Fill="Black" Height="100" Width="300"/>
-				</rxui:RoutedViewHost.DefaultContent>
-				<rxui:RoutedViewHost.ViewLocator>
-					<app:AppViewLocator/>
-				</rxui:RoutedViewHost.ViewLocator>
-			</rxui:RoutedViewHost>
 
 			<GridSplitter Grid.Column="3"
 						  Background="Black"
