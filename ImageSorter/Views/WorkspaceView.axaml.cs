@@ -1,22 +1,21 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.PanAndZoom;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ImageSorter.ViewModels;
 using ReactiveUI;
+using System.Diagnostics;
 
 namespace ImageSorter.Views;
 
 public partial class WorkspaceView : ReactiveUserControl<WorkspaceViewModel>
 {
-    // This doesn't work since we aren't using : Window and InitializeComponent()
-    // because we are using Reactive and stuff
-    // Normally this would auto bind to the xaml control with the same name
-    // Have to figure out how to do this with Reactive I guess
     private readonly ZoomBorder? _zoomBorder;
 
-    private void ZoomBorder_KeyDown(object? sender, KeyEventArgs e)
+    private void CurrentImageZoomBorder_KeyDown(object? sender, KeyEventArgs e)
     {
         switch (e.Key)
         {
@@ -36,15 +35,35 @@ public partial class WorkspaceView : ReactiveUserControl<WorkspaceViewModel>
         }
     }
 
+    // Focus the zoom border when mouse goes over it
+    // Not sure about this one, might be annoying if trying to type in a text box
+    //private void FocusCurrentImageZoomBorder(object? sender, PointerEventArgs e)
+    //{
+    //    if (sender is ZoomBorder zm)
+    //    {
+    //        zm.Focus();
+    //    }
+    //}
+
     public WorkspaceView()
     {
         this.WhenActivated(disposables => { });
         AvaloniaXamlLoader.Load(this);
 
-        _zoomBorder = this.Find<ZoomBorder>("ZoomBorder");
-        if (_zoomBorder != null)
+
+        // Requires a bit of a hack on MainWindow code behind
+        // This is because I have made it so background clicks exit focus of things
+        // That, however, makes it so this ZoomBorder cannot be focused
+        _zoomBorder = this.Find<ZoomBorder>("CurrentImageZoomBorder");
+
+        if (_zoomBorder is not null)
         {
-            _zoomBorder.KeyDown += ZoomBorder_KeyDown;
+            _zoomBorder.KeyDown += CurrentImageZoomBorder_KeyDown;
+            //_zoomBorder.PointerEntered += FocusCurrentImageZoomBorder;
+
         }
+
+
     }
+
 }

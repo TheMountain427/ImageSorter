@@ -19,6 +19,7 @@ using System.Diagnostics;
 using static ImageSorter.Models.Helpers;
 using Avalonia.Media.Imaging;
 using System.IO;
+using Avalonia.Input;
 
 namespace ImageSorter.ViewModels;
 
@@ -34,7 +35,7 @@ public class WorkspaceViewModel : ViewModelBase
     public RoutingState CurrentImageRouter { get; } = new RoutingState();
 
     public RoutingState WorkspaceControlsRouter { get; } = new RoutingState();
-    
+
     private List<ImageDetails> _sortedImageDetails;
     public List<ImageDetails> SortedImageDetails
     {
@@ -406,7 +407,7 @@ public class WorkspaceViewModel : ViewModelBase
                                                              ChangeSortOrder: ReactiveCommand.Create<ImgOrderOption>(_ => this.ImageSortOrder = _),
                                                              ImageOrderOptions: this.ImageOrderOptions,
                                                              ImageSortOrder: this.ImageSortOrder);
-                
+
         var overlayVM = new OverlayViewModel(_aps, ViewModelToDisplay: sortPreviewVM,
                                                    CloseOverlay: CloseOverlayView,
                                                    AllowClickOff: true);
@@ -547,7 +548,7 @@ public class WorkspaceViewModel : ViewModelBase
     public void BtnCommand()
     {
     }
-    
+
     private void ShiftCurrentIndexByValue(int shift)
     {
         var potentialIndex = this.CurrentImageIndex + shift;
@@ -686,8 +687,12 @@ public class WorkspaceViewModel : ViewModelBase
         }
     }
 
-    public WorkspaceViewModel(IScreen screen, RoutingState router, AppState CurrentAppState, ProjectConfig projectConfig) : base (CurrentAppState)
+
+    
+    public WorkspaceViewModel(IScreen screen, RoutingState router, AppState CurrentAppState, ProjectConfig projectConfig) : base(CurrentAppState)
     {
+        
+
         _aps = this.CurrentAppState;
         this.MainRouter = router;
         this.HostScreen = screen;
@@ -805,13 +810,13 @@ public class WorkspaceViewModel : ViewModelBase
         SortImageDetailsAsyncCommand = ReactiveCommand.CreateFromObservable<(double Counter, double ImageCount), Unit>(tuple => SortImageDetails(tuple.Counter, tuple.ImageCount));
 
         this.WhenAnyValue(x => x.ProjectConfig.ReferenceImages).Subscribe(_ => BtnCommand());
-        
+
         var thumbnailVM = new WorkspaceThumbnailViewModel(_aps, CurrentImageIndex: this.CurrentImageIndex,
                                                                 SortedImageDetails: this.SortedImageDetails,
                                                                 CurrentImageIndexObservable: this.WhenAnyValue(x => x.CurrentImageIndex),
                                                                 SortedImageDetialsObservable: this.WhenAnyValue(x => x.SortedImageDetails),
                                                                 ImageShiftCommand: ReactiveCommand.Create<int>(_ => ShiftCurrentIndexByValue(_)));
-        
+
         thumbnailVM.Activator.Activate();
         ThumbnailRouter.Navigate.Execute(thumbnailVM);
     }

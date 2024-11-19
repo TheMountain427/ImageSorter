@@ -18,7 +18,9 @@
 		  PointerPressed="Background_PointerPressed"
 		  Focusable="True"
 		  Background="#00000000">
-		<rxui:RoutedViewHost Grid.Row="0" Router="{ Binding Router }">
+		<rxui:RoutedViewHost Name="MainRoutedViewHost"
+						     Grid.Row="0" 
+							 Router="{ Binding Router }">
 
 			<!--Change the animation for page transitions-->
 			<!--https://reference.avaloniaui.net/api/Avalonia.Animation/-->

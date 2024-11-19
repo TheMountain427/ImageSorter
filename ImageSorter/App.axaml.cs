@@ -33,6 +33,7 @@ public partial class App : Application
             TopLevel = TopLevel.GetTopLevel(desktop.MainWindow);
             // Changed formated here so that Top Level is loaded before the view models
             // This way we can access StorageProvider on ViewModel load
+            // This also lets us access keydown events from anywhere
             desktop.MainWindow.DataContext = new MainWindowViewModel();
 
             // Allow access to ApplicationLiftetime for App Exit event

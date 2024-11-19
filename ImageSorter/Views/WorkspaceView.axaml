@@ -90,15 +90,16 @@
 
 
 				</StackPanel>
-				<Panel Grid.Row="1">
-					<paz:ZoomBorder Name="ZoomBorder" 
+					<paz:ZoomBorder Name="CurrentImageZoomBorder" 
 									Stretch="None" 
 									ZoomSpeed="1.2"
 									Background="SlateBlue" 
 									ClipToBounds="True" 
 									Focusable="True"
 									VerticalAlignment="Stretch"
-									HorizontalAlignment="Stretch">
+									HorizontalAlignment="Stretch"
+									Grid.Row="1"
+									ZIndex="10">
 					<rxui:RoutedViewHost Router="{ Binding CurrentImageRouter }">
 						<rxui:RoutedViewHost.PageTransition>
 							<CrossFade Duration="0:0:0.5"/>
@@ -111,7 +112,6 @@
 						</rxui:RoutedViewHost.ViewLocator>
 					</rxui:RoutedViewHost>
 					</paz:ZoomBorder>
-				</Panel>
 			</Grid>
 
 			<rxui:RoutedViewHost Router="{ Binding WorkspaceControlsRouter }"
