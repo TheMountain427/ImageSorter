@@ -55,9 +55,9 @@ public class WorkspaceViewModel : ViewModelBase
 
     public RoutingState ThumbnailRouter { get; } = new RoutingState();
 
-    public List<ImageDetails> AlphaReferenceImages { get; set; }
+    public List<ImageDetails> AlphaReferenceImages { get; set; } = new List<ImageDetails>();
 
-    public List<ImageDetails> BetaReferenceImages { get; set; }
+    public List<ImageDetails> BetaReferenceImages { get; set; } = new List<ImageDetails>();
 
     public WorkspaceReferenceImageViewModel AlphaReferenceViewModel { get; }
 
@@ -205,14 +205,37 @@ public class WorkspaceViewModel : ViewModelBase
 
     private void ManageReferenceSplit(object? sender, EventArgs e)
     {
-        // Make alpha have the greater number of refs if the total reference count is odd
-        int alphaCount = this.ProjectConfig.ReferenceImages.Count / 2 + (this.ProjectConfig.ReferenceImages.Count % 2);
+        switch (this.CurrentAppState.ReferenceSplitSetting)
+        {
+            case ReferenceSplit.Split:
+                {
+                    // Make alpha have the greater number of refs if the total reference count is odd
+                    int alphaCount = this.ProjectConfig.ReferenceImages.Count / 2 + (this.ProjectConfig.ReferenceImages.Count % 2);
 
-        this.AlphaReferenceImages = this.ProjectConfig.ReferenceImages.Take(alphaCount).ToList();
-        this.BetaReferenceImages = this.ProjectConfig.ReferenceImages.Skip(alphaCount).ToList();
+                    this.AlphaReferenceImages = this.ProjectConfig.ReferenceImages.Take(alphaCount).ToList();
+                    this.BetaReferenceImages = this.ProjectConfig.ReferenceImages.Skip(alphaCount).ToList();
+                }
+                break;
+            case ReferenceSplit.Alpha:
+                {
+                    // All on Alpha reference view
+                    this.AlphaReferenceImages = this.ProjectConfig.ReferenceImages.ToList();
+                    this.BetaReferenceImages = new List<ImageDetails>();
+                }
+                break;
+            case ReferenceSplit.Beta:
+                {
+                    // All on Beta reference view
+                    this.AlphaReferenceImages = new List<ImageDetails>();
+                    this.BetaReferenceImages = this.ProjectConfig.ReferenceImages.ToList();
+                }
+                break;
+            default:
+                break;
+        }
 
-        this.AlphaReferenceViewModel.UpdateReferenceCollection(this.AlphaReferenceImages);
-        this.BetaReferenceViewModel.UpdateReferenceCollection(this.BetaReferenceImages);
+        this.AlphaReferenceViewModel?.UpdateReferenceCollection(this.AlphaReferenceImages);
+        this.BetaReferenceViewModel?.UpdateReferenceCollection(this.BetaReferenceImages);
     }
 
 
@@ -688,10 +711,10 @@ public class WorkspaceViewModel : ViewModelBase
     }
 
 
-    
+
     public WorkspaceViewModel(IScreen screen, RoutingState router, AppState CurrentAppState, ProjectConfig projectConfig) : base(CurrentAppState)
     {
-        
+
 
         _aps = this.CurrentAppState;
         this.MainRouter = router;
@@ -778,11 +801,7 @@ public class WorkspaceViewModel : ViewModelBase
             }
         }
 
-        // Make alpha have the greater number of refs if the total reference count is odd
-        int alphaCount = this.ProjectConfig.ReferenceImages.Count / 2 + (this.ProjectConfig.ReferenceImages.Count % 2);
-
-        this.AlphaReferenceImages = this.ProjectConfig.ReferenceImages.Take(alphaCount).ToList();
-        this.BetaReferenceImages = this.ProjectConfig.ReferenceImages.Skip(alphaCount).ToList();
+        
 
         // ************************************************************************************
         // I also need to dispose of these old ref view models, they chill in memory too
@@ -791,6 +810,8 @@ public class WorkspaceViewModel : ViewModelBase
 
         // Have to save the view models cause I need to notify the VM's that the collection changes
         // Other option is to just make a new VM every time..? Seems smelly to do that
+        this.WhenAnyValue(x => x.CurrentAppState.ReferenceSplitSetting).Subscribe(_ => ManageReferenceSplit(this, EventArgs.Empty));
+
         this.AlphaReferenceViewModel = new WorkspaceReferenceImageViewModel(_aps, this.ProjectConfig, AlphaReferenceImages, ReferenceViewIdentifier.Alpha);
         this.BetaReferenceViewModel = new WorkspaceReferenceImageViewModel(_aps, this.ProjectConfig, BetaReferenceImages, ReferenceViewIdentifier.Beta);
 

@@ -121,6 +121,7 @@ public class MainWindowViewModel : ReactiveObject, IScreen
         CurrentAppState.WhenAnyValue(x => x.ThumbnailVerticalAlign).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
         CurrentAppState.WhenAnyValue(x => x.ControlsHorizontalAlign).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
         CurrentAppState.WhenAnyValue(x => x.ControlsVerticalAlign).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
+        CurrentAppState.WhenAnyValue(x => x.ReferenceSplitSetting).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
     }
 
     public MainWindowViewModel()

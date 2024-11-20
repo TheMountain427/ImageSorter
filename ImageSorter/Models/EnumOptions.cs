@@ -6,6 +6,7 @@ using static ImageSorter.Models.Enums;
 
 namespace ImageSorter.Models;
 
+// I don't like these, using AccessibleObjects like SortConfirmations and HorizontalToggles seems better
 public class ImgOrderOption
 {
     public string OptionText { get; }

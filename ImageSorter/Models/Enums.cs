@@ -23,4 +23,11 @@ public static class Enums
         Alpha = 0,
         Beta = 1
     }
+
+    public enum ReferenceSplit
+    {
+        Split = 0,
+        Alpha = 1,
+        Beta = 2
+    }
 }

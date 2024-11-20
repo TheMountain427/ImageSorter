@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:ImageSorter.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="200"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
              x:Class="ImageSorter.Views.WorkspaceControlsView"
 			 x:DataType="vm:WorkspaceControlsViewModel">
 
@@ -203,7 +203,7 @@
 								</Border>
 							</StackPanel>
 						</Border>
-						
+
 						<Border BorderBrush="Black"
 								BorderThickness="2"
 								Width="{ Binding $parent.Bounds.Width }"
@@ -267,6 +267,37 @@
 							</StackPanel>
 						</Border>
 
+						<Border BorderBrush="Black"
+								BorderThickness="2"
+								HorizontalAlignment="Stretch">
+							<StackPanel>
+								<Border BorderBrush="Black"
+										BorderThickness="2"
+										HorizontalAlignment="Stretch">
+									<TextBlock Text="Reference Image Placement"
+											   FontWeight="Bold"
+											   HorizontalAlignment="Center"/>
+								</Border>
+								<Border BorderBrush="Black"
+										BorderThickness="2"
+										HorizontalAlignment="Stretch">
+									<StackPanel Orientation="Horizontal"
+												Spacing="5"
+												HorizontalAlignment="Center"
+												VerticalAlignment="Center">
+										<CheckBox Content="{ Binding ReferenceSplitSettings.SplitOption.OptionText }"
+												  IsChecked="{ Binding ReferenceSplitSettings.SplitOption.OptionSelection.BooleanValue }"
+												  ToolTip.Tip="{ Binding ReferenceSplitSettings.SplitOption.OptionSelection.AccessibleText }"/>
+										<CheckBox Content="{ Binding ReferenceSplitSettings.AlphaOption.OptionText }"
+												  IsChecked="{ Binding ReferenceSplitSettings.AlphaOption.OptionSelection.BooleanValue }"
+												  ToolTip.Tip="{ Binding ReferenceSplitSettings.AlphaOption.OptionSelection.AccessibleText }"/>
+										<CheckBox Content="{ Binding ReferenceSplitSettings.BetaOption.OptionText }"
+												  IsChecked="{ Binding ReferenceSplitSettings.BetaOption.OptionSelection.BooleanValue }"
+												  ToolTip.Tip="{ Binding ReferenceSplitSettings.BetaOption.OptionSelection.AccessibleText }"/>
+									</StackPanel>
+								</Border>
+							</StackPanel>
+						</Border>
 
 						<Button Content="Initiate Sort"
 								Command="{ Binding BeginSortCommand }"/>

@@ -61,6 +61,8 @@ public class WorkspaceControlsViewModel : ViewModelBase
 
     public VerticalToggles ControlsVerticalSettings { get; set; } = new VerticalToggles();
 
+    public ReferenceSplitToggles ReferenceSplitSettings { get; set; } = new ReferenceSplitToggles();
+
     private ImgOrderOption _imageSortOrder;
     public ImgOrderOption ImageSortOrder
     {
@@ -117,5 +119,8 @@ public class WorkspaceControlsViewModel : ViewModelBase
        
         this.ControlsVerticalSettings.SetSelectedOption(this.CurrentAppState.ControlsVerticalAlign);
         this.ControlsVerticalSettings.WhenAnyValue(x => x.SelectedOption).Subscribe(_ => this.CurrentAppState.ControlsVerticalAlign = _);
+
+        this.ReferenceSplitSettings.SetSelectedOption(this.CurrentAppState.ReferenceSplitSetting);
+        this.ReferenceSplitSettings.WhenAnyValue(x => x.SelectedOption).Subscribe(_ => this.CurrentAppState.ReferenceSplitSetting = _);
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using static ImageSorter.Models.Enums;
 
 namespace ImageSorter.Models
 {
@@ -133,6 +134,13 @@ namespace ImageSorter.Models
         {
             get { return _controlsVerticalAlign; }
             set { this.RaiseAndSetIfChanged(ref _controlsVerticalAlign, value); }
+        }
+
+        private ReferenceSplit _referenceSplitSetting = ReferenceSplit.Split;
+        public ReferenceSplit ReferenceSplitSetting
+        {
+            get { return _referenceSplitSetting; }
+            set { this.RaiseAndSetIfChanged(ref _referenceSplitSetting, value); }
         }
 
         [JsonIgnore]

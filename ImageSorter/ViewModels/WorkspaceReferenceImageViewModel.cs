@@ -175,6 +175,7 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
         }
     }
 
+    // Should probably change this to reactive once ProjectConfig.ReferenceImages is changed to reactive
     public void UpdateReferenceCollection(IEnumerable<ImageDetails> referenceImages)
     {
         // ObservableCollections suck and I am lazy
