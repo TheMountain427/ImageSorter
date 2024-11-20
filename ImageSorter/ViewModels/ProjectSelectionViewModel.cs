@@ -309,11 +309,6 @@ public class ProjectSelectionViewModel : ViewModelBase
             ValidateLoadedProjectConfig(projectConfig);
         }
 
-        // Set up jsonWriter to write projectconfig to a json when it changes
-        // hopefully carries over into the workspace
-        var jsonWriter = new ProjectConfigJsonWriter();
-        projectConfig.OnProjectConfigChange += jsonWriter.WriteProjectConfigState;
-
 
         // Enable Json Writer for project config
         // should also trigger a Json write

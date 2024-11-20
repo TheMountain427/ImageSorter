@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static ImageSorter.Models.Enums;
@@ -19,135 +20,90 @@ namespace ImageSorter.Models
     public class ProjectConfig : ReactiveObject
     {
         private string _projectName;
-        private DateTime _lastModifiedTime = DateTime.UtcNow;
+        public string ProjectName
+        {
+            get { return _projectName; }
+            set { this.RaiseAndSetIfChanged(ref _projectName, value); }
+        }
+
         private string _projectConfigPath;
+        public string ProjectConfigPath
+        {
+            get { return _projectConfigPath; }
+            set { this.RaiseAndSetIfChanged(ref _projectConfigPath, value); }
+        }
+
         private List<string> _imgDirectoryPaths;
+        public List<string> ImgDirectoryPaths
+        {
+            get { return _imgDirectoryPaths; }
+            set { this.RaiseAndSetIfChanged(ref _imgDirectoryPaths, value); }
+        }
+
         private List<string> _outputDirectoryPath;
+        public List<string> OutputDirectoryPath
+        {
+            get { return _outputDirectoryPath; }
+            set { this.RaiseAndSetIfChanged(ref _outputDirectoryPath, value); }
+        }
+
         private ObservableCollection<string> _filterValues = new ObservableCollection<string> { "Unsorted" };
+        public ObservableCollection<string> FilterValues
+        {
+            get { return _filterValues; }
+            set { this.RaiseAndSetIfChanged(ref _filterValues, value); }
+        }
+
         private ImageHashSet _inputImages = new ImageHashSet();
+        public ImageHashSet InputImages
+        {
+            get { return _inputImages; }
+            set { this.RaiseAndSetIfChanged(ref _inputImages, value); }
+        }
+
         private ObservableCollection<ImageDetails> _referenceImages = new ObservableCollection<ImageDetails>();
+        public ObservableCollection<ImageDetails> ReferenceImages
+        {
+            get { return _referenceImages; }
+            set { this.RaiseAndSetIfChanged(ref _referenceImages, value); }
+        }
+
         private ImgOrder _imageSortOrder;
+        public ImgOrder ImageSortOrder
+        {
+            get { return _imageSortOrder; }
+            set { this.RaiseAndSetIfChanged(ref _imageSortOrder, value); }
+        }
+
         private int _currentImageIndex;
+        public int CurrentImageIndex
+        {
+            get { return _currentImageIndex; }
+            set { this.RaiseAndSetIfChanged(ref _currentImageIndex, value); }
+        }
+
+        private DateTime _lastModifiedTime = DateTime.UtcNow;
+        public DateTime LastModifiedTime
+        {
+            get { return _lastModifiedTime; }
+            set { this.RaiseAndSetIfChanged(ref _lastModifiedTime, value); }
+        }
+
 
         [JsonIgnore]
         public bool JsonWriterEnabled { get; private set; } = false;
+
         [JsonIgnore]
         public List<ImageFileWatcher> ProjectImageWatchers { get; set; }
-        [JsonInclude]
-        public string ProjectName
-        {
-            get => _projectName;
-            set
-            {
-                _projectName = value;
-                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
-                this.SetLastModifiedTime();
-            }
-        }
-        [JsonInclude]
-        public string ProjectConfigPath
-        {
-            get => _projectConfigPath;
-            set
-            {
-                _projectConfigPath = value;
-                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
-                this.SetLastModifiedTime();
-            }
-        }
-        [JsonInclude]
-        public List<string> ImgDirectoryPaths
-        {
-            get => _imgDirectoryPaths;
-            set
-            {
-                _imgDirectoryPaths = value;
-                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
-                this.SetLastModifiedTime();
-            }
-        }
-        [JsonInclude]
-        public List<string> OutputDirectoryPath
-        {
-            get => _outputDirectoryPath;
-            set
-            {
-                _outputDirectoryPath = value;
-                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
-                this.SetLastModifiedTime();
-            }
-        }
-        [JsonInclude]
-        public ObservableCollection<string> FilterValues
-        {
-            get => _filterValues;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _filterValues, value);
-                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
-                this.SetLastModifiedTime();
-            }
-        }
-        [JsonInclude]
-        public ImageHashSet InputImages
-        {
-            get => _inputImages;
-            set
-            {
-                _inputImages = value;
-                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
-                this.SetLastModifiedTime();
-            }
-        }
-        [JsonInclude]
-        public ObservableCollection<ImageDetails> ReferenceImages
-        {
-            get => _referenceImages;
-            set
-            {
-                _referenceImages = value;
-                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
-                this.SetLastModifiedTime();
-            }
-        }
-        [JsonInclude]
-        public ImgOrder ImageSortOrder
-        {
-            get => _imageSortOrder;
-            set
-            {
-                _imageSortOrder = value;
-                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
-                this.SetLastModifiedTime();
-            }
-        }
-        [JsonInclude]
-        public int CurrentImageIndex
-        {
-            get => _currentImageIndex;
-            set
-            {
-                _currentImageIndex = value;
-                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
-                this.SetLastModifiedTime();
-            }
-        }
-        [JsonInclude]
-        public DateTime LastModifiedTime
-        {
-            get => _lastModifiedTime;
-            protected set
-            {
-                _lastModifiedTime = value;
-                _onProjectConfigChange?.Invoke(this, EventArgs.Empty);
-            }
-        }
+
+        [JsonIgnore]
+        private JsonSerializerOptions JsonOptions = new JsonSerializerOptions { WriteIndented = true, IgnoreReadOnlyProperties = true };
 
         private EventHandler _onProjectConfigChange;
         public event EventHandler OnProjectConfigChange
         {
             add { _onProjectConfigChange += value; }
-            remove {  _onProjectConfigChange -= value; }
+            remove { _onProjectConfigChange -= value; }
         }
 
         public void SetLastModifiedTime()
@@ -166,6 +122,8 @@ namespace ImageSorter.Models
             this.JsonWriterEnabled = value;
         }
 
+
+        // Need to test image watcher, this is probably unneeded
         public void InputImageChangeEvent(object sender, EventArgs e)
         {
             // Forwarding ImageWatcher events to ImageHashSet
@@ -200,6 +158,18 @@ namespace ImageSorter.Models
             this.SetLastModifiedTime();
         }
 
-        
+        public void WriteProjectConfigState(ProjectConfig ProjectConfig)
+        {
+            if (ProjectConfig.JsonWriterEnabled)
+            {
+                File.WriteAllText(ProjectConfig.ProjectConfigPath, JsonSerializer.Serialize(ProjectConfig, this.JsonOptions));
+            }
+        }
+
+
+        public ProjectConfig()
+        {
+            this.Changed.Subscribe(_ => WriteProjectConfigState(this));
+        }
     }
 }
