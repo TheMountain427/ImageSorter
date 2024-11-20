@@ -10,7 +10,7 @@ namespace ImageSorter.Models
 {
     internal class ProjectConfigJsonWriter
     {
-        private JsonSerializerOptions JsonOptions = new JsonSerializerOptions { WriteIndented = true };
+        private JsonSerializerOptions JsonOptions = new JsonSerializerOptions { WriteIndented = true,  IgnoreReadOnlyProperties = true, };
 
         // Event handler for writing app state to json on change
         public void WriteProjectConfigState(object? sender, EventArgs e)

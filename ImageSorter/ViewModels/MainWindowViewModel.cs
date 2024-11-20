@@ -78,10 +78,6 @@ public class MainWindowViewModel : ReactiveObject, IScreen
 
         // Enable AppState write to file
         currentAppState.SetJsonWriterState(true);
-
-        // Set up AppStateJsonWriter to write app state to json on changes
-        // That was a useful comment I swear
-        var jsonWriter = new AppStateJsonWriter();
         currentAppState.CurrentAppDirectory = currentDirectory;
 
         // Check ProjectConfigs exists
@@ -97,31 +93,7 @@ public class MainWindowViewModel : ReactiveObject, IScreen
             currentAppState.ProjectConfigsPath = projectConfigsPath;
         }
 
-
-        
-        SetupAppStateSubscriptions(currentAppState,jsonWriter);
-        CurrentAppState = currentAppState;
-    }
-
-    private void SetupAppStateSubscriptions(AppState CurrentAppState, AppStateJsonWriter jsonWriter)
-    {
-        CurrentAppState.WhenAnyValue(x => x.AppStateFileName).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.ProjectConfigDirectory).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.CurrentAppDirectory).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.AppStateFilePath).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.ProjectConfigsPath).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.CurrentProjectName).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.CurrentProjectConfigPath).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.LastReferenceImagePath).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.RecentProjectNames).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.FilterSidePanelOpen).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.WindowHeight).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.WindowWidth).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.ThumbnailHorizontalAlign).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.ThumbnailVerticalAlign).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.ControlsHorizontalAlign).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.ControlsVerticalAlign).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
-        CurrentAppState.WhenAnyValue(x => x.ReferenceSplitSetting).Subscribe(_ => jsonWriter.WriteAppState(CurrentAppState));
+        this.CurrentAppState = currentAppState;
     }
 
     public MainWindowViewModel()

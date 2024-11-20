@@ -33,7 +33,7 @@ namespace ImageSorter.Models
         public bool JsonWriterEnabled { get; private set; } = false;
         [JsonIgnore]
         public List<ImageFileWatcher> ProjectImageWatchers { get; set; }
-
+        [JsonInclude]
         public string ProjectName
         {
             get => _projectName;
@@ -44,7 +44,7 @@ namespace ImageSorter.Models
                 this.SetLastModifiedTime();
             }
         }
-
+        [JsonInclude]
         public string ProjectConfigPath
         {
             get => _projectConfigPath;
@@ -55,7 +55,7 @@ namespace ImageSorter.Models
                 this.SetLastModifiedTime();
             }
         }
-
+        [JsonInclude]
         public List<string> ImgDirectoryPaths
         {
             get => _imgDirectoryPaths;
@@ -66,7 +66,7 @@ namespace ImageSorter.Models
                 this.SetLastModifiedTime();
             }
         }
-
+        [JsonInclude]
         public List<string> OutputDirectoryPath
         {
             get => _outputDirectoryPath;
@@ -77,7 +77,7 @@ namespace ImageSorter.Models
                 this.SetLastModifiedTime();
             }
         }
-
+        [JsonInclude]
         public ObservableCollection<string> FilterValues
         {
             get => _filterValues;
@@ -88,7 +88,7 @@ namespace ImageSorter.Models
                 this.SetLastModifiedTime();
             }
         }
-
+        [JsonInclude]
         public ImageHashSet InputImages
         {
             get => _inputImages;
@@ -99,7 +99,7 @@ namespace ImageSorter.Models
                 this.SetLastModifiedTime();
             }
         }
-
+        [JsonInclude]
         public ObservableCollection<ImageDetails> ReferenceImages
         {
             get => _referenceImages;
@@ -110,7 +110,7 @@ namespace ImageSorter.Models
                 this.SetLastModifiedTime();
             }
         }
-
+        [JsonInclude]
         public ImgOrder ImageSortOrder
         {
             get => _imageSortOrder;
@@ -121,7 +121,7 @@ namespace ImageSorter.Models
                 this.SetLastModifiedTime();
             }
         }
-
+        [JsonInclude]
         public int CurrentImageIndex
         {
             get => _currentImageIndex;
@@ -132,7 +132,7 @@ namespace ImageSorter.Models
                 this.SetLastModifiedTime();
             }
         }
-
+        [JsonInclude]
         public DateTime LastModifiedTime
         {
             get => _lastModifiedTime;

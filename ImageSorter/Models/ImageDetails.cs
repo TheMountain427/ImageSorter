@@ -21,13 +21,16 @@ namespace ImageSorter.Models
     // https://stackoverflow.com/questions/31104335/ignore-base-class-properties-in-json-net-serialization
     public class ImageDetails : ReactiveObject
     {
+        [JsonInclude]
         public string FileName { get; set; }
         public ulong FileSize { get; set; }
+        [JsonInclude]
         public string FilePath { get; set; }
         public DateTimeOffset FileCreatedTime { get; set; }
         public DateTimeOffset FileLastModifiedTime { get; set; }
 
         private string _filteredValue = "Unsorted";
+        [JsonInclude]
         public string FilteredValue
         {
             get { return _filteredValue; }

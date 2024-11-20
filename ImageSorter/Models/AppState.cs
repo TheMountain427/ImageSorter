@@ -2,8 +2,10 @@
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static ImageSorter.Models.Enums;
@@ -144,11 +146,27 @@ namespace ImageSorter.Models
         }
 
         [JsonIgnore]
+        private JsonSerializerOptions JsonOptions = new JsonSerializerOptions { WriteIndented = true };
+
+        [JsonIgnore]
         public bool JsonWriterEnabled { get; private set; } = false;
 
         public void SetJsonWriterState(bool value)
         {
             this.JsonWriterEnabled = value;
+        }
+        
+        public void WriteAppState(AppState appState)
+        {
+            if (appState.JsonWriterEnabled)
+            {
+                File.WriteAllText(appState.AppStateFilePath, JsonSerializer.Serialize(appState, this.JsonOptions));
+            }
+        }
+
+        public AppState()
+        {
+            this.Changed.Subscribe(_ => WriteAppState(this));
         }
     }
 }
