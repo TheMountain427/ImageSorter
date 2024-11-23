@@ -209,12 +209,6 @@ public class WorkspaceViewModel : ViewModelBase
                     // Make alpha have the greater number of refs if the total reference count is odd
                     int alphaCount = this.ProjectConfig.ReferenceImages.Count / 2 + (this.ProjectConfig.ReferenceImages.Count % 2);
 
-                    // Set image indexes as index + 1 for reference images. This is used for keybinding tooltips
-                    for (int i = 1; i <= this.ProjectConfig.ReferenceImages.Count; i++)
-                    {
-                        this.ProjectConfig.ReferenceImages[i - 1].ImageIndex = i;
-                    }
-
                     this.AlphaReferenceImages = this.ProjectConfig.ReferenceImages.Take(alphaCount).ToList();
                     this.BetaReferenceImages = this.ProjectConfig.ReferenceImages.Skip(alphaCount).ToList();
                 }
@@ -402,7 +396,7 @@ public class WorkspaceViewModel : ViewModelBase
         });
 
         // Do nothing on image click because we do not want to exit out of overview during sort confirmations
-        ShowOverview(successCommand, cancelCommand, ReactiveCommand.Create<string>((_) => OverviewDoNothing(_)));
+        ShowPreSortOverview(successCommand, cancelCommand, ReactiveCommand.Create<string>((_) => OverviewDoNothing(_)));
 
     }
 
@@ -430,7 +424,6 @@ public class WorkspaceViewModel : ViewModelBase
     private void ShowOverview(ICommand successCommand, ICommand cancelCommand, ICommand? ImageClickCommand)
     {
         var imageClickCommand = ImageClickCommand is null ? null : ImageClickCommand;
-
         // Oh my god your constructor is huge
         var sortPreviewVM = new ImageOverviewViewModel(_aps, ProjectConfig: this.ProjectConfig,
                                                              SortedImageDetails: SortedImageDetails,
@@ -444,6 +437,30 @@ public class WorkspaceViewModel : ViewModelBase
         var overlayVM = new OverlayViewModel(_aps, ViewModelToDisplay: sortPreviewVM,
                                                    CloseOverlay: CloseOverlayView,
                                                    AllowClickOff: true);
+
+        // Pre-activating the VM prevents it from stuttering in
+        sortPreviewVM.Activator.Activate();
+        overlayVM.Activator.Activate();
+
+        OverlayRouter.Navigate.Execute(overlayVM);
+    }
+
+    private void ShowPreSortOverview(ICommand successCommand, ICommand cancelCommand, ICommand? ImageClickCommand)
+    {
+        var imageClickCommand = ImageClickCommand is null ? null : ImageClickCommand;
+        // Oh my god your constructor is huge
+        var sortPreviewVM = new ImageOverviewViewModel(_aps, ProjectConfig: this.ProjectConfig,
+                                                             SortedImageDetails: SortedImageDetails,
+                                                             OnSuccessCommand: successCommand,
+                                                             OnCancelCommand: cancelCommand,
+                                                             ImageClickCommand: imageClickCommand,
+                                                             ChangeSortOrder: ReactiveCommand.Create<ImgOrderOption>(_ => this.ImageSortOrder = _),
+                                                             ImageOrderOptions: this.ImageOrderOptions,
+                                                             ImageSortOrder: this.ImageSortOrder);
+
+        var overlayVM = new OverlayViewModel(_aps, ViewModelToDisplay: sortPreviewVM,
+                                                   CloseOverlay: CloseOverlayView,
+                                                   AllowClickOff: false);
 
         // Pre-activating the VM prevents it from stuttering in
         sortPreviewVM.Activator.Activate();
@@ -964,6 +981,7 @@ public class WorkspaceViewModel : ViewModelBase
 
         WorkspaceAlphaReferenceRouter.Navigate.Execute(this.AlphaReferenceViewModel);
         WorkspaceBetaReferenceRouter.Navigate.Execute(this.BetaReferenceViewModel);
+        this.ManageReferenceSplit(this, EventArgs.Empty);
 
         // ************************************************************************************
 

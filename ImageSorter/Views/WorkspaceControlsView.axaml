@@ -458,7 +458,7 @@
 					<Button Name="InitiateSortButton"
 							Content="Finish"
 							HorizontalContentAlignment="Center"
-							Command="{ Binding OpenOverviewCommand }"
+							Command="{ Binding BeginSortCommand }"
 							HorizontalAlignment="Center"
 							Grid.Column="3"
 							Width="80"

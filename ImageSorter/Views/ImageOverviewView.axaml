@@ -30,7 +30,7 @@
 				   ZIndex="3"
 				   Width="{ Binding $parent[Grid].Bounds.Width }">
 
-			<Button Content="Filter by:"
+			<Button Content="Show images with filter value..."
 					DockPanel.Dock="Right"
 					HorizontalAlignment="Right"
 					Command="{ Binding ReselectListValues }">
@@ -58,7 +58,7 @@
 					  DisplayMemberBinding="{ Binding OptionText }"
 					  x:CompileBindings="False"
 					  DockPanel.Dock="Right"
-					  HorizontalAlignment="Right"/>
+					  HorizontalAlignment="Left"/>
 		</DockPanel>
 
 

@@ -126,7 +126,7 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
 
     // Handle when number of reference image changes by calling image loader
     // This is triggering 4 times on a collection change.
-    // Actually I'm a partial dingus, have to views using this so it needs to run twice.
+    // Actually I'm a partial dingus, have two views using this so it needs to run twice.
     // Other 2 are reset events due to my smelly code, will filter those.
     // Actually actually, runs on each foreach in UpdateReferenceCollection. Only need it run at the end. <- Fixed
     private void LoadReferenceBitmapOnChange(object sender, NotifyCollectionChangedEventArgs e)
@@ -144,12 +144,6 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
     {
         if (this.ReferenceImages.Count > 0)
         {
-            // Need index of imagedetail so itemcontrol tags can bind to it.
-            // Using it to identify which ref image to load the image to.
-            // Because nothing wrong with have the same filter name on different reference images.
-            // They are just references after all.
-            int i = 0;
-
             foreach (var refImg in this.ReferenceImages)
             {
                 if (!string.IsNullOrEmpty(refImg.FilePath)
@@ -167,10 +161,6 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
                     refImg.ImageNotLoaded = true;
                     refImg.ImageBitmap = DefaultBitmap;
                 }
-
-                refImg.ReferenceViewID = this.ReferenceViewID;
-                refImg.ImageIndex = i;
-                i++;
             }
         }
     }
@@ -203,16 +193,16 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
 
                 refImg.ReferenceViewID = this.ReferenceViewID;
 
-                refImg.ImageIndex = i;
+                // Set ImageIndexes as index + 1 of the original reference images collection.
+                // This is used for keybinding tooltips
+                refImg.ImageIndex = this.ProjectConfig.ReferenceImages.IndexOf(refImg) + 1;
                 i++;
             }
         }
     }
 
-#pragma warning disable CS8618 // Shut the fuck up _referenceImages isn't null when exiting
     public WorkspaceReferenceImageViewModel(AppState CurrentAppState, ProjectConfig projectConfig, IEnumerable<ImageDetails> referenceImages,
-#pragma warning restore CS8618 
-                                            ReferenceViewIdentifier referenceViewID) : base (CurrentAppState)
+                                            ReferenceViewIdentifier referenceViewID) : base(CurrentAppState)
     {
         this.CurrentAppState = CurrentAppState;
         this.ProjectConfig = projectConfig;
@@ -221,7 +211,7 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
         this.SetReferenceImage = ReactiveCommand.Create<int>(_setReferenceImage);
 
         // Use provided referenceImage as it may be modified version of ProjectConfig
-        this.ReferenceImages = new ObservableCollection<ImageDetails>(referenceImages);
+        this._referenceImages = new ObservableCollection<ImageDetails>(referenceImages);
 
         this.DefaultImgPath = Path.Join(Environment.CurrentDirectory, @"\Assets\512x512-Transparent.png");
         this.DefaultBitmap = new Bitmap(DefaultImgPath);
