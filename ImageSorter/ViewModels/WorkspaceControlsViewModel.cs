@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -66,8 +67,11 @@ public class WorkspaceControlsViewModel : ViewModelBase
     private ImgOrderOption _imageSortOrder;
     public ImgOrderOption ImageSortOrder
     {
+        // I think I am supposed to be setting _imageSortOrder = <shit>
+        // not ImageSortOrder = <shit>. Oh well
         get { return _imageSortOrder; }
-        set { this.RaiseAndSetIfChanged(ref _imageSortOrder, value); }
+        [MemberNotNull(nameof(_imageSortOrder))]
+        set { this.RaiseAndSetIfChanged(ref _imageSortOrder!, value); } 
     }
     private bool _advanceSettingsOpen;
     public bool AdvancedSettingsOpen
@@ -85,6 +89,8 @@ public class WorkspaceControlsViewModel : ViewModelBase
 
     public ICommand OpenAdditonalsViewThing { get; }
 
+    public ICommand BrowseNewOutputDir { get; }
+
     public WorkspaceControlsViewModel(AppState CurrentAppState, ProjectConfig ProjectConfig, ImageCommands ImageCommands) : base (CurrentAppState)
     {
         this.ProjectConfig = ProjectConfig;
@@ -101,6 +107,7 @@ public class WorkspaceControlsViewModel : ViewModelBase
         this.BeginSortCommand = ImageCommands.BeginImageSorting;
         this.ImageOrderOptions = ImageCommands.ImageOrderOptions;
         this.ImageSortOrder = ImageCommands.ImageSortOrder;
+        this.BrowseNewOutputDir = ImageCommands.BrowseForNewOutput;
 
         this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => ImageCommands.ChangeImageSortOrder.Execute(_));
 

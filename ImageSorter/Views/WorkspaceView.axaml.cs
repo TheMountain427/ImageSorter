@@ -7,7 +7,10 @@ using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ImageSorter.ViewModels;
 using ReactiveUI;
+using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ImageSorter.Views;
 
@@ -15,29 +18,23 @@ public partial class WorkspaceView : ReactiveUserControl<WorkspaceViewModel>
 {
     private readonly ZoomBorder? _zoomBorder;
 
-    private void CurrentImageZoomBorder_KeyDown(object? sender, KeyEventArgs e)
-    {
-        switch (e.Key)
-        {
-            case Key.F:
-                _zoomBorder?.Fill();
-                break;
-            case Key.U:
-                _zoomBorder?.Uniform();
-                break;
-            case Key.R:
-                _zoomBorder?.ResetMatrix();
-                break;
-            case Key.T:
-                _zoomBorder?.ToggleStretchMode();
-                _zoomBorder?.AutoFit();
-                break;
-        }
-    }
-
     private void ZoomBorder_ZoomChanged(object sender, ZoomChangedEventArgs e)
     {
         Debug.WriteLine($"[ZoomChanged] {e.ZoomX} {e.ZoomY} {e.OffsetX} {e.OffsetY}");
+    }
+
+    private void AttachZoomBorderToVM(object? sender, LogicalTreeAttachmentEventArgs e)
+    {
+        if (_zoomBorder is not null && _zoomBorder.DataContext is WorkspaceViewModel vm)
+        {
+            vm.SetZoomBorder(_zoomBorder);
+            _zoomBorder.AttachedToLogicalTree -= AttachZoomBorderToVM;
+
+            if (vm.CurrentAppState.DebugMode)
+            {
+                _zoomBorder.ZoomChanged += ZoomBorder_ZoomChanged;
+            }
+        }
     }
 
     // Focus the zoom border when mouse goes over it
@@ -63,17 +60,11 @@ public partial class WorkspaceView : ReactiveUserControl<WorkspaceViewModel>
 
         if (_zoomBorder is not null)
         {
-            _zoomBorder.KeyDown += CurrentImageZoomBorder_KeyDown;
 
             //_zoomBorder.PointerEntered += FocusCurrentImageZoomBorder;
 
-            if (_zoomBorder.DataContext is WorkspaceViewModel vm && vm.CurrentAppState.DebugMode)
-            {
-                _zoomBorder.ZoomChanged += ZoomBorder_ZoomChanged;
-            }
+            _zoomBorder.AttachedToLogicalTree += AttachZoomBorderToVM;
         }
-
-
     }
 
 }

@@ -41,7 +41,7 @@ namespace ImageSorter.Models
         }
 
         private List<string> _outputDirectoryPath;
-        public List<string> OutputDirectoryPath
+        public List<string> OutputDirectoryPaths
         {
             get { return _outputDirectoryPath; }
             set { this.RaiseAndSetIfChanged(ref _outputDirectoryPath, value); }

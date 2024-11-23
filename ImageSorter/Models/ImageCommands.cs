@@ -16,6 +16,7 @@ public class ImageCommands
     public ICommand ResetMainImagePosition { get; set; }
     public ICommand SetImageFilteredValue { get; set; }
     public ICommand BeginImageSorting { get; set; }
+    public ICommand BrowseForNewOutput { get; set; }
 
     // To change the sort order of the images
     // Yes, it seems like too much to send but every other way blows up or fails

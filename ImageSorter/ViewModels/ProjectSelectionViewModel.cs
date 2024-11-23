@@ -276,7 +276,7 @@ public class ProjectSelectionViewModel : ViewModelBase
             {
                 ProjectName = ProjectNameText,
                 ImgDirectoryPaths = ImgDirectories,
-                OutputDirectoryPath = OutDirectories
+                OutputDirectoryPaths = OutDirectories
             };
 
             var pathToConfig = Path.Join(CurrentAppState.ProjectConfigsPath, ProjectNameToFileName(ProjectNameText));
@@ -605,7 +605,7 @@ public class ProjectSelectionViewModel : ViewModelBase
                 {
                     ProjectNameText = loadedProj.ProjectName;
                     ImgPathText = SetDirectoryPathText(loadedProj.ImgDirectoryPaths);
-                    OutPathText = SetDirectoryPathText(loadedProj.OutputDirectoryPath);
+                    OutPathText = SetDirectoryPathText(loadedProj.OutputDirectoryPaths);
                     this.didLoadRecentProject = true;
                 }
             }

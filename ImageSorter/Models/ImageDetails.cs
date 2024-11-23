@@ -17,8 +17,7 @@ using static ImageSorter.Models.Enums;
 
 namespace ImageSorter.Models
 {
-    // Change json to opt in
-    // https://stackoverflow.com/questions/31104335/ignore-base-class-properties-in-json-net-serialization
+    // What a mess...
     public class ImageDetails : ReactiveObject
     {
         [JsonInclude]

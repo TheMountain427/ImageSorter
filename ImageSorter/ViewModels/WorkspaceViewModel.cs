@@ -20,6 +20,10 @@ using static ImageSorter.Models.Helpers;
 using Avalonia.Media.Imaging;
 using System.IO;
 using Avalonia.Input;
+using Avalonia;
+using Avalonia.Platform.Storage;
+using Avalonia.Controls.PanAndZoom;
+using Avalonia.Interactivity;
 
 namespace ImageSorter.ViewModels;
 
@@ -104,6 +108,8 @@ public class WorkspaceViewModel : ViewModelBase
         }
     }
 
+    public ZoomBorder? ZoomBorder { get; protected set; }
+
     public ImgOrderOptions ImageOrderOptions { get; } = new ImgOrderOptions();
 
     private int _currentImageIndex;
@@ -183,25 +189,16 @@ public class WorkspaceViewModel : ViewModelBase
         }
     }
 
-    public void GoToSelectedImage(int ImageIndex)
-    {
-
-    }
-
     public void ResetImagePosition()
     {
-
+        this.ZoomBorder?.ResetMatrix();
     }
 
-
-
-
-    private void _setImageFilterValue(string FilterValue)
+    public void SetImageFilterValue(string FilterValue)
     {
         // Not sure why I did it like this
         this.ProjectConfig.SetImageFilterValue(CurrentImageVM.ImageDetails, FilterValue);
     }
-
 
     private void ManageReferenceSplit(object? sender, EventArgs e)
     {
@@ -513,7 +510,7 @@ public class WorkspaceViewModel : ViewModelBase
             var outputNames = this.SortEngine.ConvertSortedGroupsToFilterOutputDirectories(sortedImageGroups);
 
             // Create the output directories the images will go into
-            var outputDirectories = this.SortEngine.CreateOutputDirectories(outputNames, this.ProjectConfig.OutputDirectoryPath.First());
+            var outputDirectories = this.SortEngine.CreateOutputDirectories(outputNames, this.ProjectConfig.OutputDirectoryPaths.First());
 
             this.SortEngine.SortImagesIntoDirectories(sortedImageGroups, outputDirectories);
 
@@ -712,6 +709,126 @@ public class WorkspaceViewModel : ViewModelBase
 
 
 
+    private async void BrowseAndSelectNewOutput()
+    {
+        // Set settings for folder browser, default location is Desktop
+        var options = new FolderPickerOpenOptions
+        {
+            AllowMultiple = true,
+            SuggestedStartLocation = await App.TopLevel.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Desktop),
+            Title = "Select Output Directory"
+        };
+
+        // Try to use the current output directory as the starting location
+        if (!string.IsNullOrEmpty(this.CurrentAppState.LastReferenceImagePath))
+        {
+            var tryGetFolder = await App.TopLevel.StorageProvider.TryGetFolderFromPathAsync(this.ProjectConfig.OutputDirectoryPaths[0]);
+            options.SuggestedStartLocation = tryGetFolder is not null ? tryGetFolder : options.SuggestedStartLocation;
+        }
+
+        // Haha, we let them pick more than one output directory but we actually only use the first to sort lmaooooooooooo
+        var SelectedDirectories = await App.TopLevel.StorageProvider.OpenFolderPickerAsync(options);
+
+        var SelectedDirectoriesPaths = new List<string>();
+
+        if (SelectedDirectories is not null)
+        {
+            SelectedDirectoriesPaths.AddRange(SelectedDirectories.Select(x => x.Path.LocalPath));
+        }
+
+        this.ProjectConfig.OutputDirectoryPaths = SelectedDirectoriesPaths;
+    }
+
+    private void CurrentImageZoomBorder_KeyDown(object? sender, KeyEventArgs e)
+    {
+        HandleZoomBorderHotKey(sender, e, this.ZoomBorder);
+    }
+
+    public void SetZoomBorder(ZoomBorder? zm)
+    {
+        if (zm is not null)
+        {
+            this.ZoomBorder = zm;
+            ZoomBorder.KeyDown += CurrentImageZoomBorder_KeyDown;
+        }
+    }
+
+    private bool CtrlKeyModifierActive { get; set; }
+
+
+    private void HandleZoomBorderHotKey(object? sender, RoutedEventArgs e, object? item)
+    {
+        if (sender is not null && item is ZoomBorder zm && e is KeyEventArgs ke)
+        {
+            switch (ke.Key)
+            {
+                case Key.F:
+                    zm?.Fill();
+                    break;
+                case Key.U:
+                    zm?.Uniform();
+                    break;
+                case Key.R:
+                    zm?.ResetMatrix();
+                    break;
+                case Key.T:
+                    zm?.ToggleStretchMode();
+                    zm?.AutoFit();
+                    break;
+                case Key.Right:
+                    if (ke.KeyModifiers == KeyModifiers.Control)
+                        GoToLastImage();
+                    else
+                        ChangeToNextImage();
+                    break;
+                case Key.Left:
+                    if (ke.KeyModifiers == KeyModifiers.Control)
+                        GoToFirstImage();
+                    else
+                        ChangeToPreviousImage();
+                    break;
+                case Key.OemPeriod or Key.Decimal:
+                    SetImageFilterValue("Unsorted");
+                    break;
+                case Key.D1 or Key.NumPad1:
+                    SetFilterFromHotkey(1);
+                    break;
+                case Key.D2 or Key.NumPad2:
+                    SetFilterFromHotkey(2);
+                    break;
+                case Key.D3 or Key.NumPad3:
+                    SetFilterFromHotkey(3);
+                    break;
+                case Key.D4 or Key.NumPad4:
+                    SetFilterFromHotkey(4);
+                    break;
+                case Key.D5 or Key.NumPad5:
+                    SetFilterFromHotkey(5);
+                    break;
+                case Key.D6 or Key.NumPad6:
+                    SetFilterFromHotkey(6);
+                    break;
+                case Key.D7 or Key.NumPad7:
+                    SetFilterFromHotkey(7);
+                    break;
+                case Key.D8 or Key.NumPad8:
+                    SetFilterFromHotkey(8);
+                    break;
+                case Key.D9 or Key.NumPad9:
+                    SetFilterFromHotkey(9);
+                    break;
+            }
+        }
+
+        void SetFilterFromHotkey(int index)
+        {
+            if (index - 1 < this.ProjectConfig.ReferenceImages.Count)
+            {
+                SetImageFilterValue(this.ProjectConfig.ReferenceImages[index - 1].FilteredValue);
+            }
+        }
+    }
+
     public WorkspaceViewModel(IScreen screen, RoutingState router, AppState CurrentAppState, ProjectConfig projectConfig) : base(CurrentAppState)
     {
 
@@ -762,7 +879,7 @@ public class WorkspaceViewModel : ViewModelBase
         }
 
 
-        SetImageFilteredValue = ReactiveCommand.Create<string>(_ => _setImageFilterValue(_));
+        SetImageFilteredValue = ReactiveCommand.Create<string>(_ => SetImageFilterValue(_));
 
         // Pass through commands to control vm that navigate the main image
         var imageCommands = new ImageCommands()
@@ -774,6 +891,7 @@ public class WorkspaceViewModel : ViewModelBase
             ResetMainImagePosition = ReactiveCommand.Create(() => ResetImagePosition()),
             SetImageFilteredValue = this.SetImageFilteredValue,
             BeginImageSorting = ReactiveCommand.Create(() => CheckForImageSortIssues()),
+            BrowseForNewOutput = ReactiveCommand.Create(() => BrowseAndSelectNewOutput()),
             ChangeImageSortOrder = ReactiveCommand.Create<ImgOrderOption>(_ => this.ImageSortOrder = _),
             ImageOrderOptions = this.ImageOrderOptions,
             ImageSortOrder = this.ImageSortOrder
@@ -801,7 +919,7 @@ public class WorkspaceViewModel : ViewModelBase
             }
         }
 
-        
+
 
         // ************************************************************************************
         // I also need to dispose of these old ref view models, they chill in memory too
@@ -835,10 +953,11 @@ public class WorkspaceViewModel : ViewModelBase
         var thumbnailVM = new WorkspaceThumbnailViewModel(_aps, CurrentImageIndex: this.CurrentImageIndex,
                                                                 SortedImageDetails: this.SortedImageDetails,
                                                                 CurrentImageIndexObservable: this.WhenAnyValue(x => x.CurrentImageIndex),
-                                                                SortedImageDetialsObservable: this.WhenAnyValue(x => x.SortedImageDetails),
+                                                                SortedImageDetailsObservable: this.WhenAnyValue(x => x.SortedImageDetails),
                                                                 ImageShiftCommand: ReactiveCommand.Create<int>(_ => ShiftCurrentIndexByValue(_)));
 
         thumbnailVM.Activator.Activate();
         ThumbnailRouter.Navigate.Execute(thumbnailVM);
+
     }
 }

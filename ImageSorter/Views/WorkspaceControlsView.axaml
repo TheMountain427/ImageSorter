@@ -83,7 +83,7 @@
 				Padding="5"
 				MaxWidth="500"
 				MaxHeight="5000">
-			<StackPanel>
+			<StackPanel Spacing="5">
 				<Expander ExpandDirection="Up"
 						  HorizontalAlignment="Stretch"
 						  VerticalAlignment="Top"
@@ -101,7 +101,8 @@
 						<Border BorderBrush="Black"
 								BorderThickness="2"
 								Width="{ Binding $parent.Bounds.Width }"
-								HorizontalAlignment="Stretch">
+								HorizontalAlignment="Stretch"
+								IsVisible="{ Binding CurrentAppState.DebugMode }">
 							<StackPanel>
 								<Border BorderBrush="Black"
 										BorderThickness="2"
@@ -136,7 +137,6 @@
 								</Border>
 								<WrapPanel>
 									<TextBlock Text="I'm a setting!             "/>
-									<TextBlock Text="Change output directory here"/>
 								</WrapPanel>
 							</StackPanel>
 						</Border>
@@ -148,7 +148,37 @@
 							<StackPanel>
 								<Border BorderBrush="Black"
 										BorderThickness="2"
-										HorizontalAlignment="Stretch">
+										HorizontalAlignment="Stretch"
+										Padding="2">
+									<TextBlock Text="Change Output Directory"
+											   FontWeight="Bold"
+											   HorizontalAlignment="Center"/>
+								</Border>
+								<Border BorderBrush="Black"
+										BorderThickness="2"
+										HorizontalAlignment="Stretch"
+										Padding="2">
+									<Grid ColumnDefinitions="*,Auto">
+										<TextBox Text="{ Binding ProjectConfig.OutputDirectoryPaths[0] }"
+												 Grid.Column="0"/>
+										<Button Content="Browse" 
+												Command="{ Binding BrowseNewOutputDir }"
+												Grid.Column="1"
+												Margin="3,0,0,0"/>
+									</Grid>
+								</Border>
+							</StackPanel>
+						</Border>
+
+						<Border BorderBrush="Black"
+								BorderThickness="2"
+								Width="{ Binding $parent.Bounds.Width }"
+								HorizontalAlignment="Stretch">
+							<StackPanel>
+								<Border BorderBrush="Black"
+										BorderThickness="2"
+										HorizontalAlignment="Stretch"
+										Padding="2">
 									<TextBlock Text="Change Thumbnail Viewer Position"
 											   FontWeight="Bold"
 											   HorizontalAlignment="Center"/>
@@ -211,7 +241,8 @@
 							<StackPanel>
 								<Border BorderBrush="Black"
 										BorderThickness="2"
-										HorizontalAlignment="Stretch">
+										HorizontalAlignment="Stretch"
+										Padding="2">
 									<TextBlock Text="Change Controls Viewer Position"
 											   FontWeight="Bold"
 											   HorizontalAlignment="Center"/>
@@ -273,7 +304,8 @@
 							<StackPanel>
 								<Border BorderBrush="Black"
 										BorderThickness="2"
-										HorizontalAlignment="Stretch">
+										HorizontalAlignment="Stretch"
+										Padding="2">
 									<TextBlock Text="Reference Image Placement"
 											   FontWeight="Bold"
 											   HorizontalAlignment="Center"/>
@@ -299,8 +331,15 @@
 							</StackPanel>
 						</Border>
 
+						<Button Content="Unsort Image"
+								Command="{ Binding SetImageFilteredValue }"
+								CommandParameter="Unsorted"
+								HorizontalAlignment="Center"
+								ToolTip.Tip="Keybinding: ' . '"/>
 						<Button Content="Initiate Sort"
-								Command="{ Binding BeginSortCommand }"/>
+								Command="{ Binding BeginSortCommand }"
+								HorizontalAlignment="Center"
+								ToolTip.Tip="I seriously don't know where to put this button"/>
 					</StackPanel>
 				</Expander>
 				<Grid Name="WorkCtrl_MainGrid"
@@ -325,18 +364,13 @@
 											Content="{ Binding FilteredValue}"
 											Command="{ Binding $parent[UserControl].DataContext.SetImageFilteredValue }"
 											CommandParameter="{ Binding $self.Tag }"
-											Tag="{ Binding FilteredValue }"/>
+											Tag="{ Binding FilteredValue }"
+											ToolTip.Tip="Keybinding is the position of this filter"/>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
 					</Grid>
-					<Rectangle Name="WorkCtrl_SeperatorRectangle"
-							   HorizontalAlignment="Stretch"
-							   Grid.Row="1"
-							   Fill="LightGray"
-							   Height="10"
-							   VerticalAlignment="Center"
-							   Margin="-5,10"/>
+					<Separator Grid.Row="1"/>
 					<Grid Name="WorkCtrl_MiddleGrid"
 						  ColumnDefinitions="*,*,*,*"
 						  VerticalAlignment="Top"
@@ -346,25 +380,29 @@
 								HorizontalContentAlignment="Center"
 								Command="{ Binding GoFirstImage }"
 								Grid.Column="0"
-								Width="120"/>
+								Width="120"
+								ToolTip.Tip="Keybinding: ' Ctrl + Left '"/>
 						<Button Name="WorkCtrl_PreviousImageButton"
 								Content="Previous Image"
 								HorizontalContentAlignment="Center"
 								Command="{ Binding GoPreviousImage }"
 								Grid.Column="1"
-								Width="120"/>
+								Width="120"
+								ToolTip.Tip="Keybinding: ' Left '"/>
 						<Button Name="WorkCtrl_NextImageButton"
 								Content="Next Image"
 								HorizontalContentAlignment="Center"
 								Command="{ Binding GoNextImage }"
 								Grid.Column="2"
-								Width="120"/>
+								Width="120"
+								ToolTip.Tip="Keybinding: ' Right '"/>
 						<Button Name="WorkCtrl_LastImageButton"
 								Content="Last Image"
 								HorizontalContentAlignment="Center"
 								Command="{ Binding GoLastImage }"
 								Grid.Column="3"
-								Width="120"/>
+								Width="120"
+								ToolTip.Tip="Keybinding: ' Ctrl + Right '"/>
 					</Grid>
 					<Grid Name="WorkCtrl_BottomGrid"
 						  ColumnDefinitions="*,Auto,*"
@@ -372,12 +410,13 @@
 						  Grid.Row="3"
 						  Margin="0,10,0,0">
 						<Button Name="WorkCtrl_OpenAdditonalsButton"
-								Content="Sort?"
+								Content="Additional"
 								HorizontalContentAlignment="Center"
 								Grid.Column="0"
 								Command="{ Binding OpenAdditonalsViewThing }"
 								HorizontalAlignment="Left"
-								Width="120"/>
+								Width="120"
+								ToolTip.Tip="Open additional settings... and the sort button."/>
 						<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
 								  SelectedItem="{ Binding ImageSortOrder }"
 								  SelectedValueBinding="{ Binding }"

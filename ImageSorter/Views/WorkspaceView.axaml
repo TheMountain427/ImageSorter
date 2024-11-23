@@ -66,7 +66,7 @@
 				<ColumnDefinition Width="2"/>
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="2"/>
-				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
 
 			<ScrollViewer Name="Workspace_Alpha_RefScrollView"
@@ -92,13 +92,15 @@
 					</rxui:RoutedViewHost>
 				</StackPanel>
 			</ScrollViewer>
-			<GridSplitter Grid.Column="1"
+			<GridSplitter Name="Workspace_GridSplitter_01" 
+						  Grid.Column="1"
 						  Background="Black"
 						  ResizeDirection="Columns"
 						  IsEnabled="True"
 						  IsVisible="True"/>
 
-			<GridSplitter Grid.Column="3"
+			<GridSplitter Name="Workspace_GridSplitter_02" 
+						  Grid.Column="3"
 						  Background="Black"
 						  ResizeDirection="Columns"
 						  IsEnabled="True"

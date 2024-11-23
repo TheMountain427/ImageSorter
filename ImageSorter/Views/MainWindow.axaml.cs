@@ -28,7 +28,6 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         // to send key events to it. 
         // A worse option is to use App.Toplevel.Keydown then filter those events.
         // But that fires even when typing in a textbox, which would require more hack filters.
-
         if (sender is Grid grid)
         {
             // If we are at workspace view, and zoomborder has not been found, go find it
@@ -41,12 +40,16 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             if (_currentImageZoomBorder is null)
             {
                 grid.Focus();
+                // Actually I'm just going to focus the ZoomBorder by default. Makes hotkeys easier
+                _currentImageZoomBorder?.Focus();
             }
             // If zoom border is not null, then we are at workspace view 
             // If pointer is over zoomborder, then disable background focus so we can focus that
             else if (!_currentImageZoomBorder.IsPointerOver)
             {
                 grid.Focus();
+                // Actually I'm just going to focus the ZoomBorder by default. Makes hotkeys easier
+                _currentImageZoomBorder?.Focus();
             }
         }
 

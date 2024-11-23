@@ -48,12 +48,12 @@ namespace ImageSorter.Models
                 return false;
             }
 
-            if (projectConfig.OutputDirectoryPath is null || projectConfig.OutputDirectoryPath.Count == 0)
+            if (projectConfig.OutputDirectoryPaths is null || projectConfig.OutputDirectoryPaths.Count == 0)
             {
                 return false;
             }
 
-            foreach (var path in projectConfig.OutputDirectoryPath)
+            foreach (var path in projectConfig.OutputDirectoryPaths)
             {
                 if (!Directory.Exists(path))
                 {

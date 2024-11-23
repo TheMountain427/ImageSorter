@@ -154,7 +154,7 @@ public class WorkspaceThumbnailViewModel : ViewModelBase, IActivatableViewModel
 
 
     public WorkspaceThumbnailViewModel(AppState CurrentAppState, int CurrentImageIndex, List<ImageDetails> SortedImageDetails,
-                                       IObservable<int> CurrentImageIndexObservable, IObservable<List<ImageDetails>> SortedImageDetialsObservable,
+                                       IObservable<int> CurrentImageIndexObservable, IObservable<List<ImageDetails>> SortedImageDetailsObservable,
                                        ICommand ImageShiftCommand) : base (CurrentAppState)
     {
         this._sortedImageDetails = SortedImageDetails;
@@ -165,7 +165,7 @@ public class WorkspaceThumbnailViewModel : ViewModelBase, IActivatableViewModel
 
         CurrentImageIndexObservable.Subscribe(_ => SetupThumbnails(this._sortedImageDetails, _));
 
-        SortedImageDetialsObservable.Subscribe(_ => UpdateSortOrder(_));
+        SortedImageDetailsObservable.Subscribe(_ => UpdateSortOrder(_));
 
 
         Activator = new ViewModelActivator();
