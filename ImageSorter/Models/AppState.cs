@@ -1,4 +1,5 @@
-﻿using Avalonia.Layout;
+﻿using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Layout;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace ImageSorter.Models
 {
     public class AppState : ReactiveObject
     {
-        public bool DebugMode { get; } = true;
+        public bool DebugMode { get; } = false;
 
         private string _appStateFileName = "AppState.json";
         public string AppStateFileName
@@ -79,6 +80,7 @@ namespace ImageSorter.Models
             set { this.RaiseAndSetIfChanged(ref _recentProjectNames, value); }
         }
 
+        // Don't write this so controls aren't disabled on load after exiting with overlay up
         [JsonIgnore]
         private bool _isWorkSpaceOverlayEnabled = false;
         [JsonIgnore]

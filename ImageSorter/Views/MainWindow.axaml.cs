@@ -56,6 +56,35 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         // Now we can focus the zoomborder and handle KeyDown events on its code behind
     }
 
+    // Set the height of the system bar override
+    // It is always 30 on my machine but this a quick attempt to try to
+    // handle another system where the value could be different
+    // Altered from https://stackoverflow.com/a/71918303 to handle the background grid focus above
+    private void SetUpStatusBar()
+    {
+        if (this.FrameSize is null)
+            throw new UnhandledErrorException("Blowing up now");
+                
+        var titleBarGrid = this.FindControl<Grid>("TitleBar_Grid");
+
+        if (titleBarGrid is null)
+            throw new UnhandledErrorException("Kaboom");
+
+        // X,Y of the window including top system bar
+        var frameSize = this.FrameSize;
+        // X,Y of the window minus the top system bar
+        var clientSize = this.ClientSize;
+
+        // System buttons are FrameSizeY - this. 
+        // This is what it is on my machine, might change based on scaling or somthing
+        double extraPaddingY = 9;
+
+        var statusBarHeight = frameSize.Value.Height - clientSize.Height - extraPaddingY;
+
+        titleBarGrid.Height = statusBarHeight;
+        titleBarGrid.MaxHeight = statusBarHeight;
+
+    }
 
     public MainWindow()
     {
@@ -63,8 +92,11 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         AvaloniaXamlLoader.Load(this);
 
         // Store the RouterViewHost so we don't have to find it everytime on our checks
+        // What those checks are, I don't remember
         this._mainRoutedViewHost = this.FindControl<RoutedViewHost>("MainRoutedViewHost");
 
+        // Setup the system title bar height
+        SetUpStatusBar();
 
         // Adding F12 DevTools manually since this MainWindow does
         // not inherit from Window

@@ -10,8 +10,9 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ImageSorter.Views.WorkspaceView"
              x:DataType="vm:WorkspaceViewModel">
+
 	<Grid>
-		
+
 		<paz:ZoomBorder Name="CurrentImageZoomBorder"
 						Stretch="None"
 						ZoomSpeed="1.2"
@@ -59,14 +60,14 @@
 				<app:AppViewLocator/>
 			</rxui:RoutedViewHost.ViewLocator>
 		</rxui:RoutedViewHost>
-		
+
 		<Grid IsEnabled="{ Binding !CurrentAppState.IsWorkSpaceOverlayEnabled }">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="30*"/>
 				<ColumnDefinition Width="2"/>
-				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="40*"/>
 				<ColumnDefinition Width="2"/>
-				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="30*"/>
 			</Grid.ColumnDefinitions>
 
 			<ScrollViewer Name="Workspace_Alpha_RefScrollView"
@@ -92,14 +93,14 @@
 					</rxui:RoutedViewHost>
 				</StackPanel>
 			</ScrollViewer>
-			<GridSplitter Name="Workspace_GridSplitter_01" 
+			<GridSplitter Name="Workspace_GridSplitter_01"
 						  Grid.Column="1"
 						  Background="Black"
 						  ResizeDirection="Columns"
 						  IsEnabled="True"
 						  IsVisible="True"/>
 
-			<GridSplitter Name="Workspace_GridSplitter_02" 
+			<GridSplitter Name="Workspace_GridSplitter_02"
 						  Grid.Column="3"
 						  Background="Black"
 						  ResizeDirection="Columns"
@@ -147,13 +148,11 @@
 		</SplitView>
 
 		<!--Overlay has to be down here because images just ignore z-index when in routed views I guess-->
-		<Grid>
-			<rxui:RoutedViewHost Router="{ Binding OverlayRouter }" ZIndex="1">
-				<rxui:RoutedViewHost.ViewLocator>
-					<app:AppViewLocator/>
-				</rxui:RoutedViewHost.ViewLocator>
-			</rxui:RoutedViewHost>
-		</Grid>
+		<rxui:RoutedViewHost Router="{ Binding OverlayRouter }" ZIndex="10">
+			<rxui:RoutedViewHost.ViewLocator>
+				<app:AppViewLocator/>
+			</rxui:RoutedViewHost.ViewLocator>
+		</rxui:RoutedViewHost>
 
 		<Expander IsVisible="{ Binding CurrentAppState.DebugMode }"
 				  ExpandDirection="Up"
@@ -190,6 +189,6 @@
 				</ScrollViewer>
 			</Expander.Content>
 		</Expander>
-		
+
 	</Grid>
 </UserControl>

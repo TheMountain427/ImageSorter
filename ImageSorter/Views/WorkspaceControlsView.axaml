@@ -83,7 +83,8 @@
 				Padding="5"
 				MaxWidth="500"
 				MaxHeight="5000">
-			<StackPanel Spacing="5">
+			<StackPanel Spacing="5"
+						IsEnabled="{ Binding !CurrentAppState.IsWorkSpaceOverlayEnabled }">
 				<Expander ExpandDirection="Up"
 						  HorizontalAlignment="Stretch"
 						  VerticalAlignment="Top"
@@ -97,7 +98,6 @@
 								   TextAlignment="Center"/>
 					</Expander.Header>
 					<StackPanel Spacing="3">
-
 						<Border BorderBrush="Black"
 								BorderThickness="2"
 								Width="{ Binding $parent.Bounds.Width }"

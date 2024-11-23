@@ -57,7 +57,8 @@
 					  SelectedValueBinding="{ Binding }"
 					  DisplayMemberBinding="{ Binding OptionText }"
 					  x:CompileBindings="False"
-					  DockPanel.Dock="Right"/>
+					  DockPanel.Dock="Right"
+					  HorizontalAlignment="Right"/>
 		</DockPanel>
 
 

@@ -94,6 +94,8 @@ public class MainWindowViewModel : ReactiveObject, IScreen
         }
 
         this.CurrentAppState = currentAppState;
+
+        
     }
 
     public MainWindowViewModel()

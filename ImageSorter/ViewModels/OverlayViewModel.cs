@@ -23,7 +23,7 @@ public class OverlayViewModel : ViewModelBase, IActivatableViewModel
     // If clicking the background should close the overlay, set to false for required stuff
     public bool AllowClickOff { get; } = true;
 
-    public OverlayViewModel(AppState CurrentAppState, ViewModelBase ViewModelToDisplay,  ICommand CloseOverlay, bool AllowClickOff) : base (CurrentAppState)
+    public OverlayViewModel(AppState CurrentAppState, ViewModelBase ViewModelToDisplay, ICommand CloseOverlay, bool AllowClickOff) : base(CurrentAppState)
     {
         this.CurrentAppState = CurrentAppState;
         this.CloseOverlay = CloseOverlay;
@@ -38,8 +38,13 @@ public class OverlayViewModel : ViewModelBase, IActivatableViewModel
                 .Create(() => this.HandleDeactivation())
                 .DisposeWith(disposables);
 
+            this.CurrentAppState.IsWorkSpaceOverlayEnabled = true;
+
         });
     }
 
-    private void HandleDeactivation() { }
+    private void HandleDeactivation()
+    {
+        this.CurrentAppState.IsWorkSpaceOverlayEnabled = false;
+    }
 }

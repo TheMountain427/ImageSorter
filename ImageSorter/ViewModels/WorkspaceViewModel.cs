@@ -395,7 +395,14 @@ public class WorkspaceViewModel : ViewModelBase
             this.CloseOverlayView.Execute(null);
         });
 
-        ShowOverview(successCommand, cancelCommand, null);
+        // Do nothing on image click because we do not want to exit out of overview during sort confirmations
+        ShowOverview(successCommand, cancelCommand, ReactiveCommand.Create<string>((_) => OverviewDoNothing(_)));
+
+    }
+
+    // For if showing overview but don't want image clicks to do anything
+    private void OverviewDoNothing(string s)
+    {
 
     }
 

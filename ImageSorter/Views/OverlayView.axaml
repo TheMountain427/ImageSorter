@@ -9,7 +9,7 @@
              x:Class="ImageSorter.Views.OverlayView"
 			 x:DataType="vm:OverlayViewModel">
 
-	<Grid >
+	<Grid>
 		<Border Background="Black" 
 				Opacity=".5"
 				Focusable="{ Binding AllowClickOff }"
@@ -25,7 +25,8 @@
 					BorderBrush="Black"
 					BorderThickness="2"
 					HorizontalAlignment="Center"
-					VerticalAlignment="Center">
+					VerticalAlignment="Center"
+					ZIndex="100">
 				<rxui:RoutedViewHost Router="{ Binding OverlayRouter }">
 					<rxui:RoutedViewHost.PageTransition>
 						<CrossFade Duration="0:0:0.8"/>
