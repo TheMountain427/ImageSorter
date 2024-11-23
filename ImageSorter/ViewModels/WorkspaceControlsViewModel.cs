@@ -131,6 +131,8 @@ public class WorkspaceControlsViewModel : ViewModelBase
 
     public ICommand BrowseNewOutputDir { get; }
 
+    public ICommand OpenOverviewCommand { get; }
+
     public WorkspaceControlsViewModel(AppState CurrentAppState, ProjectConfig ProjectConfig, ImageCommands ImageCommands) : base(CurrentAppState)
     {
         this.ProjectConfig = ProjectConfig;
@@ -148,6 +150,7 @@ public class WorkspaceControlsViewModel : ViewModelBase
         this.ImageOrderOptions = ImageCommands.ImageOrderOptions;
         this.ImageSortOrder = ImageCommands.ImageSortOrder;
         this.BrowseNewOutputDir = ImageCommands.BrowseForNewOutput;
+        this.OpenOverviewCommand = ImageCommands.OpenOverview;
 
         this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => ImageCommands.ChangeImageSortOrder.Execute(_));
 

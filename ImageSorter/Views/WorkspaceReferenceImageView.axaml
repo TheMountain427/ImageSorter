@@ -7,6 +7,7 @@
              x:Class="ImageSorter.Views.WorkspaceReferenceImageView"
 			 x:DataType="vm:WorkspaceReferenceImageViewModel">
 
+
 	<Grid>
 		<ItemsControl ItemsSource="{ Binding ReferenceImages }"
 					  x:CompileBindings="False">
@@ -18,26 +19,6 @@
 						<Grid>
 							<StackPanel>
 								<Grid>
-									<Button Content="...">
-										<Button.Flyout>
-											<Flyout>
-												<StackPanel>
-													<Button Content="Set Reference Image"
-															HorizontalAlignment="Stretch"
-															HorizontalContentAlignment="Center"
-															Command="{ Binding $parent[UserControl].DataContext.SetReferenceImage }"
-															CommandParameter="{ Binding $self.Tag }"
-															Tag="{ Binding ImageIndex }"/>
-													<Button Content="Change Filter Name"
-															HorizontalAlignment="Stretch"
-															HorizontalContentAlignment="Center"
-															Command="{ Binding $parent[UserControl].DataContext.ChangeFilterName }"
-															CommandParameter="{ Binding $self.Tag }"
-															Tag="{ Binding ImageIndex }"/>
-												</StackPanel>
-											</Flyout>
-										</Button.Flyout>
-									</Button>
 									<!--Text="{ Binding FilteredValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus }
 										This fails here for some reason but works in WorkspaceFilterView.
 										Possibly because ReferenceImages in this VM is created from a IEnumerable<ImageDetails>?
@@ -46,7 +27,16 @@
 											 HorizontalAlignment="Center"
 											 TextChanged="FilterNameChanged"/>
 								</Grid>
-								<Image Source="{ Binding ImageBitmap }"/>
+								<Image Source="{ Binding ImageBitmap }">
+									<Image.ContextMenu>
+										<ContextMenu>
+											<MenuItem Header="Change reference image"
+													  Command="{ Binding $parent[UserControl].DataContext.SetReferenceImage }"
+													  CommandParameter="{ Binding $self.Tag }"
+													  Tag="{ Binding ImageIndex }"/>
+										</ContextMenu>
+									</Image.ContextMenu>
+								</Image>
 							</StackPanel>
 							<Button Name="{ Binding $self.Tag, Mode=OneWay, StringFormat=WorkRef_Set{0}Button }"
 									Tag="{ Binding ImageIndex }"

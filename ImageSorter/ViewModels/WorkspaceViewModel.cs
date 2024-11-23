@@ -209,6 +209,12 @@ public class WorkspaceViewModel : ViewModelBase
                     // Make alpha have the greater number of refs if the total reference count is odd
                     int alphaCount = this.ProjectConfig.ReferenceImages.Count / 2 + (this.ProjectConfig.ReferenceImages.Count % 2);
 
+                    // Set image indexes as index + 1 for reference images. This is used for keybinding tooltips
+                    for (int i = 1; i <= this.ProjectConfig.ReferenceImages.Count; i++)
+                    {
+                        this.ProjectConfig.ReferenceImages[i - 1].ImageIndex = i;
+                    }
+
                     this.AlphaReferenceImages = this.ProjectConfig.ReferenceImages.Take(alphaCount).ToList();
                     this.BetaReferenceImages = this.ProjectConfig.ReferenceImages.Skip(alphaCount).ToList();
                 }
@@ -630,7 +636,22 @@ public class WorkspaceViewModel : ViewModelBase
 
 
         ShowOverview(successCommand, cancelCommand, ReactiveCommand.Create<string>(_ => GoToImageFromOverview(_)));
+    }
 
+    public void OpenDefaultOverview()
+    {
+        var successCommand = ReactiveCommand.Create(() =>
+        {
+            this.CloseOverlayView.Execute(null);
+        });
+
+        var cancelCommand = ReactiveCommand.Create(() =>
+        {
+            this.CloseOverlayView.Execute(null);
+        });
+
+
+        ShowOverview(successCommand, cancelCommand, ReactiveCommand.Create<string>(_ => GoToImageFromOverview(_)));
     }
 
     private void ChangeMainImage(int NewCurrentImageIndex)
@@ -899,6 +920,7 @@ public class WorkspaceViewModel : ViewModelBase
             SetImageFilteredValue = this.SetImageFilteredValue,
             BeginImageSorting = ReactiveCommand.Create(() => CheckForImageSortIssues()),
             BrowseForNewOutput = ReactiveCommand.Create(() => BrowseAndSelectNewOutput()),
+            OpenOverview = ReactiveCommand.Create(() => OpenDefaultOverview()),
             ChangeImageSortOrder = ReactiveCommand.Create<ImgOrderOption>(_ => this.ImageSortOrder = _),
             ImageOrderOptions = this.ImageOrderOptions,
             ImageSortOrder = this.ImageSortOrder

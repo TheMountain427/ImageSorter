@@ -20,25 +20,22 @@ namespace ImageSorter.Models
     // What a mess...
     public class ImageDetails : ReactiveObject
     {
-        [JsonInclude]
+        
         public string FileName { get; set; }
         public ulong FileSize { get; set; }
-        [JsonInclude]
         public string FilePath { get; set; }
         public DateTimeOffset FileCreatedTime { get; set; }
         public DateTimeOffset FileLastModifiedTime { get; set; }
+        public bool IsValid { get; set; } = true;
+        public bool ImageNotLoaded { get; set; } = false;
+        public ReferenceViewIdentifier ReferenceViewID { get; set; }
 
         private string _filteredValue = "Unsorted";
-        [JsonInclude]
         public string FilteredValue
         {
             get { return _filteredValue; }
             set { this.RaiseAndSetIfChanged(ref _filteredValue, value); }
         }
-
-        public bool IsValid { get; set; } = true;
-        public bool ImageNotLoaded { get; set; } = false;
-        public ReferenceViewIdentifier ReferenceViewID { get; set; }
 
         private int _imageIndex;
         public int ImageIndex
@@ -58,7 +55,6 @@ namespace ImageSorter.Models
             get { return _thumbnailBitmap; }
             set { this.RaiseAndSetIfChanged(ref _thumbnailBitmap, value); }
         }
-
 
         public Stream LoadImageBitmap()
         {

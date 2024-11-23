@@ -61,7 +61,7 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
 
     private async void _setReferenceImage(int referenceIndex)
     {
-        var selectedFile = await BrowseFilesReference(referenceIndex);
+        var selectedFile = await BrowseFilesReference();
         UpdateReferenceImage(referenceIndex, selectedFile);
 
 
@@ -72,7 +72,7 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
     }
 
 
-    private async Task<IReadOnlyList<IStorageFile>?> BrowseFilesReference(int referenceIndex)
+    private async Task<IReadOnlyList<IStorageFile>?> BrowseFilesReference()
     {
         // Set settings for folder browser, default location is Desktop
         var options = new FilePickerOpenOptions

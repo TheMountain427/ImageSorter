@@ -3,13 +3,19 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:ImageSorter.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="800"
              x:Class="ImageSorter.Views.WorkspaceControlsView"
 			 x:DataType="vm:WorkspaceControlsViewModel">
 
 	<UserControl.Resources>
 		<StreamGeometry x:Key="MenAtWork">
 			M218 114c-10.2-4.2-63.5-17-64-29.8-.2-5 9.1-27.6 44.7-19.4 21.9 5 20.1 26.4 17.7 35.6-1.2 4.4-7.4 7.1-9.9 10.9m-5.5 6c-16.1 40.9-64.6 28.2-50.4-17.3M148 160c-5.2 20.2-8.6 95.8-15 111.7-7.7 18.8-26.2 42.9-39 58.6l10.4 7.7m87.6 0c-1.7.2-15.4-1-16-1.4s0-80.4-17-113.1L169.5 163M146 159c-43.7-.4-54 23.3-8.2 43M172 165c14.1 18.1 24.9 42.3 39 59M96 203c54.7 8.5 94.7 10.4 149 17m13.6-14.7c0 5.3-11 29.1-6.5 33.7 15 15.6 75.7 4.3 45.7-23.6-8.4-7.8-21.9-10.9-36.1-12.4Z
+		</StreamGeometry>
+		<StreamGeometry x:Key="EditFilters">
+			M1939 1477c50 25 64 22 105-28 36-42 34-84-5-132-45-54-82-71-124-57-39 13-85 62-85 90 0 31 63 104 109 127Zm-456 402c30 11 123-5 161-28 57-36 246-238 246-264 0-25-127-157-151-157-16 0-256 237-274 270-7 14-16 51-20 83-8 61 1 82 38 96Zm-81 121c21 9 49 16 61 14s60-8 107-14c46-7 100-20 120-30 42-22 461-443 483-485 54-109 9-235-114-315-72-46-137-52-207-19-56 28-451 411-489 476-27 47-58 217-48 269 8 44 41 83 87 104Zm-283 420c96 16 145 0 284-91 84-55 98-69 103-97 9-45-21-86-64-90-25-3-54 11-128 57-116 73-147 81-207 52-76-37-76-39-80-421-5-460 10-424-322-774-153-161-235-254-249-285-17-39-21-70-24-198-3-140-2-157 18-197 42-87-23-81 830-81h755l31 22c57 41 66 76 62 246-4 167-15 207-78 287-16 21-30 50-30 64 0 39 41 76 84 76 31 0 41-7 75-50 90-114 116-216 109-434-4-118-8-149-27-191-25-57-67-105-126-144l-40-26-801-3-801-3-54 29c-63 33-132 113-151 174-8 28-13 106-13 228V755l36 75c39 81 80 130 341 403 120 124 165 178 185 223l28 59 5 350c5 385 6 385 70 459 39 44 116 85 179 96Z
+		</StreamGeometry>
+		<StreamGeometry x:Key="Settings">
+			M12 16a4 4 0 10-4-4 4 4 0 004 4Zm0-6a2 2 0 11-2 2 2 2 0 012-2Zm-8.5 2.877-1 .579a2 2 0 00-.733 2.732l1.489 2.578A2 2 0 005.99 19.5L7 18.916a1.006 1.006 0 011.008.011.992.992 0 01.495.857V21a2 2 0 002 2h3a2 2 0 002-2V19.782a1.009 1.009 0 011.5-.866l1.009.582a2 2 0 002.732-.732l1.488-2.578a2 2 0 00-.733-2.732l-1-.579a1.007 1.007 0 01-.5-.89 1 1 0 01.5-.864l1-.579a2 2 0 00.733-2.732l-1.49-2.578A2 2 0 0018.01 4.5L17 5.083a1.008 1.008 0 01-1.5-.867V3a2 2 0 00-2-2h-3a2 2 0 00-2 2V4.294a.854.854 0 01-.428.74l-.154.089a.864.864 0 01-.854 0L5.99 4.5a2 2 0 00-2.733.732L1.769 7.813A2 2 0 002.5 10.544l1 .578a1.011 1.011 0 01.5.891.994.994 0 01-.5.864Zm1-3.487-1-.578L4.99 6.234l1.074.62a2.86 2.86 0 002.85 0l.154-.088A2.863 2.863 0 0010.5 4.294V3h3V4.216a3.008 3.008 0 004.5 2.6l1.007-.582L20.5 8.812l-1 .578a3.024 3.024 0 000 5.219l1 .579-1.488 2.578L18 17.184a3.008 3.008 0 00-4.5 2.6V21h-3V19.784a3.006 3.006 0 00-4.5-2.6l-1.007.582L3.5 15.188l1-.579a3.024 3.024 0 000-5.219Z
 		</StreamGeometry>
 	</UserControl.Resources>
 
@@ -101,7 +107,7 @@
 								   FontWeight="Bold"
 								   FontSize="20"
 								   TextAlignment="Center"
-								   TextDecorations="Underline" 
+								   TextDecorations="Underline"
 								   Margin="0,-10,0,5"/>
 						<Border BorderBrush="Black"
 								BorderThickness="2"
@@ -141,7 +147,7 @@
 									</StackPanel>
 								</Border>
 								<WrapPanel>
-									<TextBlock Text="I'm a setting!             "/>
+									<TextBlock Text="I'm a setting!"/>
 								</WrapPanel>
 							</StackPanel>
 						</Border>
@@ -345,10 +351,6 @@
 								CommandParameter="Unsorted"
 								HorizontalAlignment="Center"
 								ToolTip.Tip="Keybinding: ' . '"/>
-						<Button Content="Initiate Sort"
-								Command="{ Binding BeginSortCommand }"
-								HorizontalAlignment="Center"
-								ToolTip.Tip="I seriously don't know where to put this button"/>
 					</StackPanel>
 				</Expander>
 
@@ -373,7 +375,7 @@
 										Command="{ Binding $parent[UserControl].DataContext.SetImageFilteredValue }"
 										CommandParameter="{ Binding $self.Tag }"
 										Tag="{ Binding FilteredValue }"
-										ToolTip.Tip="Keybinding is the position of this filter"/>
+										ToolTip.Tip="{ Binding ImageIndex, StringFormat='Keybinding: \' {0} \' '}"/>
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
@@ -412,34 +414,74 @@
 							Width="120"
 							ToolTip.Tip="Keybinding: ' Ctrl + Right '"/>
 				</Grid>
-				<Grid Name="WorkCtrl_BottomGrid"
-					  ColumnDefinitions="*,Auto,*"
+				<Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto"
 					  VerticalAlignment="Top"
+					  HorizontalAlignment="Stretch"
 					  Grid.Row="3"
 					  Margin="0,10,0,0">
-					<Button Name="WorkCtrl_OpenAdditonalsButton"
-							Content="Additional"
+					<Button Name="OpenAdditonalsButton"
 							HorizontalContentAlignment="Center"
 							Grid.Column="0"
 							Command="{ Binding OpenAdditonalsViewThing }"
-							HorizontalAlignment="Left"
-							Width="120"
-							ToolTip.Tip="Open additional settings... and the sort button."/>
+							HorizontalAlignment="Center"
+							Width="50"
+							Height="30"
+							ToolTip.Tip="Open additional settings">
+						<Button.Content>
+							<Path Fill="Black"
+								  Stretch="Uniform"
+								  Width="18"
+								  HorizontalAlignment="Center"
+								  VerticalAlignment="Center"
+								  Data="{ StaticResource Settings }"/>
+						</Button.Content>
+					</Button>
+					<Button Name="OverviewButton"
+							Content="Overview"
+							HorizontalContentAlignment="Center"
+							Command="{ Binding OpenOverviewCommand }"
+							HorizontalAlignment="Center"
+							Grid.Column="1"
+							Width="80"
+							Margin="6,0,0,0"
+							ToolTip.Tip="Open an overview of all images"/>
 					<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
 							  SelectedItem="{ Binding ImageSortOrder }"
 							  SelectedValueBinding="{ Binding }"
 							  DisplayMemberBinding="{ Binding OptionText }"
 							  x:CompileBindings="True"
-							  Grid.Column="1"
+							  Grid.Column="2"
 							  HorizontalAlignment="Center"
-							  Focusable="False"/>
-					<Button Name="WorkCtrl_EditFiltersButton"
-							Content="Edit Filters"
+							  Focusable="False"
+							  Width="200"
+							  WrapSelection="False"/>
+					<Button Name="InitiateSortButton"
+							Content="Finish"
+							HorizontalContentAlignment="Center"
+							Command="{ Binding OpenOverviewCommand }"
+							HorizontalAlignment="Center"
+							Grid.Column="3"
+							Width="80"
+							Margin="0,0,6,0"
+							ToolTip.Tip="End sorting and copy images to their destination"/>
+					<Button Name="EditFiltersButton"
 							HorizontalContentAlignment="Center"
 							Command="{ Binding ToggleFilterSidePane }"
-							HorizontalAlignment="Right"
-							Grid.Column="2"
-							Width="120"/>
+							HorizontalAlignment="Center"
+							Grid.Column="4"
+							Width="50"
+							Height="30"
+							ToolTip.Tip="Edit filters and amount of references">
+						<Button.Content>
+							<Path Fill="Black"
+								  Stretch="Uniform"
+								  Width="18"
+								  HorizontalAlignment="Center"
+								  VerticalAlignment="Center"
+								  Data="{ StaticResource EditFilters }"/>
+						</Button.Content>
+					</Button>
+
 				</Grid>
 				<Button Content="Debug"
 						Command="{ Binding DebugCommand }"
