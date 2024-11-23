@@ -1,4 +1,7 @@
-﻿using Avalonia.Data.Converters;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.PanAndZoom;
+using Avalonia.Data.Converters;
+using Avalonia.Layout;
 using ImageSorter.Models;
 using ReactiveUI;
 using System;
@@ -76,6 +79,15 @@ public class WorkspaceThumbnailViewModel : ViewModelBase, IActivatableViewModel
         set { this.RaiseAndSetIfChanged(ref _currentMax, value); }
     }
 
+    private bool _reverseViewerOrder = false;
+    public bool ReverseViewerOrder
+    {
+        get { return _reverseViewerOrder; }
+        protected set { this.RaiseAndSetIfChanged(ref _reverseViewerOrder, value); }
+    }
+
+    private  ReversibleStackPanel? RStackPanel { get; set; }
+
     // Lol, lmao even
     [MemberNotNull(nameof(_previous_2_ImageDetails))]
     [MemberNotNull(nameof(_previous_1_ImageDetails))]
@@ -151,7 +163,36 @@ public class WorkspaceThumbnailViewModel : ViewModelBase, IActivatableViewModel
             this.ImageShiftCommand.Execute(shift);
         }
     }
+    
+    
+    private void HandleStackPanelOrder()
+    {
+        switch (this.CurrentAppState.ThumbnailVerticalAlign)
+        {
+            case VerticalAlignment.Bottom:
+                if (this.ReverseViewerOrder == false)
+                {
+                    this.ReverseViewerOrder = true;
+                    this.RStackPanel?.InvalidateArrange(); // Force update layout
+                }
+                break;
+            default:
+                if (this.ReverseViewerOrder == true)
+                {
+                    this.ReverseViewerOrder = false;
+                    this.RStackPanel?.InvalidateArrange();
+                }
+                break;
+        }
+    }
 
+    public void SetReversibleStackPanel(ReversibleStackPanel? rStack)
+    {
+        if (rStack is not null)
+        {
+            this.RStackPanel = rStack;
+        }
+    }
 
     public WorkspaceThumbnailViewModel(AppState CurrentAppState, int CurrentImageIndex, List<ImageDetails> SortedImageDetails,
                                        IObservable<int> CurrentImageIndexObservable, IObservable<List<ImageDetails>> SortedImageDetailsObservable,
@@ -167,6 +208,9 @@ public class WorkspaceThumbnailViewModel : ViewModelBase, IActivatableViewModel
 
         SortedImageDetailsObservable.Subscribe(_ => UpdateSortOrder(_));
 
+        // Reverse controls if VerticalAlignment == top
+        this.HandleStackPanelOrder();
+        this.CurrentAppState.WhenAnyValue(x => x.ThumbnailVerticalAlign).Subscribe(_ => HandleStackPanelOrder());
 
         Activator = new ViewModelActivator();
         this.WhenActivated(disposables =>

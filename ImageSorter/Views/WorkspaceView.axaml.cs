@@ -60,7 +60,6 @@ public partial class WorkspaceView : ReactiveUserControl<WorkspaceViewModel>
 
         if (_zoomBorder is not null)
         {
-
             //_zoomBorder.PointerEntered += FocusCurrentImageZoomBorder;
 
             _zoomBorder.AttachedToLogicalTree += AttachZoomBorderToVM;

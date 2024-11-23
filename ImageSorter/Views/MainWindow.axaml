@@ -11,9 +11,10 @@
         x:Class="ImageSorter.Views.MainWindow"
 		x:DataType="vm:MainWindowViewModel"
 		TransparencyLevelHint="AcrylicBlur"
-		Background="Transparent"
+		Background="White"
 		ExtendClientAreaToDecorationsHint="True">
 
+	<!--Background="Transparent"-->
 	<Grid RowDefinitions="Auto,*">
 		<!--Title bar-->
 		<Grid Name="TitleBar_Grid"

@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Layout;
 using Avalonia.Platform.Storage;
 using DynamicData;
 using ImageSorter.Models;
@@ -17,6 +18,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using static ImageSorter.Models.Helpers;
+
 
 namespace ImageSorter.ViewModels;
 
@@ -51,7 +53,7 @@ public class WorkspaceControlsViewModel : ViewModelBase
     public ICommand SetImageFilteredValue { get; }
 
     public ICommand DebugCommand { get; }
-    
+
     public ImgOrderOptions ImageOrderOptions { get; set; }
 
     public HorizontalToggles ThumbnailHorizontalSettings { get; set; } = new HorizontalToggles();
@@ -64,6 +66,15 @@ public class WorkspaceControlsViewModel : ViewModelBase
 
     public ReferenceSplitToggles ReferenceSplitSettings { get; set; } = new ReferenceSplitToggles();
 
+    private ReversibleStackPanel? RStackPanel { get; set; }
+
+    private bool _reverseControlsOrder = false;
+    public bool ReverseControlsOrder
+    {
+        get { return _reverseControlsOrder; }
+        protected set { this.RaiseAndSetIfChanged(ref _reverseControlsOrder, value); }
+    }
+
     private ImgOrderOption _imageSortOrder;
     public ImgOrderOption ImageSortOrder
     {
@@ -71,7 +82,7 @@ public class WorkspaceControlsViewModel : ViewModelBase
         // not ImageSortOrder = <shit>. Oh well
         get { return _imageSortOrder; }
         [MemberNotNull(nameof(_imageSortOrder))]
-        set { this.RaiseAndSetIfChanged(ref _imageSortOrder!, value); } 
+        set { this.RaiseAndSetIfChanged(ref _imageSortOrder!, value); }
     }
     private bool _advanceSettingsOpen;
     public bool AdvancedSettingsOpen
@@ -85,13 +96,42 @@ public class WorkspaceControlsViewModel : ViewModelBase
         CurrentAppState.FilterSidePanelOpen = !CurrentAppState.FilterSidePanelOpen;
     }
 
+    private void HandleStackPanelOrder()
+    {
+        switch (this.CurrentAppState.ControlsVerticalAlign)
+        {
+            case VerticalAlignment.Top:
+                if (this.ReverseControlsOrder == false)
+                {
+                    this.ReverseControlsOrder = true;
+                    this.RStackPanel?.InvalidateArrange(); // Force update layout
+                }
+                break;
+            default:
+                if (this.ReverseControlsOrder == true)
+                {
+                    this.ReverseControlsOrder = false;
+                    this.RStackPanel?.InvalidateArrange();
+                }
+                break;
+        }
+    }
+
+    public void SetReversibleStackPanel(ReversibleStackPanel? rStack)
+    {
+        if (rStack is not null)
+        {
+            this.RStackPanel = rStack;
+        }
+    }
+
     public ICommand BeginSortCommand { get; }
 
     public ICommand OpenAdditonalsViewThing { get; }
 
     public ICommand BrowseNewOutputDir { get; }
 
-    public WorkspaceControlsViewModel(AppState CurrentAppState, ProjectConfig ProjectConfig, ImageCommands ImageCommands) : base (CurrentAppState)
+    public WorkspaceControlsViewModel(AppState CurrentAppState, ProjectConfig ProjectConfig, ImageCommands ImageCommands) : base(CurrentAppState)
     {
         this.ProjectConfig = ProjectConfig;
         this.ImageCommands = ImageCommands;
@@ -111,23 +151,30 @@ public class WorkspaceControlsViewModel : ViewModelBase
 
         this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => ImageCommands.ChangeImageSortOrder.Execute(_));
 
+        // Open the additional settings view
         this.OpenAdditonalsViewThing = ReactiveCommand.Create(() => AdvancedSettingsOpen = !AdvancedSettingsOpen);
         this.DebugCommand = ReactiveCommand.Create(() => AdvancedSettingsOpen = !AdvancedSettingsOpen);
 
-       
+        // Set up commands for settings that change controls and thumbnail viewer position
+        // Positions are set through CurrentAppState
         this.ThumbnailHorizontalSettings.SetSelectedOption(this.CurrentAppState.ThumbnailHorizontalAlign);
         this.ThumbnailHorizontalSettings.WhenAnyValue(x => x.SelectedOption).Subscribe(_ => this.CurrentAppState.ThumbnailHorizontalAlign = _);
-       
+
         this.ThumbnailVerticalSettings.SetSelectedOption(this.CurrentAppState.ThumbnailVerticalAlign);
         this.ThumbnailVerticalSettings.WhenAnyValue(x => x.SelectedOption).Subscribe(_ => this.CurrentAppState.ThumbnailVerticalAlign = _);
-       
+
         this.ControlsHorizontalSettings.SetSelectedOption(this.CurrentAppState.ControlsHorizontalAlign);
         this.ControlsHorizontalSettings.WhenAnyValue(x => x.SelectedOption).Subscribe(_ => this.CurrentAppState.ControlsHorizontalAlign = _);
-       
+
         this.ControlsVerticalSettings.SetSelectedOption(this.CurrentAppState.ControlsVerticalAlign);
         this.ControlsVerticalSettings.WhenAnyValue(x => x.SelectedOption).Subscribe(_ => this.CurrentAppState.ControlsVerticalAlign = _);
 
+        // Set up commands for how reference images are split between reference views
         this.ReferenceSplitSettings.SetSelectedOption(this.CurrentAppState.ReferenceSplitSetting);
         this.ReferenceSplitSettings.WhenAnyValue(x => x.SelectedOption).Subscribe(_ => this.CurrentAppState.ReferenceSplitSetting = _);
+
+        // Reverse controls if VerticalAlignment == top
+        this.HandleStackPanelOrder();
+        this.CurrentAppState.WhenAnyValue(x => x.ControlsVerticalAlign).Subscribe(_ => HandleStackPanelOrder());
     }
 }

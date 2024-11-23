@@ -82,9 +82,13 @@
 				CornerRadius="2"
 				Padding="5"
 				MaxWidth="500"
-				MaxHeight="5000">
-			<StackPanel Spacing="5"
-						IsEnabled="{ Binding !CurrentAppState.IsWorkSpaceOverlayEnabled }">
+				MaxHeight="5000"
+				Background="White">
+
+			<ReversibleStackPanel Name="RStackPanel"
+								  Spacing="5"
+								  IsEnabled="{ Binding !CurrentAppState.IsWorkSpaceOverlayEnabled }"
+								  ReverseOrder="{ Binding ReverseControlsOrder }">
 				<Expander ExpandDirection="Up"
 						  HorizontalAlignment="Stretch"
 						  VerticalAlignment="Top"
@@ -92,12 +96,13 @@
 						  IsExpanded="True"
 						  Margin="0,1"
 						  MinHeight="20">
-					<Expander.Header>
+					<StackPanel Spacing="3">
 						<TextBlock Text="Advanced Settings"
 								   FontWeight="Bold"
-								   TextAlignment="Center"/>
-					</Expander.Header>
-					<StackPanel Spacing="3">
+								   FontSize="20"
+								   TextAlignment="Center"
+								   TextDecorations="Underline" 
+								   Margin="0,-10,0,5"/>
 						<Border BorderBrush="Black"
 								BorderThickness="2"
 								Width="{ Binding $parent.Bounds.Width }"
@@ -161,7 +166,7 @@
 									<Grid ColumnDefinitions="*,Auto">
 										<TextBox Text="{ Binding ProjectConfig.OutputDirectoryPaths[0] }"
 												 Grid.Column="0"/>
-										<Button Content="Browse" 
+										<Button Content="Browse"
 												Command="{ Binding BrowseNewOutputDir }"
 												Grid.Column="1"
 												Margin="3,0,0,0"/>
@@ -188,29 +193,9 @@
 										HorizontalAlignment="Stretch">
 									<StackPanel>
 										<StackPanel HorizontalAlignment="Center">
-											<TextBlock Text="Horizontal Position"
-													   HorizontalAlignment="Center"/>
-											<StackPanel Orientation="Horizontal"
-														Spacing="5"
-														HorizontalAlignment="Center"
-														VerticalAlignment="Center">
-												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionText }"
-														  IsChecked="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionSelection.AccessibleText }"/>
-												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionText }"
-														  IsChecked="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionSelection.AccessibleText }"/>
-												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.RightOption.OptionText }"
-														  IsChecked="{ Binding ThumbnailHorizontalSettings.RightOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.RightOption.OptionSelection.AccessibleText }"/>
-												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionText }"
-														  IsChecked="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionSelection.AccessibleText }"/>
-											</StackPanel>
-										</StackPanel>
-										<StackPanel HorizontalAlignment="Center">
-											<TextBlock Text="Horizontal Position"
-													   HorizontalAlignment="Center"/>
+											<TextBlock Text="Vertical Position"
+													   HorizontalAlignment="Center"
+													   TextDecorations="Underline"/>
 											<StackPanel Orientation="Horizontal"
 														Spacing="5"
 														HorizontalAlignment="Center"
@@ -227,6 +212,28 @@
 												<CheckBox Content="{ Binding ThumbnailVerticalSettings.StretchOption.OptionText }"
 														  IsChecked="{ Binding ThumbnailVerticalSettings.StretchOption.OptionSelection.BooleanValue }"
 														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.StretchOption.OptionSelection.AccessibleText }"/>
+											</StackPanel>
+										</StackPanel>
+										<StackPanel HorizontalAlignment="Center">
+											<TextBlock Text="Horizontal Position"
+													   HorizontalAlignment="Center"
+													   TextDecorations="Underline"/>
+											<StackPanel Orientation="Horizontal"
+														Spacing="5"
+														HorizontalAlignment="Center"
+														VerticalAlignment="Center">
+												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.RightOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailHorizontalSettings.RightOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.RightOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionText }"
+														  IsChecked="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionSelection.AccessibleText }"/>
 											</StackPanel>
 										</StackPanel>
 									</StackPanel>
@@ -252,45 +259,47 @@
 										HorizontalAlignment="Stretch">
 									<StackPanel>
 										<StackPanel HorizontalAlignment="Center">
-											<TextBlock Text="Horizontal Position"
-													   HorizontalAlignment="Center"/>
+											<TextBlock Text="Vertical Position"
+													   HorizontalAlignment="Center"
+													   TextDecorations="Underline"/>
 											<StackPanel Orientation="Horizontal"
 														Spacing="5"
 														HorizontalAlignment="Center"
 														VerticalAlignment="Center">
-												<CheckBox Content="{ Binding ControlsHorizontalSettings.RightOption.OptionText }"
-														  IsChecked="{ Binding ControlsHorizontalSettings.RightOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.RightOption.OptionSelection.AccessibleText }"/>
-												<CheckBox Content="{ Binding ControlsHorizontalSettings.CenterOption.OptionText }"
-														  IsChecked="{ Binding ControlsHorizontalSettings.CenterOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.CenterOption.OptionSelection.AccessibleText }"/>
-												<CheckBox Content="{ Binding ControlsHorizontalSettings.LeftOption.OptionText }"
-														  IsChecked="{ Binding ControlsHorizontalSettings.LeftOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.LeftOption.OptionSelection.AccessibleText }"/>
-												<CheckBox Content="{ Binding ControlsHorizontalSettings.StretchOption.OptionText }"
-														  IsChecked="{ Binding ControlsHorizontalSettings.StretchOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.StretchOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsVerticalSettings.TopOption.OptionText }"
+														  IsChecked="{ Binding ControlsVerticalSettings.TopOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.TopOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsVerticalSettings.CenterOption.OptionText }"
+														  IsChecked="{ Binding ControlsVerticalSettings.CenterOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.CenterOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsVerticalSettings.BottomOption.OptionText }"
+														  IsChecked="{ Binding ControlsVerticalSettings.BottomOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.BottomOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsVerticalSettings.StretchOption.OptionText }"
+														  IsChecked="{ Binding ControlsVerticalSettings.StretchOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.StretchOption.OptionSelection.AccessibleText }"/>
 											</StackPanel>
 										</StackPanel>
 										<StackPanel HorizontalAlignment="Center">
 											<TextBlock Text="Horizontal Position"
-													   HorizontalAlignment="Center"/>
+													   HorizontalAlignment="Center"
+													   TextDecorations="Underline"/>
 											<StackPanel Orientation="Horizontal"
 														Spacing="5"
 														HorizontalAlignment="Center"
 														VerticalAlignment="Center">
-												<CheckBox Content="{ Binding ControlsVerticalSettings.BottomOption.OptionText }"
-														  IsChecked="{ Binding ControlsVerticalSettings.BottomOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsVerticalSettings.BottomOption.OptionSelection.AccessibleText }"/>
-												<CheckBox Content="{ Binding ControlsVerticalSettings.CenterOption.OptionText }"
-														  IsChecked="{ Binding ControlsVerticalSettings.CenterOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsVerticalSettings.CenterOption.OptionSelection.AccessibleText }"/>
-												<CheckBox Content="{ Binding ControlsVerticalSettings.TopOption.OptionText }"
-														  IsChecked="{ Binding ControlsVerticalSettings.TopOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsVerticalSettings.TopOption.OptionSelection.AccessibleText }"/>
-												<CheckBox Content="{ Binding ControlsVerticalSettings.StretchOption.OptionText }"
-														  IsChecked="{ Binding ControlsVerticalSettings.StretchOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsVerticalSettings.StretchOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsHorizontalSettings.LeftOption.OptionText }"
+														  IsChecked="{ Binding ControlsHorizontalSettings.LeftOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.LeftOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsHorizontalSettings.CenterOption.OptionText }"
+														  IsChecked="{ Binding ControlsHorizontalSettings.CenterOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.CenterOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsHorizontalSettings.RightOption.OptionText }"
+														  IsChecked="{ Binding ControlsHorizontalSettings.RightOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.RightOption.OptionSelection.AccessibleText }"/>
+												<CheckBox Content="{ Binding ControlsHorizontalSettings.StretchOption.OptionText }"
+														  IsChecked="{ Binding ControlsHorizontalSettings.StretchOption.OptionSelection.BooleanValue }"
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.StretchOption.OptionSelection.AccessibleText }"/>
 											</StackPanel>
 										</StackPanel>
 									</StackPanel>
@@ -342,104 +351,102 @@
 								ToolTip.Tip="I seriously don't know where to put this button"/>
 					</StackPanel>
 				</Expander>
-				<Grid Name="WorkCtrl_MainGrid"
-					  RowDefinitions="Auto,Auto,*,auto">
-					<Grid Name="WorkCtrl_TopGrid"
-						  VerticalAlignment="Top"
-						  Grid.Row="0">
-						<ItemsControl Name="WorkCtrl_FilterWrapRepeater"
-									  ItemsSource="{ Binding ReferenceImages }"
-									  x:CompileBindings="False"
-									  Grid.Row="0">
-							<ItemsControl.ItemsPanel>
-								<!--https://docs.avaloniaui.net/docs/concepts/custom-itemspanel-->
-								<ItemsPanelTemplate>
-									<WrapPanel HorizontalAlignment="Center"/>
-								</ItemsPanelTemplate>
-							</ItemsControl.ItemsPanel>
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<!--https://docs.avaloniaui.net/docs/basics/data/data-binding/data-binding-syntax#string-formatting-->
-									<Button Name="{ Binding $self.Tag, Mode=OneWay, StringFormat=WorkCtrl_{0}Button }"
-											Content="{ Binding FilteredValue}"
-											Command="{ Binding $parent[UserControl].DataContext.SetImageFilteredValue }"
-											CommandParameter="{ Binding $self.Tag }"
-											Tag="{ Binding FilteredValue }"
-											ToolTip.Tip="Keybinding is the position of this filter"/>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
-					</Grid>
-					<Separator Grid.Row="1"/>
-					<Grid Name="WorkCtrl_MiddleGrid"
-						  ColumnDefinitions="*,*,*,*"
-						  VerticalAlignment="Top"
-						  Grid.Row="2">
-						<Button Name="WorkCtrl_FirstImageButton"
-								Content="First Image"
-								HorizontalContentAlignment="Center"
-								Command="{ Binding GoFirstImage }"
-								Grid.Column="0"
-								Width="120"
-								ToolTip.Tip="Keybinding: ' Ctrl + Left '"/>
-						<Button Name="WorkCtrl_PreviousImageButton"
-								Content="Previous Image"
-								HorizontalContentAlignment="Center"
-								Command="{ Binding GoPreviousImage }"
-								Grid.Column="1"
-								Width="120"
-								ToolTip.Tip="Keybinding: ' Left '"/>
-						<Button Name="WorkCtrl_NextImageButton"
-								Content="Next Image"
-								HorizontalContentAlignment="Center"
-								Command="{ Binding GoNextImage }"
-								Grid.Column="2"
-								Width="120"
-								ToolTip.Tip="Keybinding: ' Right '"/>
-						<Button Name="WorkCtrl_LastImageButton"
-								Content="Last Image"
-								HorizontalContentAlignment="Center"
-								Command="{ Binding GoLastImage }"
-								Grid.Column="3"
-								Width="120"
-								ToolTip.Tip="Keybinding: ' Ctrl + Right '"/>
-					</Grid>
-					<Grid Name="WorkCtrl_BottomGrid"
-						  ColumnDefinitions="*,Auto,*"
-						  VerticalAlignment="Top"
-						  Grid.Row="3"
-						  Margin="0,10,0,0">
-						<Button Name="WorkCtrl_OpenAdditonalsButton"
-								Content="Additional"
-								HorizontalContentAlignment="Center"
-								Grid.Column="0"
-								Command="{ Binding OpenAdditonalsViewThing }"
-								HorizontalAlignment="Left"
-								Width="120"
-								ToolTip.Tip="Open additional settings... and the sort button."/>
-						<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
-								  SelectedItem="{ Binding ImageSortOrder }"
-								  SelectedValueBinding="{ Binding }"
-								  DisplayMemberBinding="{ Binding OptionText }"
-								  x:CompileBindings="True"
-								  Grid.Column="1"
-								  HorizontalAlignment="Center"
-								  Focusable="False"/>
-						<Button Name="WorkCtrl_EditFiltersButton"
-								Content="Edit Filters"
-								HorizontalContentAlignment="Center"
-								Command="{ Binding ToggleFilterSidePane }"
-								HorizontalAlignment="Right"
-								Grid.Column="2"
-								Width="120"/>
-					</Grid>
+
+				<Grid Name="WorkCtrl_TopGrid"
+					  VerticalAlignment="Top"
+					  Grid.Row="0">
+					<ItemsControl Name="WorkCtrl_FilterWrapRepeater"
+								  ItemsSource="{ Binding ReferenceImages }"
+								  x:CompileBindings="False"
+								  Grid.Row="0">
+						<ItemsControl.ItemsPanel>
+							<!--https://docs.avaloniaui.net/docs/concepts/custom-itemspanel-->
+							<ItemsPanelTemplate>
+								<WrapPanel HorizontalAlignment="Center"/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<!--https://docs.avaloniaui.net/docs/basics/data/data-binding/data-binding-syntax#string-formatting-->
+								<Button Name="{ Binding $self.Tag, Mode=OneWay, StringFormat=WorkCtrl_{0}Button }"
+										Content="{ Binding FilteredValue}"
+										Command="{ Binding $parent[UserControl].DataContext.SetImageFilteredValue }"
+										CommandParameter="{ Binding $self.Tag }"
+										Tag="{ Binding FilteredValue }"
+										ToolTip.Tip="Keybinding is the position of this filter"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</Grid>
+				<Separator Grid.Row="1"/>
+				<Grid Name="WorkCtrl_MiddleGrid"
+					  ColumnDefinitions="*,*,*,*"
+					  VerticalAlignment="Top"
+					  Grid.Row="2">
+					<Button Name="WorkCtrl_FirstImageButton"
+							Content="First Image"
+							HorizontalContentAlignment="Center"
+							Command="{ Binding GoFirstImage }"
+							Grid.Column="0"
+							Width="120"
+							ToolTip.Tip="Keybinding: ' Ctrl + Left '"/>
+					<Button Name="WorkCtrl_PreviousImageButton"
+							Content="Previous Image"
+							HorizontalContentAlignment="Center"
+							Command="{ Binding GoPreviousImage }"
+							Grid.Column="1"
+							Width="120"
+							ToolTip.Tip="Keybinding: ' Left '"/>
+					<Button Name="WorkCtrl_NextImageButton"
+							Content="Next Image"
+							HorizontalContentAlignment="Center"
+							Command="{ Binding GoNextImage }"
+							Grid.Column="2"
+							Width="120"
+							ToolTip.Tip="Keybinding: ' Right '"/>
+					<Button Name="WorkCtrl_LastImageButton"
+							Content="Last Image"
+							HorizontalContentAlignment="Center"
+							Command="{ Binding GoLastImage }"
+							Grid.Column="3"
+							Width="120"
+							ToolTip.Tip="Keybinding: ' Ctrl + Right '"/>
+				</Grid>
+				<Grid Name="WorkCtrl_BottomGrid"
+					  ColumnDefinitions="*,Auto,*"
+					  VerticalAlignment="Top"
+					  Grid.Row="3"
+					  Margin="0,10,0,0">
+					<Button Name="WorkCtrl_OpenAdditonalsButton"
+							Content="Additional"
+							HorizontalContentAlignment="Center"
+							Grid.Column="0"
+							Command="{ Binding OpenAdditonalsViewThing }"
+							HorizontalAlignment="Left"
+							Width="120"
+							ToolTip.Tip="Open additional settings... and the sort button."/>
+					<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
+							  SelectedItem="{ Binding ImageSortOrder }"
+							  SelectedValueBinding="{ Binding }"
+							  DisplayMemberBinding="{ Binding OptionText }"
+							  x:CompileBindings="True"
+							  Grid.Column="1"
+							  HorizontalAlignment="Center"
+							  Focusable="False"/>
+					<Button Name="WorkCtrl_EditFiltersButton"
+							Content="Edit Filters"
+							HorizontalContentAlignment="Center"
+							Command="{ Binding ToggleFilterSidePane }"
+							HorizontalAlignment="Right"
+							Grid.Column="2"
+							Width="120"/>
 				</Grid>
 				<Button Content="Debug"
 						Command="{ Binding DebugCommand }"
 						IsVisible="{ Binding CurrentAppState.DebugMode }"/>
 
 
-			</StackPanel>
+			</ReversibleStackPanel>
 		</Border>
 	</Grid>
 
