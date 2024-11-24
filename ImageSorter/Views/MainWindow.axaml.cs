@@ -60,6 +60,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     // It is always 30 on my machine but this a quick attempt to try to
     // handle another system where the value could be different
     // Altered from https://stackoverflow.com/a/71918303 to handle the background grid focus above
+    // Surprise, the size changes when maximized lol
     private void SetUpStatusBar()
     {
         if (this.FrameSize is null)

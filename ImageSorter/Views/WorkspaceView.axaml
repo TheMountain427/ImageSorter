@@ -71,7 +71,9 @@
 			</Grid.ColumnDefinitions>
 
 			<ScrollViewer Name="Workspace_Alpha_RefScrollView"
-						  Grid.Column="0">
+						  Grid.Column="0"
+						  Background="#FF181818"
+						  VerticalScrollBarVisibility="Hidden">
 				<StackPanel Name="Workspace_Alpha_RefStackPanel">
 					<DockPanel>
 						<Button Name="Workspace_Alpha_RefResetSplitButton"
@@ -95,19 +97,21 @@
 			</ScrollViewer>
 			<GridSplitter Name="Workspace_GridSplitter_01"
 						  Grid.Column="1"
-						  Background="Black"
+						  Background="#FF202020"
 						  ResizeDirection="Columns"
 						  IsEnabled="True"
 						  IsVisible="True"/>
 
 			<GridSplitter Name="Workspace_GridSplitter_02"
 						  Grid.Column="3"
-						  Background="Black"
+						  Background="#FF202020"
 						  ResizeDirection="Columns"
 						  IsEnabled="True"
 						  IsVisible="True"/>
 			<ScrollViewer Name="Workspace_Beta_RefScrollView"
-						  Grid.Column="4">
+						  Grid.Column="4"
+						  Background="#FF181818"
+						  VerticalScrollBarVisibility="Hidden">
 				<StackPanel Name="Workspace_Beta_RefStackPanel">
 					<DockPanel>
 						<Button Name="Workspace_Beta_RefResetSplitButton"

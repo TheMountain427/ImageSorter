@@ -34,7 +34,9 @@
 										<DataTemplate>
 											<CheckBox Content="{ Binding OptionText }"
 													  IsChecked="{ Binding OptionSelection.BooleanValue }"
-													  ToolTip.Tip="{ Binding OptionSelection.AccessibleText }"/>
+													  ToolTip.Tip="{ Binding OptionSelection.AccessibleText }"
+													  ToolTip.Placement="Bottom"
+													  ToolTip.ShowDelay="1200"/>
 										</DataTemplate>
 									</ItemsControl.ItemTemplate>
 								</ItemsControl>
@@ -49,8 +51,13 @@
 				<Button Content="{ Binding ContinueButton.StringValue }"
 						Command="{ Binding ConfirmSelection }"
 						IsEnabled="{ Binding CanContinue }"
-						ToolTip.Tip="{ Binding ContinueButton.AccessibleText }"/>
-				<Button Content="Cancel" Command="{ Binding OnCancelCommand }"/>
+						ToolTip.Tip="{ Binding ContinueButton.AccessibleText }"
+						ToolTip.Placement="Bottom"
+						ToolTip.ShowDelay="1200"
+					    BorderBrush="#3F3F3F"/>
+				<Button Content="Cancel"
+						Command="{ Binding OnCancelCommand }"
+						BorderBrush="#3F3F3F"/>
 			</StackPanel>
 		</StackPanel>
 	</Grid>

@@ -83,13 +83,13 @@
 
 	<Grid>
 		<Border Name="WorkCtrl_Border"
-				BorderBrush="Black"
+				BorderBrush="#FF202020"
 				BorderThickness="2"
 				CornerRadius="2"
 				Padding="5"
 				MaxWidth="500"
 				MaxHeight="5000"
-				Background="White">
+				Background="#FF181818">
 
 			<ReversibleStackPanel Name="RStackPanel"
 								  Spacing="5"
@@ -126,7 +126,7 @@
 									<StackPanel Orientation="Horizontal"
 												HorizontalAlignment="Center">
 										<TextBlock>
-											<Path Fill="Black"
+											<Path Fill="#d5d5d5"
 												  Stretch="Uniform"
 												  Width="30"
 												  HorizontalAlignment="Center"
@@ -137,7 +137,7 @@
 												   VerticalAlignment="Center"
 												   FontWeight="ExtraBold"/>
 										<TextBlock>
-											<Path Fill="Black"
+											<Path Fill="#d5d5d5"
 												  Stretch="Uniform"
 												  Width="30"
 												  HorizontalAlignment="Center"
@@ -175,7 +175,8 @@
 										<Button Content="Browse"
 												Command="{ Binding BrowseNewOutputDir }"
 												Grid.Column="1"
-												Margin="3,0,0,0"/>
+												Margin="3,0,0,0"
+												BorderBrush="#3F3F3F"/>
 									</Grid>
 								</Border>
 							</StackPanel>
@@ -208,16 +209,24 @@
 														VerticalAlignment="Center">
 												<CheckBox Content="{ Binding ThumbnailVerticalSettings.TopOption.OptionText }"
 														  IsChecked="{ Binding ThumbnailVerticalSettings.TopOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.TopOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.TopOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ThumbnailVerticalSettings.CenterOption.OptionText }"
 														  IsChecked="{ Binding ThumbnailVerticalSettings.CenterOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.CenterOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.CenterOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ThumbnailVerticalSettings.BottomOption.OptionText }"
 														  IsChecked="{ Binding ThumbnailVerticalSettings.BottomOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.BottomOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.BottomOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ThumbnailVerticalSettings.StretchOption.OptionText }"
 														  IsChecked="{ Binding ThumbnailVerticalSettings.StretchOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.StretchOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ThumbnailVerticalSettings.StretchOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 											</StackPanel>
 										</StackPanel>
 										<StackPanel HorizontalAlignment="Center">
@@ -230,16 +239,24 @@
 														VerticalAlignment="Center">
 												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionText }"
 														  IsChecked="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.LeftOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionText }"
 														  IsChecked="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.CenterOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.RightOption.OptionText }"
 														  IsChecked="{ Binding ThumbnailHorizontalSettings.RightOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.RightOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.RightOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionText }"
 														  IsChecked="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ThumbnailHorizontalSettings.StretchOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 											</StackPanel>
 										</StackPanel>
 									</StackPanel>
@@ -274,16 +291,24 @@
 														VerticalAlignment="Center">
 												<CheckBox Content="{ Binding ControlsVerticalSettings.TopOption.OptionText }"
 														  IsChecked="{ Binding ControlsVerticalSettings.TopOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsVerticalSettings.TopOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.TopOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ControlsVerticalSettings.CenterOption.OptionText }"
 														  IsChecked="{ Binding ControlsVerticalSettings.CenterOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsVerticalSettings.CenterOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.CenterOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ControlsVerticalSettings.BottomOption.OptionText }"
 														  IsChecked="{ Binding ControlsVerticalSettings.BottomOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsVerticalSettings.BottomOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.BottomOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ControlsVerticalSettings.StretchOption.OptionText }"
 														  IsChecked="{ Binding ControlsVerticalSettings.StretchOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsVerticalSettings.StretchOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ControlsVerticalSettings.StretchOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 											</StackPanel>
 										</StackPanel>
 										<StackPanel HorizontalAlignment="Center">
@@ -296,16 +321,24 @@
 														VerticalAlignment="Center">
 												<CheckBox Content="{ Binding ControlsHorizontalSettings.LeftOption.OptionText }"
 														  IsChecked="{ Binding ControlsHorizontalSettings.LeftOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.LeftOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.LeftOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ControlsHorizontalSettings.CenterOption.OptionText }"
 														  IsChecked="{ Binding ControlsHorizontalSettings.CenterOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.CenterOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.CenterOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ControlsHorizontalSettings.RightOption.OptionText }"
 														  IsChecked="{ Binding ControlsHorizontalSettings.RightOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.RightOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.RightOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 												<CheckBox Content="{ Binding ControlsHorizontalSettings.StretchOption.OptionText }"
 														  IsChecked="{ Binding ControlsHorizontalSettings.StretchOption.OptionSelection.BooleanValue }"
-														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.StretchOption.OptionSelection.AccessibleText }"/>
+														  ToolTip.Tip="{ Binding ControlsHorizontalSettings.StretchOption.OptionSelection.AccessibleText }"
+														  ToolTip.Placement="Bottom"
+														  ToolTip.ShowDelay="1200"/>
 											</StackPanel>
 										</StackPanel>
 									</StackPanel>
@@ -334,13 +367,19 @@
 												VerticalAlignment="Center">
 										<CheckBox Content="{ Binding ReferenceSplitSettings.SplitOption.OptionText }"
 												  IsChecked="{ Binding ReferenceSplitSettings.SplitOption.OptionSelection.BooleanValue }"
-												  ToolTip.Tip="{ Binding ReferenceSplitSettings.SplitOption.OptionSelection.AccessibleText }"/>
+												  ToolTip.Tip="{ Binding ReferenceSplitSettings.SplitOption.OptionSelection.AccessibleText }"
+												  ToolTip.Placement="Bottom"
+												  ToolTip.ShowDelay="1200"/>
 										<CheckBox Content="{ Binding ReferenceSplitSettings.AlphaOption.OptionText }"
 												  IsChecked="{ Binding ReferenceSplitSettings.AlphaOption.OptionSelection.BooleanValue }"
-												  ToolTip.Tip="{ Binding ReferenceSplitSettings.AlphaOption.OptionSelection.AccessibleText }"/>
+												  ToolTip.Tip="{ Binding ReferenceSplitSettings.AlphaOption.OptionSelection.AccessibleText }"
+												  ToolTip.Placement="Bottom"
+												  ToolTip.ShowDelay="1200"/>
 										<CheckBox Content="{ Binding ReferenceSplitSettings.BetaOption.OptionText }"
 												  IsChecked="{ Binding ReferenceSplitSettings.BetaOption.OptionSelection.BooleanValue }"
-												  ToolTip.Tip="{ Binding ReferenceSplitSettings.BetaOption.OptionSelection.AccessibleText }"/>
+												  ToolTip.Tip="{ Binding ReferenceSplitSettings.BetaOption.OptionSelection.AccessibleText }"
+												  ToolTip.Placement="Bottom"
+												  ToolTip.ShowDelay="1200"/>
 									</StackPanel>
 								</Border>
 							</StackPanel>
@@ -350,7 +389,11 @@
 								Command="{ Binding SetImageFilteredValue }"
 								CommandParameter="Unsorted"
 								HorizontalAlignment="Center"
-								ToolTip.Tip="Keybinding: ' . '"/>
+								ToolTip.Tip="Keybinding: ' . '"
+								Margin="0,10,0,0"
+								ToolTip.Placement="Bottom"
+								ToolTip.ShowDelay="1200"
+							    BorderBrush="#3F3F3F"/>
 					</StackPanel>
 				</Expander>
 
@@ -375,7 +418,10 @@
 										Command="{ Binding $parent[UserControl].DataContext.SetImageFilteredValue }"
 										CommandParameter="{ Binding $self.Tag }"
 										Tag="{ Binding FilteredValue }"
-										ToolTip.Tip="{ Binding ImageIndex, StringFormat='Keybinding: \' {0} \' '}"/>
+										ToolTip.Tip="{ Binding ImageIndex, StringFormat='Keybinding: \' {0} \' '}"
+										ToolTip.Placement="Bottom"
+										ToolTip.ShowDelay="1200"
+										BorderBrush="#3F3F3F"/>
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
@@ -391,28 +437,39 @@
 							Command="{ Binding GoFirstImage }"
 							Grid.Column="0"
 							Width="120"
-							ToolTip.Tip="Keybinding: ' Ctrl + Left '"/>
+							ToolTip.Tip="Keybinding: ' Ctrl + Left '"
+							ToolTip.Placement="Bottom"
+							ToolTip.ShowDelay="1200"
+							BorderBrush="#3F3F3F"/>
 					<Button Name="WorkCtrl_PreviousImageButton"
 							Content="Previous Image"
 							HorizontalContentAlignment="Center"
 							Command="{ Binding GoPreviousImage }"
 							Grid.Column="1"
 							Width="120"
-							ToolTip.Tip="Keybinding: ' Left '"/>
+							ToolTip.Tip="Keybinding: ' Left '"
+							ToolTip.Placement="Bottom"
+							ToolTip.ShowDelay="1200"
+							BorderBrush="#3F3F3F"/>
 					<Button Name="WorkCtrl_NextImageButton"
 							Content="Next Image"
 							HorizontalContentAlignment="Center"
 							Command="{ Binding GoNextImage }"
 							Grid.Column="2"
 							Width="120"
-							ToolTip.Tip="Keybinding: ' Right '"/>
+							ToolTip.Tip="Keybinding: ' Right '"
+							ToolTip.Placement="Bottom"
+							ToolTip.ShowDelay="1200"/>
 					<Button Name="WorkCtrl_LastImageButton"
 							Content="Last Image"
 							HorizontalContentAlignment="Center"
 							Command="{ Binding GoLastImage }"
 							Grid.Column="3"
 							Width="120"
-							ToolTip.Tip="Keybinding: ' Ctrl + Right '"/>
+							ToolTip.Tip="Keybinding: ' Ctrl + Right '"
+							ToolTip.Placement="Bottom"
+							ToolTip.ShowDelay="1200"
+							BorderBrush="#3F3F3F"/>
 				</Grid>
 				<Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto"
 					  VerticalAlignment="Top"
@@ -426,9 +483,12 @@
 							HorizontalAlignment="Center"
 							Width="50"
 							Height="30"
-							ToolTip.Tip="Open additional settings">
+							ToolTip.Tip="Open additional settings"
+							ToolTip.Placement="LeftEdgeAlignedTop"
+							ToolTip.ShowDelay="1200"
+							BorderBrush="#3F3F3F">
 						<Button.Content>
-							<Path Fill="Black"
+							<Path Fill="#d5d5d5"
 								  Stretch="Uniform"
 								  Width="18"
 								  HorizontalAlignment="Center"
@@ -444,7 +504,10 @@
 							Grid.Column="1"
 							Width="80"
 							Margin="6,0,0,0"
-							ToolTip.Tip="Open an overview of all images"/>
+							ToolTip.Tip="Open an overview of all images"
+							ToolTip.Placement="LeftEdgeAlignedTop"
+							ToolTip.ShowDelay="1200"
+							BorderBrush="#3F3F3F"/>
 					<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
 							  SelectedItem="{ Binding ImageSortOrder }"
 							  SelectedValueBinding="{ Binding }"
@@ -454,7 +517,11 @@
 							  HorizontalAlignment="Center"
 							  Focusable="False"
 							  Width="200"
-							  WrapSelection="False"/>
+							  WrapSelection="False"
+							  ToolTip.Tip="Change image sort order"
+							  ToolTip.Placement="RightEdgeAlignedTop"
+							  ToolTip.ShowDelay="1200"
+							  BorderBrush="#3F3F3F"/>
 					<Button Name="InitiateSortButton"
 							Content="Finish"
 							HorizontalContentAlignment="Center"
@@ -463,7 +530,10 @@
 							Grid.Column="3"
 							Width="80"
 							Margin="0,0,6,0"
-							ToolTip.Tip="End sorting and copy images to their destination"/>
+							ToolTip.Tip="End sorting and copy images to their destination"
+							ToolTip.Placement="RightEdgeAlignedTop"
+							ToolTip.ShowDelay="1200"
+							BorderBrush="#3F3F3F"/>
 					<Button Name="EditFiltersButton"
 							HorizontalContentAlignment="Center"
 							Command="{ Binding ToggleFilterSidePane }"
@@ -471,9 +541,12 @@
 							Grid.Column="4"
 							Width="50"
 							Height="30"
-							ToolTip.Tip="Edit filters and amount of references">
+							ToolTip.Tip="Edit filters and amount of references"
+							ToolTip.Placement="RightEdgeAlignedTop"
+							ToolTip.ShowDelay="1200"
+							BorderBrush="#3F3F3F">
 						<Button.Content>
-							<Path Fill="Black"
+							<Path Fill="#d5d5d5"
 								  Stretch="Uniform"
 								  Width="18"
 								  HorizontalAlignment="Center"

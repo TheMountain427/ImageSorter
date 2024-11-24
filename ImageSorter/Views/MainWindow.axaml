@@ -11,27 +11,28 @@
         x:Class="ImageSorter.Views.MainWindow"
 		x:DataType="vm:MainWindowViewModel"
 		TransparencyLevelHint="AcrylicBlur"
-		Background="White"
 		ExtendClientAreaToDecorationsHint="True">
-
+	
 	<!--Background="Transparent"-->
-	<Grid RowDefinitions="Auto,*">
+	<Grid RowDefinitions="Auto,*,Auto">
 		<!--Title bar-->
 		<Grid Name="TitleBar_Grid"
 			  ColumnDefinitions="Auto,*" 
 			  IsHitTestVisible="False" 
-			  Background="Yellow" 
-			  Height="30" 
-			  MaxHeight="30">
+			  Background="#151515" 
+			  Height="25" 
+			  MaxHeight="25"
+			  Margin="6,6,0,0">
 			<Image Source="/Assets/avalonia-logo.ico"
 				   Grid.Column="0" 
 				   VerticalAlignment="Center"  
-				   Width="22" 
-				   Margin="8,0,8,0"/>
+				   Width="20" 
+				   Margin="8,3,8,0"/>
 			<TextBlock Text="Image Sorter"
 					   Grid.Column="1" 
 					   VerticalAlignment="Center" 
-					   FontSize="12" />
+					   FontSize="12"
+					   Margin="8,3,8,0" />
 		</Grid>
 
 		<!--Content-->
@@ -79,5 +80,10 @@
 			</rxui:RoutedViewHost>
 
 		</Grid>
+		<Rectangle HorizontalAlignment="Stretch"
+				   VerticalAlignment="Bottom"
+				   Height="8"
+				   Grid.Row="2"
+				   Fill="#ff151515"/>
 	</Grid>
 </Window>

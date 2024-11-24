@@ -10,15 +10,16 @@
 
 
 	<Grid>
-		<Border BorderBrush="Black"
+		<Border BorderBrush="#FF202020"
 				BorderThickness="2"
 				CornerRadius="2"
 				Padding="5"
 				MaxWidth="600"
-				MaxHeight="5000">
+				MaxHeight="5000"
+				Background="#FF181818">
 			<ReversibleStackPanel Name="RStackPanel" 
 								  ReverseOrder="{ Binding ReverseViewerOrder }">
-				<Border BorderBrush="Black"
+				<Border BorderBrush="#00000000"
 						BorderThickness="2"
 						CornerRadius="2"
 						Width="480">
@@ -28,7 +29,10 @@
 							<Button Command="{ Binding ShiftImage }"
 									CommandParameter="-2"
 									ToolTip.Tip="{ Binding Previous_2_ImageDetails.FileName }"
-									IsVisible="{ Binding #PreviousThumbnail_2.Source, Converter={x:Static ObjectConverters.IsNotNull} }">
+									ToolTip.Placement="Bottom"
+									ToolTip.ShowDelay="1200"
+									IsVisible="{ Binding #PreviousThumbnail_2.Source, Converter={x:Static ObjectConverters.IsNotNull} }"
+									Background="#00000000">
 								<Button.Content>
 									<StackPanel>
 										<TextBlock Text="{ Binding Previous_2_ImageDetails.FilteredValue }"
@@ -48,7 +52,10 @@
 							<Button Command="{ Binding ShiftImage }"
 									CommandParameter="-1"
 									ToolTip.Tip="{ Binding Previous_1_ImageDetails.FileName }"
-									IsVisible="{ Binding #PreviousThumbnail_1.Source, Converter={x:Static ObjectConverters.IsNotNull}}">
+									ToolTip.Placement="Bottom"
+									ToolTip.ShowDelay="1200"
+									IsVisible="{ Binding #PreviousThumbnail_1.Source, Converter={x:Static ObjectConverters.IsNotNull}}"
+									Background="#00000000">
 								<Button.Content>
 									<StackPanel>
 										<TextBlock Text="{ Binding Previous_1_ImageDetails.FilteredValue }"
@@ -67,7 +74,10 @@
 							<Button Command=""
 									CommandParameter=""
 									ToolTip.Tip="{ Binding Current_ImageDetails.FileName }"
-									IsVisible="{ Binding #CurrentThumbnail.Source, Converter={x:Static ObjectConverters.IsNotNull} }">
+									ToolTip.Placement="Bottom"
+									ToolTip.ShowDelay="1200"
+									IsVisible="{ Binding #CurrentThumbnail.Source, Converter={x:Static ObjectConverters.IsNotNull} }"
+									Background="#00000000">
 								<Button.Content>
 									<StackPanel>
 										<TextBlock Text="{ Binding Current_ImageDetails.FilteredValue }"
@@ -85,7 +95,10 @@
 							<Button Command="{ Binding ShiftImage }"
 									CommandParameter="1"
 									ToolTip.Tip="{ Binding Next_1_ImageDetails.FileName }"
-									IsVisible="{ Binding #NextThumbnail_1.Source, Converter={x:Static ObjectConverters.IsNotNull} }">
+									ToolTip.Placement="Bottom"
+									ToolTip.ShowDelay="1200"
+									IsVisible="{ Binding #NextThumbnail_1.Source, Converter={x:Static ObjectConverters.IsNotNull} }"
+									Background="#00000000">
 								<Button.Content>
 									<StackPanel>
 										<TextBlock Text="{ Binding Next_1_ImageDetails.FilteredValue }"
@@ -105,7 +118,10 @@
 							<Button Command="{ Binding ShiftImage }"
 									CommandParameter="2"
 									ToolTip.Tip="{ Binding Next_2_ImageDetails.FileName }"
-									IsVisible="{ Binding #NextThumbnail_2.Source, Converter={x:Static ObjectConverters.IsNotNull} }">
+									ToolTip.Placement="Bottom"
+									ToolTip.ShowDelay="1200"
+									IsVisible="{ Binding #NextThumbnail_2.Source, Converter={x:Static ObjectConverters.IsNotNull} }"
+									Background="#00000000">
 								<Button.Content>
 									<StackPanel>
 										<TextBlock Text="{ Binding Next_2_ImageDetails.FilteredValue }"

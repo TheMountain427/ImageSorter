@@ -13,14 +13,16 @@
 			<TextBlock Text="Create or Select a Project"
 					   FontSize="20"
 					   FontWeight="Bold"
-					   HorizontalAlignment="Center"/>
+					   HorizontalAlignment="Center"
+					   Margin="0,0,0,10"/>
 			<Border HorizontalAlignment="Center"
 					VerticalAlignment="Center"
 					Width="400"
 					BorderBrush="Black"
 					BorderThickness="5"
 					Padding="10"
-					CornerRadius="2">
+					CornerRadius="2"
+					Background="#FF232323">
 				<StackPanel Spacing="3">
 					<StackPanel>
 						<TextBlock Text="{ Binding ProjectNameErrorText }"
@@ -33,12 +35,16 @@
 								   Grid.Column="0"
 								   Height="12"
 								   Margin="0,0,10,0"
-								   ToolTip.Tip="{ Binding ProjectNameHelp }"/>
+								   ToolTip.Tip="{ Binding ProjectNameHelp }"
+								   ToolTip.Placement="Bottom"
+								   ToolTip.ShowDelay="1200"/>
 							<TextBox Grid.Column="1"
 									 HorizontalAlignment="Stretch"
 									 Watermark="Project Name"
 									 Text="{ Binding ProjectNameText }"
-									 ToolTip.Tip="{ Binding ProjectNameBoxHelp }"/>
+									 ToolTip.Tip="{ Binding ProjectNameBoxHelp }"
+									 ToolTip.Placement="Bottom"
+									 ToolTip.ShowDelay="1200"/>
 						</Grid>
 					</StackPanel>
 					<StackPanel>
@@ -52,13 +58,17 @@
 								   Grid.Column="0"
 								   Height="12"
 								   Margin="0,0,10,0"
-								   ToolTip.Tip="{ Binding ImgPathHelp }"/>
+								   ToolTip.Tip="{ Binding ImgPathHelp }"
+								   ToolTip.Placement="Bottom"
+								   ToolTip.ShowDelay="1200"/>
 							<!--Try UpdateSourceTrigger instead of Events-->
 							<TextBox Name="ProjectSelection_ImgPath_TextBox"
 									 Grid.Column="1"
 									 Watermark="Path\To\Images"
 									 Text="{ Binding ImgPathText }"
 									 ToolTip.Tip="{ Binding ImgPathBoxHelp }"
+								     ToolTip.Placement="Bottom"
+								     ToolTip.ShowDelay="1200"
 									 LostFocus="ProjectSelection_ImgPath_TextBox_LostFocus"
 									 GotFocus="ProjectSelection_ImgPath_TextBox_GotFocus"/>
 							<Button Name="ProjectSelection_ImgPath_BrowseButton"
@@ -68,7 +78,10 @@
 									Content="Browse"
 									Command="{ Binding BrowseFiles }"
 									CommandParameter="ImgPath"
-									ToolTip.Tip="{ Binding BrowseButtonHelp }"/>
+									ToolTip.Tip="{ Binding BrowseButtonHelp }"
+								    ToolTip.Placement="Bottom"
+								    ToolTip.ShowDelay="1200"
+									BorderBrush="#3F3F3F"/>
 						</Grid>
 					</StackPanel>
 					<StackPanel>
@@ -82,12 +95,16 @@
 								   Grid.Column="0"
 								   Height="12"
 								   Margin="0,0,10,0"
-								   ToolTip.Tip="{ Binding OutPathHelp }"/>
+								   ToolTip.Tip="{ Binding OutPathHelp }"
+								   ToolTip.Placement="Bottom"
+								   ToolTip.ShowDelay="1200"/>
 							<TextBox Name="ProjectSelection_OutPath_TextBox"
 									 Grid.Column="1"
 									 Watermark="Path\To\Output"
 									 Text="{ Binding OutPathText }"
 									 ToolTip.Tip="{ Binding OutPathBoxHelp }"
+								     ToolTip.Placement="Bottom"
+								     ToolTip.ShowDelay="1200"
 									 LostFocus="ProjectSelection_OutPath_TextBox_LostFocus"
 									 GotFocus="ProjectSelection_OutPath_TextBox_GotFocus"/>
 							<Button Name="ProjectSelection_OutPath_BrowseButton"
@@ -97,7 +114,10 @@
 									Content="Browse"
 									Command="{ Binding BrowseFiles }"
 									CommandParameter="OutPath"
-									ToolTip.Tip="{ Binding BrowseButtonHelp }"/>
+									ToolTip.Tip="{ Binding BrowseButtonHelp }"
+								    ToolTip.Placement="Bottom"
+								    ToolTip.ShowDelay="1200"
+									BorderBrush="#3F3F3F"/>
 						</Grid>
 					</StackPanel>
 					<Grid Name="ProjectSelection_Control_Grid"
@@ -109,11 +129,16 @@
 							<Button Name="ProjectSelection_Control_LoadConfigButton"
 									Height="32"
 									Content="Load Config"
-									ToolTip.Tip="{ Binding LoadConfigHelp }"/>
+									ToolTip.Tip="{ Binding LoadConfigHelp }"
+								    ToolTip.Placement="Bottom"
+							   	    ToolTip.ShowDelay="1200"
+									BorderBrush="#3F3F3F"/>
 							<ComboBox Name="ProjectSelection_Control_RecentProjects_DropDown"
 									  ItemsSource="{ Binding RecentProjects }"
 									  SelectedItem="{ Binding SelectedRecentProject }"
-									  ToolTip.Tip="{ Binding RecentProjectsHelp }">
+									  ToolTip.Tip="{ Binding RecentProjectsHelp }"
+									  ToolTip.Placement="Bottom"
+									  ToolTip.ShowDelay="1200">
 								<ComboBox.ItemTemplate>
 									<DataTemplate>
 										<TextBlock Text="{ Binding }"/>
@@ -130,7 +155,10 @@
 								IsEnabled="{ Binding ProjectSettingsSet }"
 								Content="Begin"
 								Command="{ Binding GoToWorkspace }"
-								ToolTip.Tip="{ Binding BeginHelp }"/>
+								ToolTip.Tip="{ Binding BeginHelp }"
+								ToolTip.Placement="Bottom"
+								ToolTip.ShowDelay="1200"
+								BorderBrush="#3F3F3F"/>
 					</Grid>
 				</StackPanel>
 

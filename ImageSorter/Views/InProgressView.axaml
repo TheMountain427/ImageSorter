@@ -30,7 +30,8 @@
 					Command="{ Binding ContinueCommand }"
 					IsEnabled="{ Binding ShowCompletionControls }"
 					IsVisible="{ Binding ShowCompletionControls }"
-					HorizontalAlignment="Center"/>
+					HorizontalAlignment="Center"
+					BorderBrush="#3F3F3F"/>
 		</StackPanel>
 	</Grid>
 </UserControl>

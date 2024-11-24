@@ -13,20 +13,26 @@
 					  x:CompileBindings="False">
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<Border BorderBrush="Gray"
+					<Border BorderBrush="#FF202020"
 							BorderThickness="2"
 							CornerRadius="0">
 						<Grid>
 							<StackPanel>
-								<Grid>
 									<!--Text="{ Binding FilteredValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus }
 										This fails here for some reason but works in WorkspaceFilterView.
 										Possibly because ReferenceImages in this VM is created from a IEnumerable<ImageDetails>?
 										Have to use a code behind event instead at the moment.-->
 									<TextBox Text="{ Binding FilteredValue }"
 											 HorizontalAlignment="Center"
-											 TextChanged="FilterNameChanged"/>
-								</Grid>
+											 TextChanged="FilterNameChanged"
+											 TextAlignment="Center">
+										<TextBox.Styles>
+											<Style Selector="TextBox">
+												<!--I swear to god, textboxes are uncentered out of the box. This fixes that-->
+												<Setter Property="Padding" Value="6,6,6,5"/>
+											</Style>
+										</TextBox.Styles>
+										</TextBox>
 								<Image Source="{ Binding ImageBitmap }">
 									<Image.ContextMenu>
 										<ContextMenu>
@@ -47,7 +53,8 @@
 									IsVisible="{ Binding ImageNotLoaded }"
 									ZIndex="2"
 									HorizontalAlignment="Center"
-									VerticalAlignment="Center"/>
+									VerticalAlignment="Center"
+									BorderBrush="#3F3F3F"/>
 						</Grid>
 					</Border>
 				</DataTemplate>

@@ -15,7 +15,8 @@
 					Command="{ Binding CloseFilterPanel }"
 					HorizontalAlignment="Left"
 					HorizontalContentAlignment="Center"
-					Grid.Column="0"/>
+					Grid.Column="0"
+					BorderBrush="#3F3F3F"/>
 			<StackPanel Orientation="Horizontal"
 						HorizontalAlignment="Center"
 						Spacing="5"
@@ -24,12 +25,14 @@
 						Content="Remove Filter"
 						Command="{ Binding RemoveFilter }"
 						Width="110"
-						HorizontalContentAlignment="Center"/>
+						HorizontalContentAlignment="Center"
+						BorderBrush="#3F3F3F"/>
 				<Button Name="SideFilters_AddFilterButton"
 						Content="Add Filter"
 						Command="{ Binding AddFilter }"
 						Width="110"
-						HorizontalContentAlignment="Center"/>
+						HorizontalContentAlignment="Center"
+						BorderBrush="#3F3F3F"/>
 			</StackPanel>
 		</Grid>
 		<ItemsControl ItemsSource="{ Binding ReferenceImages }">

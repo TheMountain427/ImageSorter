@@ -21,7 +21,7 @@
 					IsVisible="{ Binding CurrentAppState.DebugMode }"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Top"/>
-			<Border Background="GhostWhite"
+			<Border Background="#FF181818"
 					BorderBrush="Black"
 					BorderThickness="2"
 					HorizontalAlignment="Center"

@@ -25,7 +25,7 @@
 	<Grid Width="{ Binding MaxViewWidth }"
 		  Height="{ Binding MaxViewHeight }"
 		  RowDefinitions="Auto,*,Auto">
-		<DockPanel Background="Red"
+		<DockPanel Background="#FF232323"
 				   VerticalAlignment="Top"
 				   ZIndex="3"
 				   Width="{ Binding $parent[Grid].Bounds.Width }">
@@ -33,7 +33,8 @@
 			<Button Content="Show images with filter value..."
 					DockPanel.Dock="Right"
 					HorizontalAlignment="Right"
-					Command="{ Binding ReselectListValues }">
+					Command="{ Binding ReselectListValues }"
+					BorderBrush="#3F3F3F">
 				<Button.Flyout>
 					<Flyout Placement="BottomEdgeAlignedRight"
 							Opening="FilterByFlyout_Opening"
@@ -58,7 +59,8 @@
 					  DisplayMemberBinding="{ Binding OptionText }"
 					  x:CompileBindings="False"
 					  DockPanel.Dock="Right"
-					  HorizontalAlignment="Left"/>
+					  HorizontalAlignment="Left"
+					  BorderBrush="#3F3F3F"/>
 		</DockPanel>
 
 
@@ -72,7 +74,7 @@
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<Border BorderBrush="Black"
+							<Border BorderBrush="#FF232323"
 									BorderThickness="2"
 									Width="200"
 									Margin="5,5,5,5">
@@ -114,7 +116,8 @@
 
 								<Button Command="{ Binding $parent[UserControl].DataContext.ImageClickCommand }"
 										CommandParameter="{ Binding FileName }"
-										x:CompileBindings="False">
+										x:CompileBindings="False"
+									    Background="#00000000">
 									<Button.Content>
 										<StackPanel>
 											<TextBlock Text="{ Binding FilteredValue }"
