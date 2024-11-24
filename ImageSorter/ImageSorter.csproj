@@ -46,9 +46,16 @@
     <Content Include="Assets\512x512-Transparent.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\BadIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <None Include="C:\Users\sbker\OneDrive\Desktop\ImageSorter\ImageSorter\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

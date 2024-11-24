@@ -10,6 +10,7 @@
 		Width="{ Binding WindowWidth, Mode=TwoWay }"
         x:Class="ImageSorter.Views.MainWindow"
 		x:DataType="vm:MainWindowViewModel"
+		Icon="/Assets/BadIcon.png"
 		TransparencyLevelHint="AcrylicBlur"
 		ExtendClientAreaToDecorationsHint="True">
 	
@@ -23,7 +24,7 @@
 			  Height="25" 
 			  MaxHeight="25"
 			  Margin="6,6,0,0">
-			<Image Source="/Assets/avalonia-logo.ico"
+			<Image Source="/Assets/BadIcon.png"
 				   Grid.Column="0" 
 				   VerticalAlignment="Center"  
 				   Width="20" 
