@@ -1,0 +1,176 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:ImageSorter.ViewModels"
+			 xmlns:math="using:ImageSorter.Models.Converters"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="200"
+             x:Class="ImageSorter.Views.WorkspaceThumbnailView"
+			 x:DataType="vm:WorkspaceThumbnailViewModel">
+
+
+	<Grid>
+		<Border BorderBrush="#FF202020"
+				BorderThickness="2"
+				CornerRadius="2"
+				Padding="5"
+				MaxWidth="600"
+				MaxHeight="5000"
+				Background="#FF181818">
+			<ReversibleStackPanel Name="RStackPanel" 
+								  ReverseOrder="{ Binding ReverseViewerOrder }">
+				<Border BorderBrush="#00000000"
+						BorderThickness="2"
+						CornerRadius="2"
+						Width="480">
+					<Grid ColumnDefinitions="*,*,*,*,*">
+						<Border Grid.Column="0"
+								HorizontalAlignment="Center">
+							<Button Command="{ Binding ShiftImage }"
+									CommandParameter="-2"
+									ToolTip.Tip="{ Binding Previous_2_ImageDetails.FileName }"
+									ToolTip.Placement="Bottom"
+									ToolTip.ShowDelay="1200"
+									IsVisible="{ Binding #PreviousThumbnail_2.Source, Converter={x:Static ObjectConverters.IsNotNull} }"
+									Background="#00000000">
+								<Button.Content>
+									<StackPanel>
+										<TextBlock Text="{ Binding Previous_2_ImageDetails.FilteredValue }"
+												   HorizontalAlignment="Center"
+												   IsVisible="{ Binding CurrentAppState.DebugMode }"/>
+										<Image Name="PreviousThumbnail_2"
+											   Source="{ Binding Previous_2_ImageDetails.ThumbnailBitmap }"
+											   Opacity="80"
+											   Height="{ Binding #PreviousThumbnail_1.Bounds.Height, Converter={x:Static math:MathConverter.Smaller80Percent}} }"/>
+									</StackPanel>
+								</Button.Content>
+							</Button>
+						</Border>
+
+						<Border Grid.Column="1"
+								HorizontalAlignment="Center">
+							<Button Command="{ Binding ShiftImage }"
+									CommandParameter="-1"
+									ToolTip.Tip="{ Binding Previous_1_ImageDetails.FileName }"
+									ToolTip.Placement="Bottom"
+									ToolTip.ShowDelay="1200"
+									IsVisible="{ Binding #PreviousThumbnail_1.Source, Converter={x:Static ObjectConverters.IsNotNull}}"
+									Background="#00000000">
+								<Button.Content>
+									<StackPanel>
+										<TextBlock Text="{ Binding Previous_1_ImageDetails.FilteredValue }"
+												   HorizontalAlignment="Center"
+												   IsVisible="{ Binding CurrentAppState.DebugMode }"/>
+										<Image Name="PreviousThumbnail_1"
+											   Source="{ Binding Previous_1_ImageDetails.ThumbnailBitmap }"
+											   Opacity="50"
+											   Height="{ Binding #CurrentThumbnail.Bounds.Height, Converter={x:Static math:MathConverter.Smaller80Percent}} }"/>
+									</StackPanel>
+								</Button.Content>
+							</Button>
+						</Border>
+						<Border Grid.Column="2"
+								HorizontalAlignment="Center">
+							<Button Command=""
+									CommandParameter=""
+									ToolTip.Tip="{ Binding Current_ImageDetails.FileName }"
+									ToolTip.Placement="Bottom"
+									ToolTip.ShowDelay="1200"
+									IsVisible="{ Binding #CurrentThumbnail.Source, Converter={x:Static ObjectConverters.IsNotNull} }"
+									Background="#00000000">
+								<Button.Content>
+									<StackPanel>
+										<TextBlock Text="{ Binding Current_ImageDetails.FilteredValue }"
+												   HorizontalAlignment="Center"
+												   IsVisible="{ Binding CurrentAppState.DebugMode }"/>
+										<Image Name="CurrentThumbnail"
+											   Source="{ Binding Current_ImageDetails.ThumbnailBitmap }"/>
+									</StackPanel>
+								</Button.Content>
+							</Button>
+						</Border>
+
+						<Border Grid.Column="3"
+								HorizontalAlignment="Center">
+							<Button Command="{ Binding ShiftImage }"
+									CommandParameter="1"
+									ToolTip.Tip="{ Binding Next_1_ImageDetails.FileName }"
+									ToolTip.Placement="Bottom"
+									ToolTip.ShowDelay="1200"
+									IsVisible="{ Binding #NextThumbnail_1.Source, Converter={x:Static ObjectConverters.IsNotNull} }"
+									Background="#00000000">
+								<Button.Content>
+									<StackPanel>
+										<TextBlock Text="{ Binding Next_1_ImageDetails.FilteredValue }"
+												   HorizontalAlignment="Center"
+												   IsVisible="{ Binding CurrentAppState.DebugMode }"/>
+										<Image Name="NextThumbnail_1"
+											   Source="{ Binding Next_1_ImageDetails.ThumbnailBitmap }"
+											   Height="{ Binding #CurrentThumbnail.Bounds.Height, Converter={x:Static math:MathConverter.Smaller80Percent}} }"
+											   Opacity="50"/>
+									</StackPanel>
+								</Button.Content>
+							</Button>
+						</Border>
+
+						<Border Grid.Column="4"
+								HorizontalAlignment="Center">
+							<Button Command="{ Binding ShiftImage }"
+									CommandParameter="2"
+									ToolTip.Tip="{ Binding Next_2_ImageDetails.FileName }"
+									ToolTip.Placement="Bottom"
+									ToolTip.ShowDelay="1200"
+									IsVisible="{ Binding #NextThumbnail_2.Source, Converter={x:Static ObjectConverters.IsNotNull} }"
+									Background="#00000000">
+								<Button.Content>
+									<StackPanel>
+										<TextBlock Text="{ Binding Next_2_ImageDetails.FilteredValue }"
+												   HorizontalAlignment="Center"
+												   IsVisible="{ Binding CurrentAppState.DebugMode }"/>
+										<Image Name="NextThumbnail_2"
+											   Source="{ Binding Next_2_ImageDetails.ThumbnailBitmap }"
+											   Height="{ Binding #NextThumbnail_1.Bounds.Height, Converter={x:Static math:MathConverter.Smaller80Percent}} }"
+											   Opacity="80"/>
+									</StackPanel>
+								</Button.Content>
+							</Button>
+						</Border>
+
+					</Grid>
+				</Border>
+				<Border>
+					<Grid RowDefinitions="*,*,*"
+						  ColumnDefinitions="50*,50*">
+						<TextBlock Text="Current Image Details"
+								   HorizontalAlignment="Center"
+								   Grid.Row="0"
+								   Grid.ColumnSpan="2"
+								   FontWeight="Bold"/>
+						<TextBlock Text="{ Binding Current_ImageDetails.FileName, StringFormat='Name: {0}' }"
+								   Grid.Row="1"
+								   Grid.ColumnSpan="2"
+								   HorizontalAlignment="Left"
+								   IsVisible="{ Binding $self.Text, Converter={x:Static StringConverters.IsNotNullOrEmpty} }"/>
+						<TextBlock HorizontalAlignment="Left"
+								   Grid.Row="2"
+								   Grid.Column="0">
+							<TextBlock.Text>
+								<MultiBinding StringFormat="Position: {0}/{1}">
+									<Binding Path="CurrentIndex"/>
+									<Binding Path="CurrentMax"/>
+								</MultiBinding>
+							</TextBlock.Text>
+						</TextBlock>
+						<TextBlock Text="{ Binding Current_ImageDetails.FilteredValue, StringFormat='Filter: {0}' }"
+								   Grid.Row="2"
+								   Grid.Column="1"
+								   HorizontalAlignment="Center"
+								   IsVisible="{ Binding $self.Text, Converter={x:Static StringConverters.IsNotNullOrEmpty} }"/>
+
+					</Grid>
+				</Border>
+			</ReversibleStackPanel>
+
+		</Border>
+	</Grid>
+</UserControl>

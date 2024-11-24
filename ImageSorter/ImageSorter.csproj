@@ -30,10 +30,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\WorkspaceControlsView.axaml.cs">
+    <Compile Update="Views\WorkspaceViews\WorkspaceControlsView.axaml.cs">
       <DependentUpon>WorkspaceControlsView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\WorkspaceView.axaml.cs">
+    <Compile Update="Views\WorkspaceViews\WorkspaceView.axaml.cs">
       <DependentUpon>WorkspaceView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
