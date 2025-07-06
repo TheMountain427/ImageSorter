@@ -28,7 +28,7 @@ public partial class App : Application
             desktop.MainWindow = new MainWindow();
 
             // Set App.TopLevel here
-            TopLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+            TopLevel = TopLevel.GetTopLevel(desktop.MainWindow)!;
             // Changed formated here so that Top Level is loaded before the view models
             // This way we can access StorageProvider on ViewModel load
             // This also lets us access keydown events from anywhere

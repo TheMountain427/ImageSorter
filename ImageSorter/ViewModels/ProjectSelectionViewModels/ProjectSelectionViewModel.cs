@@ -274,7 +274,7 @@ public class ProjectSelectionViewModel : ViewModelBase
             CurrentAppState.CurrentProjectConfigPath = pathToConfig;
         }
 
-        var projectConfig = GetProjectConfigFromJson(CurrentAppState.CurrentProjectConfigPath);
+        var projectConfig = GetProjectConfigFromJson(CurrentAppState.CurrentProjectConfigPath)!;
 
         // Load images details from image input directories, only unique file names
         if (!didLoadRecentProject) // oops, was duplicating images each load

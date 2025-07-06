@@ -48,7 +48,7 @@ public class InProgressViewModel : ViewModelBase
     private string? _progressMessage;
     public string ProgressMessage
     {
-        get { return _progressMessage; }
+        get { return _progressMessage ?? ""; }
         set { this.RaiseAndSetIfChanged(ref _progressMessage, value); }
     }
 

@@ -24,6 +24,7 @@ public static class MathConverter
     public static FuncValueConverter<string, double> SimpleAddConverter { get; } =
         new FuncValueConverter<string, double>(exp =>
         {
+            if (exp is null) { return 0; }
             var variables = exp.Split('-');
             double output = double.Parse(variables[0]) + double.Parse(variables[1]);
             return output;
@@ -32,6 +33,7 @@ public static class MathConverter
     public static FuncValueConverter<string, double> SimpleSubtractConverter { get; } =
         new FuncValueConverter<string, double>(exp =>
         {
+            if (exp is null) { return 0; }
             var variables = exp.Split('*');
             double output = double.Parse(variables[0]) - double.Parse(variables[1]);
             return output;
@@ -40,6 +42,7 @@ public static class MathConverter
     public static FuncValueConverter<string, double> SimpleMultiplyConverter { get; } =
         new FuncValueConverter<string, double>(exp =>
         {
+            if (exp is null) { return 0; }
             var variables = exp.Split('*');
             double output = double.Parse(variables[0]) * double.Parse(variables[1]);
             return output;
@@ -48,6 +51,7 @@ public static class MathConverter
     public static FuncValueConverter<string, double> SimpleDivisionConverter { get; } =
         new FuncValueConverter<string, double>(exp =>
         {
+            if (exp is null) { return 0; }
             var variables = exp.Split('/');
             double output = double.Parse(variables[0]) / double.Parse(variables[1]);
             return output;

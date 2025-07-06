@@ -78,8 +78,10 @@ public class WorkspaceViewModel : ViewModelBase
     private EventHandler _onIsSortWarningUpChange;
     public event EventHandler OnIsSortWarningUpChange
     {
+#pragma warning disable CS8601
         add { _onIsSortWarningUpChange += value; }
         remove { _onIsSortWarningUpChange -= value; }
+#pragma warning restore CS8601
     }
 
     private ImgOrderOption _imageSortOrder;
@@ -124,7 +126,7 @@ public class WorkspaceViewModel : ViewModelBase
             this.SortedImageDetails = SortImageDetailsBy(this._baseImageDetails, ImgOrderOption.OptionEnum).ToList();
 
             // Find our current main image in the sort index so we can return to it
-            var newCurrentImageDetailsIndex = SortedImageDetails.IndexOf(this.CurrentImageVM.ImageDetails);
+            var newCurrentImageDetailsIndex = SortedImageDetails.IndexOf(this.CurrentImageVM.ImageDetails!);
 
             // We found it
             if (SortedImageDetails[newCurrentImageDetailsIndex] is not null)
@@ -182,7 +184,7 @@ public class WorkspaceViewModel : ViewModelBase
     public void SetImageFilterValue(string FilterValue)
     {
         // Not sure why I did it like this
-        this.ProjectConfig.SetImageFilterValue(CurrentImageVM.ImageDetails, FilterValue);
+        this.ProjectConfig.SetImageFilterValue(CurrentImageVM.ImageDetails!, FilterValue);
     }
 
     private void ManageReferenceSplit(object? sender, EventArgs e)
@@ -570,7 +572,7 @@ public class WorkspaceViewModel : ViewModelBase
     private void _goToProjectSelectionByName()
     {
         var routableViewModel = MainRouter.NavigationStack.FirstOrDefault(x => x.UrlPathSegment == "ProjectSelection");
-        MainRouter.Navigate.Execute(routableViewModel);
+        MainRouter.Navigate.Execute(routableViewModel!);
     }
 
     public ICommand DebugCommand;
@@ -859,7 +861,7 @@ public class WorkspaceViewModel : ViewModelBase
         this.SortEngine = new SortEngine(this.ProgressIncrement);
 
         // Try to load the image sort order from PorjectConfig, default to DescFileName
-        if (this.ImageOrderOptions.TryGetOrderOption(this.ProjectConfig.ImageSortOrder, out ImgOrderOption configOption))
+        if (this.ImageOrderOptions.TryGetOrderOption(this.ProjectConfig.ImageSortOrder, out ImgOrderOption? configOption))
         {
             this.ImageSortOrder = configOption;
         }

@@ -46,13 +46,20 @@ public class SortConfigs
     {
         var option = SortOptions.Find(x => x.OptionKey == SortOptionKey);
 
-        if (option is SortOption<T> typedOption)
+        if (option is not null)
         {
-            typedOption.Value = NewValue;
+            if (option is SortOption<T> typedOption)
+            {
+                typedOption.Value = NewValue;
+            }
+            else
+            {
+                throw new InvalidOperationException($"SortOption type does not match. {typeof(T)} != {option.GetType}");
+            }
         }
         else
         {
-            throw new InvalidOperationException($"SortOption type does not match. {NewValue.GetType} != {option.GetType}");
+            throw new ArgumentException("Option does not exist", nameof(SortOptionKey));
         }
     }
 
@@ -60,13 +67,20 @@ public class SortConfigs
     {
         var option = SortOptions.Find(x => x.OptionText == SortOptionText);
 
-        if (option is SortOption<T> typedOption)
+        if (option is not null)
         {
-            typedOption.Value = NewValue;
+            if (option is SortOption<T> typedOption)
+            {
+                typedOption.Value = NewValue;
+            }
+            else
+            {
+                throw new InvalidOperationException($"SortOption type does not match. {typeof(T)} != {option.GetType}");
+            }
         }
         else
         {
-            throw new InvalidOperationException($"SortOption type does not match. {NewValue.GetType} != {option.GetType}");
+            throw new ArgumentException("Option does not exist", nameof(SortOptionText));
         }
     }
 

@@ -82,11 +82,11 @@ public class WorkspaceThumbnailViewModel : ViewModelBase, IActivatableViewModel
     private  ReversibleStackPanel? RStackPanel { get; set; }
 
     // Lol, lmao even
-    [MemberNotNull(nameof(_previous_2_ImageDetails))]
-    [MemberNotNull(nameof(_previous_1_ImageDetails))]
-    [MemberNotNull(nameof(_current_ImageDetails))]
-    [MemberNotNull(nameof(_next_1_ImageDetails))]
-    [MemberNotNull(nameof(_next_2_ImageDetails))]
+    [MemberNotNull(nameof(Previous_2_ImageDetails))]
+    [MemberNotNull(nameof(Previous_1_ImageDetails))]
+    [MemberNotNull(nameof(Current_ImageDetails))]
+    [MemberNotNull(nameof(Next_1_ImageDetails))]
+    [MemberNotNull(nameof(Next_2_ImageDetails))]
     private void SetupThumbnails(List<ImageDetails> SortedImageDetails, int CurrentImageIndex)
     {
         this.CurrentIndex = CurrentImageIndex;

@@ -86,8 +86,10 @@ public class ProjectConfig : ReactiveObject
     private EventHandler _onProjectConfigChange;
     public event EventHandler OnProjectConfigChange
     {
+#pragma warning disable CS8601
         add { _onProjectConfigChange += value; }
         remove { _onProjectConfigChange -= value; }
+#pragma warning restore CS8601
     }
 
     public void SetLastModifiedTime()

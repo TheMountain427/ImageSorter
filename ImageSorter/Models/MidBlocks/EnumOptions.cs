@@ -1,4 +1,5 @@
-﻿using static ImageSorter.Models.Enums;
+﻿using System.Diagnostics.CodeAnalysis;
+using static ImageSorter.Models.Enums;
 
 namespace ImageSorter.Models;
 
@@ -24,7 +25,7 @@ public class ImgOrderOptions
         return this.Options.First(x => x.OptionEnum == ImgOrder);
     }
 
-    public bool TryGetOrderOption(ImgOrder ImgOrder, out ImgOrderOption ImgOrderOption)
+    public bool TryGetOrderOption(ImgOrder ImgOrder, [MaybeNullWhen(false)] out ImgOrderOption ImgOrderOption)
     {
         ImgOrderOption = this.Options.FirstOrDefault(x => x.OptionEnum == ImgOrder);
         return ImgOrderOption != null;

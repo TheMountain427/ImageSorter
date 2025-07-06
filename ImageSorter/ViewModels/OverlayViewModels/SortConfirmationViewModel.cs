@@ -35,7 +35,7 @@ public class SortConfirmationViewModel : ViewModelBase
         var selectedOptions = this.SortConfirmations.SelectMany(x => x.ConfirmationOptions.Where(x => x.OptionSelection.BooleanValue == true)
                                                                                           .Select(x => x.OptionText));
 
-        OnSuccessCommand.Execute(selectedOptions);
+        OnSuccessCommand?.Execute(selectedOptions);
         // OnSuccessCommand will close the view now
         //CloseOverlay.Execute(null);
     }

@@ -1,8 +1,8 @@
-﻿using ImageSorter.Models;
-using ReactiveUI;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Linq;
 using System.Text.Json;
+using ImageSorter.Models;
+using ReactiveUI;
 
 namespace ImageSorter.ViewModels;
 
@@ -44,15 +44,23 @@ public class MainWindowViewModel : ReactiveObject, IScreen
             {
                 currentAppState = JsonSerializer.Deserialize<AppState>(File.ReadAllText(appStatePath));
 
-                if (currentAppState.AppStateFilePath != appStatePath)
+                if (currentAppState is null)
                 {
-                    currentAppState.AppStateFilePath = appStatePath;
+                    currentAppState = new AppState { AppStateFilePath = appStatePath };
+                    File.WriteAllText(appStatePath, JsonSerializer.Serialize(currentAppState, JsonOptions));
+                }
+                else
+                {
+                    if (currentAppState.AppStateFilePath != appStatePath)
+                    {
+                        currentAppState.AppStateFilePath = appStatePath;
+                    }
                 }
             }
             // Handle bad json file
             catch (JsonException e)
             {
-                currentAppState.AppStateFilePath = appStatePath;
+                currentAppState = new AppState { AppStateFilePath = appStatePath };
                 File.WriteAllText(appStatePath, JsonSerializer.Serialize(currentAppState, JsonOptions));
             }
         }

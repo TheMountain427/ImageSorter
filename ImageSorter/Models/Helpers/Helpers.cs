@@ -100,7 +100,7 @@ public static class Helpers
         return builder.Uri;
     }
 
-    public static ProjectConfig GetProjectConfigFromJson(string FilePath)
+    public static ProjectConfig? GetProjectConfigFromJson(string FilePath)
     {
         return JsonSerializer.Deserialize<ProjectConfig>(File.ReadAllText(FilePath));
     }
