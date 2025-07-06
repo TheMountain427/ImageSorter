@@ -1,7 +1,4 @@
-﻿
-
-using Avalonia.Controls;
-using Avalonia.Data.Converters;
+﻿using Avalonia.Data.Converters;
 
 namespace ImageSorter.Models.Converters;
 
@@ -67,5 +64,4 @@ public static class MathConverter
     {
         return exp * 0.6;
     });
-
 }

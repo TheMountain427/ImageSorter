@@ -1,6 +1,5 @@
 ﻿using ImageSorter.Models;
 using ReactiveUI;
-using System;
 using System.Windows.Input;
 
 namespace ImageSorter.ViewModels;
@@ -112,8 +111,6 @@ public class InProgressViewModel : ViewModelBase
         this.WhenAnyValue(x => x.CurrentProgressValue).Subscribe(_ => CheckIfProgressComplete(_));
         this.WhenAnyValue(x => x.ProgressComplete).Subscribe(_ => OnProgressComplete());
     }
-
-
 
     public InProgressViewModel(AppState CurrentAppState, double MinimumValue, double MaximumValue, IObservable<double> ValueToWatch, ICommand OnSuccessCommand, string InProgressText)
         : this(CurrentAppState, MinimumValue, MaximumValue, ValueToWatch, OnSuccessCommand)

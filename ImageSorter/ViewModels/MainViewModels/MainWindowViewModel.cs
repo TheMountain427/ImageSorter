@@ -1,9 +1,6 @@
 ﻿using ImageSorter.Models;
 using ReactiveUI;
-using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Text.Json;
 
@@ -11,7 +8,6 @@ namespace ImageSorter.ViewModels;
 
 public class MainWindowViewModel : ReactiveObject, IScreen
 {
-
     public RoutingState Router { get; } = new RoutingState();
 
     public static JsonSerializerOptions JsonOptions { get; private set; } = new JsonSerializerOptions { WriteIndented = true };
@@ -31,7 +27,7 @@ public class MainWindowViewModel : ReactiveObject, IScreen
         get { return _windowHeight; }
         set { this.RaiseAndSetIfChanged(ref _windowHeight, value); }
     }
-    
+
     [MemberNotNull(nameof(CurrentAppState))]
     private void FirstRunChecks()
     {
@@ -84,8 +80,6 @@ public class MainWindowViewModel : ReactiveObject, IScreen
         }
 
         this.CurrentAppState = currentAppState;
-
-        
     }
 
     public MainWindowViewModel()
@@ -111,16 +105,3 @@ public class MainWindowViewModel : ReactiveObject, IScreen
         this.WhenAnyValue(x => x.WindowWidth).Subscribe(_ => this.CurrentAppState!.WindowWidth = _);
     }
 }
-
-
-
-
-
-
-
-
-
-
-// shit is useless here
-#pragma warning restore CS8618
-#pragma warning restore CS8602

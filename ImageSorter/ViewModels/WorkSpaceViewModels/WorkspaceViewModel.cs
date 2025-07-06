@@ -1,21 +1,16 @@
-﻿using ImageSorter.Models;
+﻿using Avalonia.Controls.PanAndZoom;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
+using ImageSorter.Models;
 using ReactiveUI;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Input;
-using static ImageSorter.Models.Enums;
-using System;
-using static ImageSorter.Models.SortOptionKey;
-using System.Threading.Tasks;
-using System.Threading;
+using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Diagnostics;
+using System.Windows.Input;
+using static ImageSorter.Models.Enums;
 using static ImageSorter.Models.Helpers;
-using Avalonia.Input;
-using Avalonia.Platform.Storage;
-using Avalonia.Controls.PanAndZoom;
-using Avalonia.Interactivity;
+using static ImageSorter.Models.SortOptionKey;
 
 namespace ImageSorter.ViewModels;
 
@@ -108,8 +103,8 @@ public class WorkspaceViewModel : ViewModelBase
         get { return _currentImageIndex; }
         protected set
         {
-            // This is smelly but whatever. 
-            // this.ProjectConfig.CurrentImageIndex wasn't updating probably cause of 
+            // This is smelly but whatever.
+            // this.ProjectConfig.CurrentImageIndex wasn't updating probably cause of
             // observables or something so just gunna force it.
             this.RaiseAndSetIfChanged(ref _currentImageIndex, value);
             this.ProjectConfig.CurrentImageIndex = value;
@@ -225,7 +220,6 @@ public class WorkspaceViewModel : ViewModelBase
         this.BetaReferenceViewModel?.UpdateReferenceCollection(this.BetaReferenceImages);
     }
 
-
     public ICommand CloseOverlayView { get; }
     private void _closeOverlayView()
     {
@@ -309,9 +303,6 @@ public class WorkspaceViewModel : ViewModelBase
             sortConfirmations.Add(orphanedSortConfirmation);
         }
 
-
-
-
         // If their are warnings, we need to prompt for how to proceed.
         // Also some ghetto event handling as I would rather the overlay be an async method that awaits values
         // then we would just continue this method, but idk how
@@ -354,7 +345,7 @@ public class WorkspaceViewModel : ViewModelBase
             OverlayRouter.Navigate.Execute(new OverlayViewModel(_aps, ViewModelToDisplay: sortConfirmationVM,
                                                                       CloseOverlay: CloseOverlayView,
                                                                       AllowClickOff: false));
-            // Subscribe to watch for OnSuccessCommand to run and mark IsSortWarningUp = 
+            // Subscribe to watch for OnSuccessCommand to run and mark IsSortWarningUp =
             this.OnIsSortWarningUpChange += ShowPreviewAfterWarning;
         }
         else
@@ -362,7 +353,6 @@ public class WorkspaceViewModel : ViewModelBase
             // No warnings, we can proceed to the sort preview
             ShowPreSortPreview();
         }
-
     }
 
     private void ShowPreviewAfterWarning(object? sender, EventArgs e)
@@ -526,7 +516,7 @@ public class WorkspaceViewModel : ViewModelBase
             // Seperate the images into groups based on filters
             var sortedImageGroups = this.SortEngine.SortImageDetailsForOutput(this.ProjectConfig.InputImages, this.ProjectConfig.ReferenceImages, this.SortConfigs);
 
-            // Get the filters that are actually being used since I didn't think far enough ahead 
+            // Get the filters that are actually being used since I didn't think far enough ahead
             var outputNames = this.SortEngine.ConvertSortedGroupsToFilterOutputDirectories(sortedImageGroups);
 
             // Create the output directories the images will go into
@@ -857,8 +847,6 @@ public class WorkspaceViewModel : ViewModelBase
 
     public WorkspaceViewModel(IScreen screen, RoutingState router, AppState CurrentAppState, ProjectConfig projectConfig) : base(CurrentAppState)
     {
-
-
         _aps = this.CurrentAppState;
         this.MainRouter = router;
         this.HostScreen = screen;
@@ -897,13 +885,11 @@ public class WorkspaceViewModel : ViewModelBase
             throw new ArgumentException("No images were supplied ya dingus.");
         }
 
-
         // This should change at some point. Really shouldn't load all of them into memory tbh.
         if (_baseImageDetails is not null)
         {
             LoadThumbnails(this._baseImageDetails);
         }
-
 
         SetImageFilteredValue = ReactiveCommand.Create<string>(_ => SetImageFilterValue(_));
 
@@ -924,12 +910,10 @@ public class WorkspaceViewModel : ViewModelBase
             ImageSortOrder = this.ImageSortOrder
         };
 
-
         WorkspaceControlsRouter.Navigate.Execute(new WorkspaceControlsViewModel(_aps, this.ProjectConfig, imageCommands));
 
         // Side pane that allows modification of filter amounts
         WorkspaceFilterRouter.Navigate.Execute(new WorkspaceFilterViewModel(_aps, this.ProjectConfig));
-
 
         // Time for some magic collections. Need to split the reference collection to both sides
         // but allow changes to properties on the collection to reflect the original list
@@ -946,11 +930,9 @@ public class WorkspaceViewModel : ViewModelBase
             }
         }
 
-
-
         // ************************************************************************************
         // I also need to dispose of these old ref view models, they chill in memory too
-        // Actually GC mostly handles this fine, it might balloon if tons of images were selected but I don't think 
+        // Actually GC mostly handles this fine, it might balloon if tons of images were selected but I don't think
         // that will happen + it would not really be large enough to care
 
         // Have to save the view models cause I need to notify the VM's that the collection changes
@@ -986,6 +968,5 @@ public class WorkspaceViewModel : ViewModelBase
 
         thumbnailVM.Activator.Activate();
         ThumbnailRouter.Navigate.Execute(thumbnailVM);
-
     }
 }

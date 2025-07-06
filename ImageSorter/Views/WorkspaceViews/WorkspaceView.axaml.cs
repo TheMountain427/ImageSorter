@@ -1,16 +1,11 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.PanAndZoom;
-using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ImageSorter.ViewModels;
 using ReactiveUI;
-using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ImageSorter.Views;
 
@@ -37,21 +32,10 @@ public partial class WorkspaceView : ReactiveUserControl<WorkspaceViewModel>
         }
     }
 
-    // Focus the zoom border when mouse goes over it
-    // Not sure about this one, might be annoying if trying to type in a text box
-    //private void FocusCurrentImageZoomBorder(object? sender, PointerEventArgs e)
-    //{
-    //    if (sender is ZoomBorder zm)
-    //    {
-    //        zm.Focus();
-    //    }
-    //}
-
     public WorkspaceView()
     {
         this.WhenActivated(disposables => { });
         AvaloniaXamlLoader.Load(this);
-
 
         // Requires a bit of a hack on MainWindow code behind
         // This is because I have made it so background clicks exit focus of things
@@ -65,5 +49,4 @@ public partial class WorkspaceView : ReactiveUserControl<WorkspaceViewModel>
             _zoomBorder.AttachedToLogicalTree += AttachZoomBorderToVM;
         }
     }
-
 }

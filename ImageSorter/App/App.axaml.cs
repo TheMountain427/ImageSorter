@@ -2,10 +2,8 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-
 using ImageSorter.ViewModels;
 using ImageSorter.Views;
-using System.Text.Json;
 
 namespace ImageSorter;
 
@@ -38,7 +36,6 @@ public partial class App : Application
 
             // Allow access to ApplicationLiftetime for App Exit event
             Desktop = desktop;
-
         }
 
         base.OnFrameworkInitializationCompleted();

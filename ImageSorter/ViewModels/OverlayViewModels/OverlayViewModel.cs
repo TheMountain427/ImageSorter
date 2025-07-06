@@ -5,7 +5,6 @@ using System.Windows.Input;
 
 namespace ImageSorter.ViewModels;
 
-
 // Overlay VM that will darken the background and pass another view to center screen
 public class OverlayViewModel : ViewModelBase, IActivatableViewModel
 {

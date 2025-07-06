@@ -17,7 +17,6 @@
 			<Image Source="{ Binding ImageBitmap }"
 				   MaxHeight="{ Binding $parent[ZoomBorder].Bounds.Height, Converter={x:Static math:MathConverter.Smaller60Percent} }"
 				   MaxWidth="{ Binding $parent[ZoomBorder].Bounds.Width, Converter={x:Static math:MathConverter.Smaller60Percent} }"/>
-		
 	</StackPanel>
 
 </UserControl>

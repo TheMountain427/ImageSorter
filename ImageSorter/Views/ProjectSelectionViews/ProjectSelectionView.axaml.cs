@@ -1,10 +1,7 @@
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
-using DynamicData.Binding;
 using ImageSorter.ViewModels;
 using ReactiveUI;
 
@@ -48,5 +45,5 @@ public partial class ProjectSelectionView : ReactiveUserControl<ProjectSelection
         {
             vm.OutPathTextBoxLostFocus = false;
         }
-    } 
+    }
 }

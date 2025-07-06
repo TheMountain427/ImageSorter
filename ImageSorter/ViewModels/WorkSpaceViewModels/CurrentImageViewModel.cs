@@ -1,7 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using ImageSorter.Models;
 using ReactiveUI;
-using System.Collections.Generic;
 using System.Reactive.Disposables;
 
 namespace ImageSorter.ViewModels;
@@ -48,7 +47,6 @@ public class CurrentImageViewModel : ViewModelBase, IActivatableViewModel
         }
 
         UrlPathSegment = $"CurrentImage[{CurrentIndex}]";
-
     }
 
     private void HandleDeactivation()

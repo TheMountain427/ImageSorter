@@ -2,8 +2,6 @@
 using Avalonia.Layout;
 using ImageSorter.Models;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Disposables;
 using System.Windows.Input;
@@ -157,7 +155,7 @@ public class WorkspaceThumbnailViewModel : ViewModelBase, IActivatableViewModel
             this.ImageShiftCommand.Execute(shift);
         }
     }
-        
+
     private void HandleStackPanelOrder()
     {
         switch (this.CurrentAppState.ThumbnailVerticalAlign)
@@ -216,4 +214,3 @@ public class WorkspaceThumbnailViewModel : ViewModelBase, IActivatableViewModel
 
     private void HandleDeactivation() { }
 }
-

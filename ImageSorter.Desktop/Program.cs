@@ -1,6 +1,4 @@
-﻿using System;
-
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.ReactiveUI;
 
 namespace ImageSorter.Desktop;

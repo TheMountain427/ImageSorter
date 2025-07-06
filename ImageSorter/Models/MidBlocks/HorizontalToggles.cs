@@ -1,6 +1,5 @@
 ﻿using Avalonia.Layout;
 using ReactiveUI;
-using System;
 
 namespace ImageSorter.Models;
 

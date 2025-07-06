@@ -1,12 +1,9 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.PanAndZoom;
 using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ImageSorter.ViewModels;
 using ReactiveUI;
-using System.Diagnostics;
 
 namespace ImageSorter.Views;
 
@@ -30,7 +27,7 @@ public partial class WorkspaceThumbnailView : ReactiveUserControl<WorkspaceThumb
         AvaloniaXamlLoader.Load(this);
 
         _rStackPanel = this.FindControl<ReversibleStackPanel>("RStackPanel");
-        
+
         if (_rStackPanel is not null)
         {
             _rStackPanel.AttachedToLogicalTree += AttachRStackToVM;

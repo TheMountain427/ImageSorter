@@ -2,11 +2,9 @@
 using Avalonia.Layout;
 using ImageSorter.Models;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
-
 
 namespace ImageSorter.ViewModels;
 
@@ -26,7 +24,6 @@ public class WorkspaceControlsViewModel : ViewModelBase
         protected set { this.RaiseAndSetIfChanged(ref _referenceImages, value); }
     }
 
-    
     public ICommand GoNextImage { get; }
 
     public ICommand GoPreviousImage { get; }

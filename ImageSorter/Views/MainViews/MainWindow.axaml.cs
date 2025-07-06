@@ -2,12 +2,10 @@
 using Avalonia.Controls;
 using Avalonia.Controls.PanAndZoom;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using ImageSorter.ViewModels;
 using ReactiveUI;
-using System.Linq;
 
 namespace ImageSorter.Views;
 
@@ -25,7 +23,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     {
         // Ok hear me out, this isn't as bad is it looks
         // I want to keep the click background function, but I need to be able to select the ZoomBorder
-        // to send key events to it. 
+        // to send key events to it.
         // A worse option is to use App.Toplevel.Keydown then filter those events.
         // But that fires even when typing in a textbox, which would require more hack filters.
         if (sender is Grid grid)
@@ -43,7 +41,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
                 // Actually I'm just going to focus the ZoomBorder by default. Makes hotkeys easier
                 _currentImageZoomBorder?.Focus();
             }
-            // If zoom border is not null, then we are at workspace view 
+            // If zoom border is not null, then we are at workspace view
             // If pointer is over zoomborder, then disable background focus so we can focus that
             else if (!_currentImageZoomBorder.IsPointerOver)
             {
@@ -52,7 +50,6 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
                 _currentImageZoomBorder?.Focus();
             }
         }
-
         // Now we can focus the zoomborder and handle KeyDown events on its code behind
     }
 
@@ -65,7 +62,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     {
         if (this.FrameSize is null)
             throw new UnhandledErrorException("Blowing up now");
-                
+
         var titleBarGrid = this.FindControl<Grid>("TitleBar_Grid");
 
         if (titleBarGrid is null)
@@ -76,7 +73,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         // X,Y of the window minus the top system bar
         var clientSize = this.ClientSize;
 
-        // System buttons are FrameSizeY - this. 
+        // System buttons are FrameSizeY - this.
         // This is what it is on my machine, might change based on scaling or somthing
         double extraPaddingY = 9;
 
@@ -84,7 +81,6 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 
         titleBarGrid.Height = statusBarHeight;
         titleBarGrid.MaxHeight = statusBarHeight;
-
     }
 
     public MainWindow()
@@ -105,5 +101,4 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         this.AttachDevTools();
 #endif
     }
-
 }

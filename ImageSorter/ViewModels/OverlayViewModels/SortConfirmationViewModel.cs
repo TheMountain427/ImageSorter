@@ -1,8 +1,5 @@
 ﻿using ImageSorter.Models;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Input;
 
 namespace ImageSorter.ViewModels;
@@ -73,8 +70,7 @@ public class SortConfirmationViewModel : ViewModelBase
 
     }
 
-
-    public SortConfirmationViewModel(AppState CurrentAppState, IEnumerable<SortConfirmation> SortConfirmations, ICommand CloseOverlay) 
+    public SortConfirmationViewModel(AppState CurrentAppState, IEnumerable<SortConfirmation> SortConfirmations, ICommand CloseOverlay)
                                      : base(CurrentAppState)
     {
         this.SortConfirmations = (List<SortConfirmation>)SortConfirmations;
@@ -132,7 +128,7 @@ public class SortConfirmationViewModel : ViewModelBase
         }
     }
 
-    public SortConfirmationViewModel(AppState CurrentAppState, IEnumerable<SortConfirmation> SortConfirmations, 
+    public SortConfirmationViewModel(AppState CurrentAppState, IEnumerable<SortConfirmation> SortConfirmations,
                                      ICommand CloseOverlay, ICommand OnSuccessCommand, ICommand OnCancelCommand)
                                      : this (CurrentAppState, SortConfirmations, CloseOverlay)
     {

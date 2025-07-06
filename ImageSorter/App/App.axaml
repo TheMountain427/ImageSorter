@@ -1,43 +1,43 @@
-<Application xmlns="https://github.com/avaloniaui"
+<Application x:Class="ImageSorter.App"
+             xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:local="using:ImageSorter"
-             x:Class="ImageSorter.App"
+             xmlns:local="using:ImageSorter"
              RequestedThemeVariant="Dark">
-	         <!--RequestedThemeVariant="Dark">-->
-	<!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-    <Application.Styles>
-        <!--<FluentTheme />-->
+	<!--  RequestedThemeVariant="Dark">  -->
+	<!--  "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options.  -->
+	<Application.Styles>
+		<!--<FluentTheme />-->
 		<!--<FluentTheme DensityStyle="Compact" />-->
 		<FluentTheme>
 			<FluentTheme.Palettes>
-				<ColorPaletteResources x:Key="Dark" 
-									   Accent="#3BFF3B3B" 
-									   AltHigh="Black" 
-									   AltLow="Black" 
-									   AltMedium="Black" 
-									   AltMediumHigh="Black" 
-									   AltMediumLow="#402B2B2B" 
-									   BaseHigh="#D5D5D5" 
-									   BaseLow="#FF202020" 
-									   BaseMedium="#4C4C4C" 
-									   BaseMediumHigh="#FFacacac" 
-									   BaseMediumLow="#3BFF3B3B" 
-									   ChromeAltLow="#FFacacac" 
-									   ChromeBlackHigh="Black" 
-									   ChromeBlackLow="#FFacacac" 
-									   ChromeBlackMedium="Black" 
-									   ChromeBlackMediumLow="Black" 
-									   ChromeDisabledHigh="#FF202020" 
-									   ChromeDisabledLow="#FF909090" 
-									   ChromeGray="#FF747474" 
-									   ChromeHigh="#FF747474" 
-									   ChromeLow="#FF0d0d0d" 
-									   ChromeMedium="#FF121212" 
-									   ChromeMediumLow="#FF1b1b1b" 
-									   ChromeWhite="White" 
-									   ListLow="#FF121212" 
-									   ListMedium="#FF202020" 
-									   RegionColor="#FF151515" />
+				<ColorPaletteResources x:Key="Dark"
+				                       Accent="#3BFF3B3B"
+				                       AltHigh="Black"
+				                       AltLow="Black"
+				                       AltMedium="Black"
+				                       AltMediumHigh="Black"
+				                       AltMediumLow="#402B2B2B"
+				                       BaseHigh="#D5D5D5"
+				                       BaseLow="#FF202020"
+				                       BaseMedium="#4C4C4C"
+				                       BaseMediumHigh="#FFacacac"
+				                       BaseMediumLow="#3BFF3B3B"
+				                       ChromeAltLow="#FFacacac"
+				                       ChromeBlackHigh="Black"
+				                       ChromeBlackLow="#FFacacac"
+				                       ChromeBlackMedium="Black"
+				                       ChromeBlackMediumLow="Black"
+				                       ChromeDisabledHigh="#FF202020"
+				                       ChromeDisabledLow="#FF909090"
+				                       ChromeGray="#FF747474"
+				                       ChromeHigh="#FF747474"
+				                       ChromeLow="#FF0d0d0d"
+				                       ChromeMedium="#FF121212"
+				                       ChromeMediumLow="#FF1b1b1b"
+				                       ChromeWhite="White"
+				                       ListLow="#FF121212"
+				                       ListMedium="#FF202020"
+				                       RegionColor="#FF151515"/>
 			</FluentTheme.Palettes>
 		</FluentTheme>
 

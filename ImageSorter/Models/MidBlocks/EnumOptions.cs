@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using static ImageSorter.Models.Enums;
+﻿using static ImageSorter.Models.Enums;
 
 namespace ImageSorter.Models;
 
@@ -9,7 +7,6 @@ public class ImgOrderOption
 {
     public string OptionText { get; }
     public ImgOrder OptionEnum { get; }
-
 
     public ImgOrderOption(string OptionText, ImgOrder ImgOrder)
     {

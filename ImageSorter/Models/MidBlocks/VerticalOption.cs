@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using System.Collections.Generic;
 
 namespace ImageSorter.Models;
 

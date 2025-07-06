@@ -2,14 +2,9 @@
 using Avalonia.Platform.Storage;
 using ImageSorter.Models;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
 using System.Reactive;
-using System.Threading.Tasks;
 using static ImageSorter.Models.Enums;
 
 namespace ImageSorter.ViewModels;
@@ -53,7 +48,6 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
         UpdateReferenceCollection(tempImgRef);
     }
 
-
     private async Task<IReadOnlyList<IStorageFile>?> BrowseFilesReference()
     {
         // Set settings for folder browser, default location is Desktop
@@ -75,7 +69,6 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
         var selectedFile = await App.TopLevel.StorageProvider.OpenFilePickerAsync(options);
 
         return selectedFile;
-
     }
 
     private void UpdateReferenceImage(int referenceIndex, IReadOnlyList<IStorageFile>? selectedFile)
@@ -119,7 +112,6 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
             LoadReferenceBitmap();
         }
     }
-
 
     // Load bitmap for references, default image for null paths
     private void LoadReferenceBitmap()
@@ -170,7 +162,7 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
                     this.ReferenceImages.CollectionChanged += LoadReferenceBitmapOnChange;
                 }
 
-                // Triggers the LoadReferenceBitmapOnChange on last refImg to update everything 
+                // Triggers the LoadReferenceBitmapOnChange on last refImg to update everything
                 this.ReferenceImages.Add(refImg);
 
                 refImg.ReferenceViewID = this.ReferenceViewID;
@@ -203,5 +195,4 @@ public class WorkspaceReferenceImageViewModel : ViewModelBase
 
         this.ReferenceImages.CollectionChanged += LoadReferenceBitmapOnChange;
     }
-
 }

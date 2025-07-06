@@ -1,5 +1,4 @@
-﻿
-namespace ImageSorter.Models;
+﻿namespace ImageSorter.Models;
 
 // For if we want the output directory name to be different from the filtername
 // Other code needs to be changed to really use this though

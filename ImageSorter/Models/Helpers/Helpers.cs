@@ -1,172 +1,167 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
+﻿using System.Text.Json;
 using static ImageSorter.Models.Enums;
 
-namespace ImageSorter.Models
+namespace ImageSorter.Models;
+
+public static class Helpers
 {
-    public static class Helpers
+    public static bool TestProjectConfig(ProjectConfig projectConfig)
     {
-        public static bool TestProjectConfig(ProjectConfig projectConfig)
+        return TestProjectConfigImagePaths(projectConfig)
+            && TestProjectConfigOutputPaths(projectConfig);
+    }
+
+    public static bool TestProjectConfigImagePaths(ProjectConfig projectConfig)
+    {
+        if (projectConfig is null)
         {
-            return TestProjectConfigImagePaths(projectConfig)
-                && TestProjectConfigOutputPaths(projectConfig);
+            return false;
         }
 
-        public static bool TestProjectConfigImagePaths(ProjectConfig projectConfig)
+        if (projectConfig.ImgDirectoryPaths is null || projectConfig.ImgDirectoryPaths.Count == 0)
         {
-            if (projectConfig is null)
+            return false;
+        }
+
+        foreach (var path in projectConfig.ImgDirectoryPaths)
+        {
+            if (!Directory.Exists(path))
             {
                 return false;
             }
+        }
 
-            if (projectConfig.ImgDirectoryPaths is null || projectConfig.ImgDirectoryPaths.Count == 0)
+        return true;
+
+    }
+
+    public static bool TestProjectConfigOutputPaths(ProjectConfig projectConfig)
+    {
+        if (projectConfig is null)
+        {
+            return false;
+        }
+
+        if (projectConfig.OutputDirectoryPaths is null || projectConfig.OutputDirectoryPaths.Count == 0)
+        {
+            return false;
+        }
+
+        foreach (var path in projectConfig.OutputDirectoryPaths)
+        {
+            if (!Directory.Exists(path))
             {
                 return false;
             }
-
-            foreach (var path in projectConfig.ImgDirectoryPaths)
-            {
-                if (!Directory.Exists(path))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-
         }
 
-        public static bool TestProjectConfigOutputPaths(ProjectConfig projectConfig)
+        return true;
+
+    }
+
+    public static string? TryGetProjectConfigPath(AppState appState, string projectName)
+    {
+        var path = Path.Join(appState.ProjectConfigsPath, Helpers.ProjectNameToFileName(projectName));
+        if (File.Exists(path))
         {
-            if (projectConfig is null)
-            {
-                return false;
-            }
-
-            if (projectConfig.OutputDirectoryPaths is null || projectConfig.OutputDirectoryPaths.Count == 0)
-            {
-                return false;
-            }
-
-            foreach (var path in projectConfig.OutputDirectoryPaths)
-            {
-                if (!Directory.Exists(path))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-
+            return path;
         }
-
-        public static string? TryGetProjectConfigPath(AppState appState, string projectName)
+        else
         {
-            var path = Path.Join(appState.ProjectConfigsPath, Helpers.ProjectNameToFileName(projectName));
-            if (File.Exists(path))
-            {
-                return path;
-            }
-            else
-            {
-                return null;
-            }
+            return null;
         }
+    }
 
-        public static string CheckProjectNameDuplicates(AppState appState, string ProjectName)
+    public static string CheckProjectNameDuplicates(AppState appState, string ProjectName)
+    {
+        var files = Directory.GetFiles(appState.ProjectConfigsPath, "*.json");
+        if (files.Length == 0)
         {
-            var files = Directory.GetFiles(appState.ProjectConfigsPath, "*.json");
-            if (files.Length == 0)
+            return ProjectName;
+        }
+        else
+        {
+            var THIS_IS_AN_ENUMERABLE = files.AsEnumerable().Where(x => x.EndsWith(ProjectNameToFileName(ProjectName)));
+            if (THIS_IS_AN_ENUMERABLE.Count() == 0)
             {
                 return ProjectName;
             }
             else
             {
-                var THIS_IS_AN_ENUMERABLE = files.AsEnumerable().Where(x => x.EndsWith(ProjectNameToFileName(ProjectName)));
-                if (THIS_IS_AN_ENUMERABLE.Count() == 0)
-                {
-                    return ProjectName;
-                }
-                else
-                {
-                    return $"{ProjectName} ({THIS_IS_AN_ENUMERABLE.Count()})";
-                }
+                return $"{ProjectName} ({THIS_IS_AN_ENUMERABLE.Count()})";
             }
         }
+    }
 
-        public static Uri UriFromPath(string path)
-        {
-            var builder = new UriBuilder();
-            builder.Path = path;
-            return builder.Uri;
-        }
+    public static Uri UriFromPath(string path)
+    {
+        var builder = new UriBuilder();
+        builder.Path = path;
+        return builder.Uri;
+    }
 
-        public static ProjectConfig GetProjectConfigFromJson(string FilePath)
-        {
-            return JsonSerializer.Deserialize<ProjectConfig>(File.ReadAllText(FilePath));
-        }
+    public static ProjectConfig GetProjectConfigFromJson(string FilePath)
+    {
+        return JsonSerializer.Deserialize<ProjectConfig>(File.ReadAllText(FilePath));
+    }
 
-        public static string ProjectNameToFileName(string ProjectName)
-        {
-            return $"{ProjectName.Trim()}.json";
-        }
+    public static string ProjectNameToFileName(string ProjectName)
+    {
+        return $"{ProjectName.Trim()}.json";
+    }
 
-        public static IEnumerable<string> GetSortedImageFilters(IEnumerable<ImageDetails> ImageDetails)
-        {
-            return ImageDetails.Select(x => x.FilteredValue).Distinct();
-        }
+    public static IEnumerable<string> GetSortedImageFilters(IEnumerable<ImageDetails> ImageDetails)
+    {
+        return ImageDetails.Select(x => x.FilteredValue).Distinct();
+    }
 
-        public static IEnumerable<ImageDetails> SortImageDetailsBy(IEnumerable<ImageDetails> ImageDetails, ImgOrder ImgOrder)
+    public static IEnumerable<ImageDetails> SortImageDetailsBy(IEnumerable<ImageDetails> ImageDetails, ImgOrder ImgOrder)
+    {
+        if (ImageDetails is not null)
         {
-            if (ImageDetails is not null)
+            var sortedImageDetails = ImgOrder switch
             {
-                var sortedImageDetails = ImgOrder switch
-                {
-                    ImgOrder.AscFileName => ImageDetails.OrderBy(x => x.FileName),
-                    ImgOrder.DescFileName => ImageDetails.OrderByDescending(x => x.FileName),
-                    ImgOrder.AscFileSize => ImageDetails.OrderBy(x => x.FileSize).ThenBy(x => x.FileName),
-                    ImgOrder.DescFileSize => ImageDetails.OrderByDescending(x => x.FileSize).ThenBy(x => x.FileName),
-                    ImgOrder.AscFileCreatedTime => ImageDetails.OrderBy(x => x.FileCreatedTime).ThenBy(x => x.FileName),
-                    ImgOrder.DescFileCreatedTime => ImageDetails.OrderByDescending(x => x.FileCreatedTime).ThenBy(x => x.FileName),
-                    ImgOrder.AscLastModifiedTime => ImageDetails.OrderBy(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
-                    ImgOrder.DescLastModifiedTime => ImageDetails.OrderByDescending(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
-                    ImgOrder.AscFilterValue => ImageDetails.OrderBy(x => x.FilteredValue).ThenBy(x => x.FileName),
-                    ImgOrder.DescFilterValue => ImageDetails.OrderByDescending(x => x.FilteredValue).ThenBy(x => x.FileName),
-                    _ => ImageDetails
-                };
+                ImgOrder.AscFileName => ImageDetails.OrderBy(x => x.FileName),
+                ImgOrder.DescFileName => ImageDetails.OrderByDescending(x => x.FileName),
+                ImgOrder.AscFileSize => ImageDetails.OrderBy(x => x.FileSize).ThenBy(x => x.FileName),
+                ImgOrder.DescFileSize => ImageDetails.OrderByDescending(x => x.FileSize).ThenBy(x => x.FileName),
+                ImgOrder.AscFileCreatedTime => ImageDetails.OrderBy(x => x.FileCreatedTime).ThenBy(x => x.FileName),
+                ImgOrder.DescFileCreatedTime => ImageDetails.OrderByDescending(x => x.FileCreatedTime).ThenBy(x => x.FileName),
+                ImgOrder.AscLastModifiedTime => ImageDetails.OrderBy(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
+                ImgOrder.DescLastModifiedTime => ImageDetails.OrderByDescending(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
+                ImgOrder.AscFilterValue => ImageDetails.OrderBy(x => x.FilteredValue).ThenBy(x => x.FileName),
+                ImgOrder.DescFilterValue => ImageDetails.OrderByDescending(x => x.FilteredValue).ThenBy(x => x.FileName),
+                _ => ImageDetails
+            };
 
-                return sortedImageDetails;
-            }
-
-            throw new ArgumentNullException("ProjectConfig or InputImages are null");
+            return sortedImageDetails;
         }
 
-        public static IQueryable<ImageDetails> SortImageDetailsQueryableBy(IQueryable<ImageDetails> ImageDetails, ImgOrder ImgOrder)
+        throw new ArgumentNullException("ProjectConfig or InputImages are null");
+    }
+
+    public static IQueryable<ImageDetails> SortImageDetailsQueryableBy(IQueryable<ImageDetails> ImageDetails, ImgOrder ImgOrder)
+    {
+        if (ImageDetails is not null)
         {
-            if (ImageDetails is not null)
+            var sortedImageDetails = ImgOrder switch
             {
-                var sortedImageDetails = ImgOrder switch
-                {
-                    ImgOrder.AscFileName => ImageDetails.OrderBy(x => x.FileName),
-                    ImgOrder.DescFileName => ImageDetails.OrderByDescending(x => x.FileName),
-                    ImgOrder.AscFileSize => ImageDetails.OrderBy(x => x.FileSize).ThenBy(x => x.FileName),
-                    ImgOrder.DescFileSize => ImageDetails.OrderByDescending(x => x.FileSize).ThenBy(x => x.FileName),
-                    ImgOrder.AscFileCreatedTime => ImageDetails.OrderBy(x => x.FileCreatedTime).ThenBy(x => x.FileName),
-                    ImgOrder.DescFileCreatedTime => ImageDetails.OrderByDescending(x => x.FileCreatedTime).ThenBy(x => x.FileName),
-                    ImgOrder.AscLastModifiedTime => ImageDetails.OrderBy(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
-                    ImgOrder.DescLastModifiedTime => ImageDetails.OrderByDescending(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
-                    ImgOrder.AscFilterValue => ImageDetails.OrderBy(x => x.FilteredValue).ThenBy(x => x.FileName),
-                    ImgOrder.DescFilterValue => ImageDetails.OrderByDescending(x => x.FilteredValue).ThenBy(x => x.FileName),
-                    _ => ImageDetails
-                };
+                ImgOrder.AscFileName => ImageDetails.OrderBy(x => x.FileName),
+                ImgOrder.DescFileName => ImageDetails.OrderByDescending(x => x.FileName),
+                ImgOrder.AscFileSize => ImageDetails.OrderBy(x => x.FileSize).ThenBy(x => x.FileName),
+                ImgOrder.DescFileSize => ImageDetails.OrderByDescending(x => x.FileSize).ThenBy(x => x.FileName),
+                ImgOrder.AscFileCreatedTime => ImageDetails.OrderBy(x => x.FileCreatedTime).ThenBy(x => x.FileName),
+                ImgOrder.DescFileCreatedTime => ImageDetails.OrderByDescending(x => x.FileCreatedTime).ThenBy(x => x.FileName),
+                ImgOrder.AscLastModifiedTime => ImageDetails.OrderBy(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
+                ImgOrder.DescLastModifiedTime => ImageDetails.OrderByDescending(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
+                ImgOrder.AscFilterValue => ImageDetails.OrderBy(x => x.FilteredValue).ThenBy(x => x.FileName),
+                ImgOrder.DescFilterValue => ImageDetails.OrderByDescending(x => x.FilteredValue).ThenBy(x => x.FileName),
+                _ => ImageDetails
+            };
 
-                return sortedImageDetails;
-            }
-
-            throw new ArgumentNullException("ProjectConfig or InputImages are null");
+            return sortedImageDetails;
         }
+
+        throw new ArgumentNullException("ProjectConfig or InputImages are null");
     }
 }

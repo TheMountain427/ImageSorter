@@ -1,19 +1,11 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using ImageSorter.Models;
 using ImageSorter.Models.Watchers;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Reactive;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using static ImageSorter.Models.Helpers;
 
@@ -157,7 +149,6 @@ public class ProjectSelectionViewModel : ViewModelBase
     // Old detail > New detail
     public List<KeyValuePair<ImageDetails, ImageDetails>> UpdatedImages { get; set; } = new List<KeyValuePair<ImageDetails, ImageDetails>>();
 
-
     public void UpdateCanGoToWorkspace()
     {
         if (string.IsNullOrEmpty(ProjectNameText) == false)
@@ -240,8 +231,6 @@ public class ProjectSelectionViewModel : ViewModelBase
         ProjectSettingsSet = ProjectNameSet && ImgPathSelected && OutPathSelected;
     }
 
-
-
     private void InitializeProject()
     {
         if (didLoadRecentProject)
@@ -310,7 +299,6 @@ public class ProjectSelectionViewModel : ViewModelBase
             ValidateLoadedProjectConfig(projectConfig);
         }
 
-
         // Enable Json Writer for project config
         // should also trigger a Json write
         // nvm I have that set not to raise an event
@@ -338,7 +326,6 @@ public class ProjectSelectionViewModel : ViewModelBase
 
     private void ValidateLoadedProjectConfig(ProjectConfig projectConfig)
     {
-
         // Loading a recent project, try to fix missing values, remove old images, and load new ones
         // Placing any issues into NewImagesFound, OldImagesMissing, UpdatedImages properties for use later
         var foundImagePaths = new List<string>();
@@ -435,8 +422,6 @@ public class ProjectSelectionViewModel : ViewModelBase
         }
     }
 
-
-
     // Set the text that will be shown in the UI path text boxes
     private void SetTextPath(List<string> DirectoryPaths, string destination)
     {
@@ -467,8 +452,6 @@ public class ProjectSelectionViewModel : ViewModelBase
         }
     }
 
-
-
     private static string SetDirectoryPathText(List<string> DirectoryPaths)
     {
         var text = "";
@@ -480,8 +463,6 @@ public class ProjectSelectionViewModel : ViewModelBase
 
         return text;
     }
-
-
 
     public async void BrowseFiles(string msg)
     {
@@ -526,8 +507,6 @@ public class ProjectSelectionViewModel : ViewModelBase
                 break;
         }
     }
-
-
 
     private void GetRecentProjects(AppState appState)
     {
@@ -579,8 +558,6 @@ public class ProjectSelectionViewModel : ViewModelBase
         }
     }
 
-
-
     private void TryLoadRecentProject()
     {
         if (SelectedRecentProject != "Recent Projects")
@@ -596,7 +573,7 @@ public class ProjectSelectionViewModel : ViewModelBase
                 {
                     loadedProj = GetProjectConfigFromJson(jsonConfigPath);
                 }
-                // handle bad json 
+                // handle bad json
                 catch (JsonException e)
                 {
                     return;
@@ -613,8 +590,6 @@ public class ProjectSelectionViewModel : ViewModelBase
         }
     }
 
-
-
     private void CheckLoadedProject()
     {
         if (didLoadRecentProject == true)
@@ -622,8 +597,6 @@ public class ProjectSelectionViewModel : ViewModelBase
             didLoadRecentProject = false;
         }
     }
-
-
 
     // **** Debug **** //
     public void dbgSetProjectSettings()
@@ -634,8 +607,6 @@ public class ProjectSelectionViewModel : ViewModelBase
     {
         MainRouter.Navigate.Execute(new WorkspaceViewModel(HostScreen, MainRouter, CurrentAppState, ProjectConfig));
     }
-
-
 
     // **** ToolTips **** //
     public string ProjectNameHelp { get; } = "Enter the name for a the project.";
@@ -649,9 +620,6 @@ public class ProjectSelectionViewModel : ViewModelBase
     public string RecentProjectsHelp { get; } = "A list of recent projects.";
     public string BeginHelp { get; } = "Go to the workspace using the current settings.";
 
-
-
-#pragma warning disable CS8618 // You're not helping as much as you think
     public ProjectSelectionViewModel(AppState CurrentAppState, IScreen screen, RoutingState router) : base(CurrentAppState)
     {
         MainRouter = router;
@@ -673,10 +641,5 @@ public class ProjectSelectionViewModel : ViewModelBase
 
         // Should handle when recent project is loaded but values are changed => don't use loaded project config
         this.WhenAnyValue(x => x.ImgPathText, x => x.OutPathText, x => x.ProjectNameText).Subscribe(_ => CheckLoadedProject());
-
-
-
     }
-#pragma warning restore CS8618 
-
 }

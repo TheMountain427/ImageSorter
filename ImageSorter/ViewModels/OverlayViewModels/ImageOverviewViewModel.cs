@@ -1,8 +1,5 @@
 ﻿using ImageSorter.Models;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Disposables;
 using System.Windows.Input;
 using static ImageSorter.Models.Helpers;
@@ -62,7 +59,7 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
     // This is the true sorce of what is actually selected
     private HashSet<int> _filterByIndexesSelected { get; set; } = new HashSet<int>();
 
-    public ImgOrderOptions ImageOrderOptions { get; } 
+    public ImgOrderOptions ImageOrderOptions { get; }
 
     private ImgOrderOption _imageSortOrder;
     public ImgOrderOption ImageSortOrder
@@ -91,7 +88,6 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
     {
         this.MaxViewWidth = WindowWidth * 0.8;
     }
-
 
     // ** REFACTOR **
     private void FilterPreviewImagesBy(object? sender, SelectionModelSelectionChangedEventArgs e)
@@ -174,7 +170,7 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
 
     public ICommand? ImageClickCommand { get; }
 
-    public ImageOverviewViewModel(AppState CurrentAppState, ProjectConfig ProjectConfig, List<ImageDetails> SortedImageDetails, 
+    public ImageOverviewViewModel(AppState CurrentAppState, ProjectConfig ProjectConfig, List<ImageDetails> SortedImageDetails,
                                   ICommand OnSuccessCommand, ICommand OnCancelCommand, ICommand? ImageClickCommand,
                                   ICommand ChangeSortOrder, ImgOrderOptions ImageOrderOptions,ImgOrderOption ImageSortOrder) : base (CurrentAppState)
     {

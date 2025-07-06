@@ -1,5 +1,4 @@
-﻿
-namespace ImageSorter.Models;
+﻿namespace ImageSorter.Models;
 
 public static class Enums
 {

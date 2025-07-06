@@ -1,12 +1,10 @@
 ﻿using static ImageSorter.Models.Enums;
 using ReactiveUI;
-using System;
 
 namespace ImageSorter.Models;
 
 public class ReferenceSplitToggles : ReactiveObject
 {
-
     private ReferenceSplit _selectedOption;
     public ReferenceSplit SelectedOption
     {
@@ -101,7 +99,7 @@ public class ReferenceSplitToggles : ReactiveObject
                 break;
         }
     }
-        
+
     public ReferenceSplitToggles()
     {
         this.SplitOption.OptionSelection.Changed.Subscribe(_ => HandleReentry(_));

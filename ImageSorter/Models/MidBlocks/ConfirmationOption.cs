@@ -1,7 +1,5 @@
-﻿
+﻿using ReactiveUI;
 
-using ReactiveUI;
-using System.Collections.Generic;
 namespace ImageSorter.Models;
 
 public class ConfirmationOption : ReactiveObject

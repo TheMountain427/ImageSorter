@@ -1,7 +1,6 @@
 ﻿using ImageSorter.ViewModels;
 using ImageSorter.Views;
 using ReactiveUI;
-using System;
 
 namespace ImageSorter
 {

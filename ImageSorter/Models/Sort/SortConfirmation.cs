@@ -1,7 +1,4 @@
 ﻿using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ImageSorter.Models;
 
@@ -45,7 +42,7 @@ public class SortConfirmation : ReactiveObject
             // Subscribe to the boolean changed event
             confirmationOption.OptionSelection.Changed.Subscribe(_ => HandleSinglularSelection(_));
             this.ConfirmationOptions.Add(confirmationOption);
-            
+
         }
 
     }
