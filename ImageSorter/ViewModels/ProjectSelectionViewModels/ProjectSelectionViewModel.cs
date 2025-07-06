@@ -285,6 +285,7 @@ public class ProjectSelectionViewModel : ViewModelBase
                 var images = Directory.EnumerateFiles(inputPath).Where(x => x.EndsWith(".jpeg") || x.EndsWith(".png") || x.EndsWith(".jpg"));
                 if (images.Any())
                 {
+
                     foreach (var imagePath in images)
                     {
                         projectConfig.InputImages.Add(new ImageDetails(imagePath));

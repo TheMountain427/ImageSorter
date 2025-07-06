@@ -65,29 +65,27 @@ public class ImageDetails : ReactiveObject
         this.ThumbnailBitmap = await Task.Run(() => Bitmap.DecodeToWidth(imageStream, 175));
     }
 
-    private void CreateImageDetails(string filePath)
+    private async Task CreateImageDetailsAsync(string filePath)
     {
-        var file = Task.Run(() => App.TopLevel.StorageProvider.TryGetFileFromPathAsync(filePath));
-        file.Wait();
+        var file = await App.TopLevel.StorageProvider.TryGetFileFromPathAsync(filePath);
 
-        if (!file.IsCompletedSuccessfully || file.Result is null)
+        if (file is null)
         {
             // File doesn't exist, so don't make it
             return;
         }
 
-        var fileProperties = Task.Run(() => file.Result.GetBasicPropertiesAsync());
-        fileProperties.Wait();
+        var fileProperties = await file.GetBasicPropertiesAsync();
 
-        if (!fileProperties.IsCompletedSuccessfully || fileProperties.Result is null)
+        if (fileProperties is null)
         {
             throw new Exception("Explode");
         }
 
-        this.FileName = file.Result.Name;
-        this.FileCreatedTime = (DateTimeOffset)fileProperties.Result.DateCreated!;
-        this.FileLastModifiedTime = (DateTimeOffset)fileProperties.Result.DateModified!;
-        this.FileSize = (ulong)fileProperties.Result.Size!;
+        this.FileName = file.Name;
+        this.FileCreatedTime = (DateTimeOffset)fileProperties.DateCreated!;
+        this.FileLastModifiedTime = (DateTimeOffset)fileProperties.DateModified!;
+        this.FileSize = (ulong)fileProperties.Size!;
         this.FilePath = filePath;
         this.IsValid = true;
 
@@ -147,6 +145,9 @@ public class ImageDetails : ReactiveObject
     {
 
     }
+
+    private Task CreateImageDetails(string filePath)
+        => Task.Run(() => CreateImageDetailsAsync(filePath));
 
     public ImageDetails(string filePath)
     {
