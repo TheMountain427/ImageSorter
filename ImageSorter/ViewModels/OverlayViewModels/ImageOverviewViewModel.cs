@@ -1,10 +1,12 @@
 ﻿using ImageSorter.Models;
+using ImageSorter.Models.Generators;
 using ReactiveUI;
 using System.Reactive.Disposables;
 using System.Windows.Input;
 using static ImageSorter.Models.Helpers;
 using Avalonia.Controls.Selection;
 using System.Diagnostics;
+using Avalonia.Controls;
 
 namespace ImageSorter.ViewModels;
 
@@ -18,8 +20,8 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
 
     private IQueryable<ImageDetails> _sortedImageDetails { get; set; }
 
-    public List<ImageDetails> _previewImageDetails;
-    public List<ImageDetails> PreviewImageDetails
+    public IEnumerable<ImageDetails> _previewImageDetails;
+    public IEnumerable<ImageDetails> PreviewImageDetails
     {
         get { return _previewImageDetails; }
         set { this.RaiseAndSetIfChanged(ref _previewImageDetails, value); }
@@ -118,21 +120,23 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
         if (this._filterByIndexesSelected.Count != 0 && AvailableFilterValues is not null)
         {
             var filterToSortBy = this._filterByIndexesSelected.Where(index => index >= 0 && index < AvailableFilterValues?.Count)
-                                       .Select(index => AvailableFilterValues[index]).ToList();
+                                       .Select(index => AvailableFilterValues[index]);
 
             // Filter the view by the sorted images
-            if (filterToSortBy.Count != 0)
+            if (filterToSortBy.Any())
             {
                 //this.PreviewImageDetails = this._sortedImageDetails.Where(image => filterToSortBy.Any(filter => filter == image.FilteredValue)).ToList();
                 this.PreviewImageDetails = SortImageDetailsQueryableBy(this._sortedImageDetails, this.ImageSortOrder.OptionEnum)
-                                                .Where(image => filterToSortBy.Any(filter => filter == image.FilteredValue))
-                                                .ToList();
+                                                .Where(image => filterToSortBy.Any(filter => filter == image.FilteredValue));
             }
         }
         else
         {
-            this.PreviewImageDetails = SortImageDetailsQueryableBy(this._sortedImageDetails, this.ImageSortOrder.OptionEnum).ToList();
+            this.PreviewImageDetails = SortImageDetailsQueryableBy(this._sortedImageDetails, this.ImageSortOrder.OptionEnum);
         }
+
+        // Update view so images get redrawn in new order
+        this.RaisePropertyChanged(nameof(PreviewImageContainers));
     }
 
     private void UpdateImageListOrder()
@@ -170,9 +174,24 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
 
     public ICommand? ImageClickCommand { get; }
 
+    // Switched over to a VirtualizingStackPanel. Since there is no VirtualizingWrapPanel,
+    // we have to create the 'wrapped rows' our selves.
+    // Also switch over to lazy loading with yield so we don't hand on large collections
+    public IEnumerable<StackPanel> PreviewImageContainers => CreateImageRows();
+    public IEnumerable<StackPanel> CreateImageRows()
+    {
+        var numItemsInRow = (int)Math.Floor(MaxViewWidth / 200);
+        numItemsInRow = numItemsInRow == 0 ? 1 : numItemsInRow;
+
+        foreach (var row in ImageOverviewContainerGenerator.CreateImageRows(PreviewImageDetails, numItemsInRow == 0 ? 1 : numItemsInRow, img => { ImageClickCommand!.Execute(img.FileName); }))
+        {
+            yield return row;
+        }
+    }
+
     public ImageOverviewViewModel(AppState CurrentAppState, ProjectConfig ProjectConfig, List<ImageDetails> SortedImageDetails,
                                   ICommand OnSuccessCommand, ICommand OnCancelCommand, ICommand? ImageClickCommand,
-                                  ICommand ChangeSortOrder, ImgOrderOptions ImageOrderOptions,ImgOrderOption ImageSortOrder) : base (CurrentAppState)
+                                  ICommand ChangeSortOrder, ImgOrderOptions ImageOrderOptions, ImgOrderOption ImageSortOrder) : base(CurrentAppState)
     {
         this.ProjectConfig = ProjectConfig;
         this.ContinueSortCommand = OnSuccessCommand;
@@ -185,12 +204,14 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
         this.ImageClickCommand = ImageClickCommand;
 
         // Set up the Filter ListBox selection handler
-        this.FilterBy_SelectionModel = new SelectionModel<string>();
-        // Allow multiple selections in the list box
-        this.FilterBy_SelectionModel.SingleSelect = false;
+        this.FilterBy_SelectionModel = new SelectionModel<string>
+        {
+            // Allow multiple selections in the list box
+            SingleSelect = false
+        };
         this.FilterBy_SelectionModel.SelectionChanged += FilterPreviewImagesBy;
 
-        this.PreviewImageDetails = _sortedImageDetails.ToList();
+        this.PreviewImageDetails = _sortedImageDetails;
 
         // ToList() as a workaround for https://github.com/AvaloniaUI/Avalonia/issues/12344
         this.AvailableFilterValues = this.PreviewImageDetails.Select(x => x.FilteredValue).Distinct().ToList();

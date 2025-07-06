@@ -65,77 +65,14 @@
 
 		<ScrollViewer Grid.Row="1">
 			<StackPanel>
-				<ItemsControl ItemsSource="{ Binding PreviewImageDetails }">
+				<!-- The perview image datatemplate are now built in the viewmodel -->
+				<ItemsControl ItemsSource="{ Binding PreviewImageContainers }">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
-							<WrapPanel HorizontalAlignment="Center"/>
+							<VirtualizingStackPanel HorizontalAlignment="Center"
+												    Width="{Binding $parent[Grid].Bounds.Width}"/>
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<Border BorderBrush="#FF232323"
-									BorderThickness="2"
-									Width="200"
-									Margin="5,5,5,5">
-
-								<!--Don't flash in images when they load/order changes-->
-								<!--Change border background on overlay view for less flashbang-->
-								<!--https://docs.avaloniaui.net/docs/guides/graphics-and-animation/keyframe-animations-->
-								<!--https://reference.avaloniaui.net/api/Avalonia.Media/Transform/-->
-								<Border.Styles>
-									<Style Selector="Border">
-										<Style.Animations>
-											<!--Uncomment this one for a funny-->
-											<!--<Animation Duration="0:0:5" Easing="ElasticEaseIn">
-												<KeyFrame Cue="0%">
-													<Setter Property="TranslateTransform.Y" Value="700"/>
-													<Setter Property="RotateTransform.Angle" Value="360"/>
-												</KeyFrame>
-												<KeyFrame Cue="50%">
-													<Setter Property="RotateTransform.Angle" Value="180"/>
-												</KeyFrame>
-												<KeyFrame Cue="100%">
-													<Setter Property="TranslateTransform.Y" Value="0"/>
-													<Setter Property="RotateTransform.Angle" Value="0"/>
-												</KeyFrame>
-											</Animation>-->
-
-											<Animation Duration="0:0:2">
-												<KeyFrame Cue="0%">
-													<Setter Property="Opacity" Value="0.0"/>
-												</KeyFrame>
-												<KeyFrame Cue="100%">
-													<Setter Property="Opacity" Value="1.0"/>
-												</KeyFrame>
-											</Animation>
-										</Style.Animations>
-									</Style>
-								</Border.Styles>
-
-
-								<Button Command="{ Binding $parent[UserControl].DataContext.ImageClickCommand }"
-										CommandParameter="{ Binding FileName }"
-										x:CompileBindings="False"
-									    Background="#00000000">
-									<Button.Content>
-										<StackPanel>
-											<TextBlock Text="{ Binding FilteredValue }"
-													   FontSize="11"
-													   HorizontalAlignment="Center"
-													   TextWrapping="NoWrap"/>
-											<Image Source="{ Binding ThumbnailBitmap }"
-												   IsVisible="{Binding ThumbnailBitmap, Converter={x:Static ObjectConverters.IsNotNull}}"
-												   Margin="5,5,5,5"/>
-											<TextBlock Text="{ Binding FileName }"
-													   FontSize="11"
-													   HorizontalAlignment="Center"
-													   TextWrapping="NoWrap"/>
-										</StackPanel>
-									</Button.Content>
-								</Button>
-							</Border>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
 				</ItemsControl>
 			</StackPanel>
 		</ScrollViewer>
