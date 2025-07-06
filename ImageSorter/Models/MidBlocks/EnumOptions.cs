@@ -43,7 +43,13 @@ public class ImgOrderOptions
             new ImgOrderOption("Last Modified Time Ascending", ImgOrder.AscLastModifiedTime),
             new ImgOrderOption("Last Modified Time Descending", ImgOrder.DescLastModifiedTime),
             new ImgOrderOption("Filter Value Ascending", ImgOrder.AscFilterValue),
-            new ImgOrderOption("Filter Value Descending", ImgOrder.DescFilterValue)
+            new ImgOrderOption("Filter Value Descending", ImgOrder.DescFilterValue),
+            new ImgOrderOption("Image Width Ascending", ImgOrder.AscImageWidth),
+            new ImgOrderOption("Image Width Descending", ImgOrder.DescImageWidth),
+            new ImgOrderOption("Image Height Ascending", ImgOrder.AscImageHeight),
+            new ImgOrderOption("Image Height Descending", ImgOrder.DescImageHeight),
+            new ImgOrderOption("Image Area Ascending", ImgOrder.AscImageArea),
+            new ImgOrderOption("Image Area Descending", ImgOrder.DescImageArea)
         };
     }
 }

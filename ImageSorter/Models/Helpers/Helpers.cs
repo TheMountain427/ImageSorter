@@ -131,6 +131,12 @@ public static class Helpers
                 ImgOrder.DescLastModifiedTime => ImageDetails.OrderByDescending(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
                 ImgOrder.AscFilterValue => ImageDetails.OrderBy(x => x.FilteredValue).ThenBy(x => x.FileName),
                 ImgOrder.DescFilterValue => ImageDetails.OrderByDescending(x => x.FilteredValue).ThenBy(x => x.FileName),
+                ImgOrder.AscImageWidth => ImageDetails.OrderBy(x => x.ImageWidth).ThenBy(x => x.FileName),
+                ImgOrder.DescImageWidth => ImageDetails.OrderByDescending(x => x.ImageWidth).ThenBy(x => x.FileName),
+                ImgOrder.AscImageHeight => ImageDetails.OrderBy(x => x.ImageHeight).ThenBy(x => x.FileName),
+                ImgOrder.DescImageHeight => ImageDetails.OrderByDescending(x => x.ImageHeight).ThenBy(x => x.FileName),
+                ImgOrder.AscImageArea => ImageDetails.OrderBy(x => x.ImageArea).ThenBy(x => x.FileName),
+                ImgOrder.DescImageArea => ImageDetails.OrderByDescending(x => x.ImageArea).ThenBy(x => x.FileName),
                 _ => ImageDetails
             };
 
@@ -156,6 +162,12 @@ public static class Helpers
                 ImgOrder.DescLastModifiedTime => ImageDetails.OrderByDescending(x => x.FileLastModifiedTime).ThenBy(x => x.FileName),
                 ImgOrder.AscFilterValue => ImageDetails.OrderBy(x => x.FilteredValue).ThenBy(x => x.FileName),
                 ImgOrder.DescFilterValue => ImageDetails.OrderByDescending(x => x.FilteredValue).ThenBy(x => x.FileName),
+                ImgOrder.AscImageWidth => ImageDetails.OrderBy(x => x.ImageWidth).ThenBy(x => x.FileName),
+                ImgOrder.DescImageWidth => ImageDetails.OrderByDescending(x => x.ImageWidth).ThenBy(x => x.FileName),
+                ImgOrder.AscImageHeight => ImageDetails.OrderBy(x => x.ImageHeight).ThenBy(x => x.FileName),
+                ImgOrder.DescImageHeight => ImageDetails.OrderByDescending(x => x.ImageHeight).ThenBy(x => x.FileName),
+                ImgOrder.AscImageArea => ImageDetails.OrderBy(x => x.ImageArea).ThenBy(x => x.FileName),
+                ImgOrder.DescImageArea => ImageDetails.OrderByDescending(x => x.ImageArea).ThenBy(x => x.FileName),
                 _ => ImageDetails
             };
 

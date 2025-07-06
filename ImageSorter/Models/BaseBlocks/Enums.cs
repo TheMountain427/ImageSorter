@@ -12,8 +12,14 @@ public static class Enums
         DescFileCreatedTime = 6,
         AscLastModifiedTime = 7,
         DescLastModifiedTime = 8,
-        AscFilterValue= 9,
-        DescFilterValue = 10
+        AscFilterValue = 9,
+        DescFilterValue = 10,
+        AscImageWidth = 11,
+        DescImageWidth = 12,
+        AscImageHeight = 13,
+        DescImageHeight = 14,
+        AscImageArea = 15,
+        DescImageArea = 16
     }
 
     public enum ReferenceViewIdentifier

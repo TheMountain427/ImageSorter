@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using ReactiveUI;
+using SkiaSharp;
 using System.Text.Json.Serialization;
 using static ImageSorter.Models.Enums;
 
@@ -16,6 +17,13 @@ public class ImageDetails : ReactiveObject
     public bool IsValid { get; set; } = true;
     public bool ImageNotLoaded { get; set; } = false;
     public ReferenceViewIdentifier ReferenceViewID { get; set; }
+
+    // [JsonIgnore]
+    public int ImageWidth { get; set; }
+    // [JsonIgnore]
+    public int ImageHeight { get; set; }
+    // [JsonIgnore]
+    public long ImageArea { get; set; }
 
     private string _filteredValue = "Unsorted";
     public string FilteredValue
@@ -33,7 +41,6 @@ public class ImageDetails : ReactiveObject
 
     [JsonIgnore]
     public Bitmap ImageBitmap { get; set; }
-
     [JsonIgnore]
     private Bitmap _thumbnailBitmap;
     [JsonIgnore]
@@ -71,7 +78,6 @@ public class ImageDetails : ReactiveObject
             return;
         }
 
-
         var fileProperties = Task.Run(() => file.Result.GetBasicPropertiesAsync());
         fileProperties.Wait();
 
@@ -86,6 +92,12 @@ public class ImageDetails : ReactiveObject
         this.FileSize = (ulong)fileProperties.Result.Size!;
         this.FilePath = filePath;
         this.IsValid = true;
+
+        var skCodec = SKCodec.Create(filePath);
+
+        this.ImageHeight = skCodec.Info.Height;
+        this.ImageWidth = skCodec.Info.Width;
+        this.ImageArea = ImageHeight * ImageWidth;
     }
 
     // This might not be needed anymore, at least not on project init
@@ -115,6 +127,12 @@ public class ImageDetails : ReactiveObject
         this.FileSize = (ulong)fileProperties.Result.Size!;
         this.FilePath = filePath;
         this.IsValid = true;
+
+        var skCodec = SKCodec.Create(filePath); 
+
+        this.ImageHeight = skCodec.Info.Height;
+        this.ImageWidth = skCodec.Info.Width;
+        this.ImageArea = ImageHeight * ImageWidth;
 
         return true;
     }
