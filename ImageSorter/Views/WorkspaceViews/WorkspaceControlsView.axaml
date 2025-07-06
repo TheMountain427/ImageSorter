@@ -459,7 +459,8 @@
 							Width="120"
 							ToolTip.Tip="Keybinding: ' Right '"
 							ToolTip.Placement="Bottom"
-							ToolTip.ShowDelay="1200"/>
+							ToolTip.ShowDelay="1200"
+							BorderBrush="#3F3F3F"/>
 					<Button Name="WorkCtrl_LastImageButton"
 							Content="Last Image"
 							HorizontalContentAlignment="Center"
