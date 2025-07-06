@@ -63,7 +63,6 @@
 					  BorderBrush="#3F3F3F"/>
 		</DockPanel>
 
-
 		<ScrollViewer Grid.Row="1">
 			<StackPanel>
 				<ItemsControl ItemsSource="{ Binding PreviewImageDetails }">
@@ -100,7 +99,7 @@
 													<Setter Property="RotateTransform.Angle" Value="0"/>
 												</KeyFrame>
 											</Animation>-->
-											
+
 											<Animation Duration="0:0:2">
 												<KeyFrame Cue="0%">
 													<Setter Property="Opacity" Value="0.0"/>
