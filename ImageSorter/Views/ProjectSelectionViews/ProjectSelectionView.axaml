@@ -129,6 +129,7 @@
 							<Button Name="ProjectSelection_Control_LoadConfigButton"
 									Height="32"
 									Content="Load Config"
+									Command="{ Binding BrowseAndLoadProjectConfig }"
 									ToolTip.Tip="{ Binding LoadConfigHelp }"
 								    ToolTip.Placement="Bottom"
 							   	    ToolTip.ShowDelay="1200"

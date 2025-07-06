@@ -1,12 +1,12 @@
-﻿using Avalonia.Controls;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Windows.Input;
+using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using ImageSorter.Models;
 using ImageSorter.Models.Watchers;
 using ReactiveUI;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Windows.Input;
 using static ImageSorter.Models.Helpers;
 
 namespace ImageSorter.ViewModels;
@@ -282,10 +282,9 @@ public class ProjectSelectionViewModel : ViewModelBase
             foreach (var inputPath in projectConfig.ImgDirectoryPaths)
             {
                 // fuck them other image types
-                var images = Directory.EnumerateFiles(inputPath).Where(x => x.EndsWith(".jpeg") || x.EndsWith(".png") || x.EndsWith(".jpg"));
+                var images = Directory.EnumerateFiles(inputPath).Where(x => x.EndsWith(".jpeg") || x.EndsWith(".png") || x.EndsWith(".jpg") || x.EndsWith(".webp"));
                 if (images.Any())
                 {
-
                     foreach (var imagePath in images)
                     {
                         projectConfig.InputImages.Add(new ImageDetails(imagePath));
@@ -470,7 +469,8 @@ public class ProjectSelectionViewModel : ViewModelBase
         var options = new FolderPickerOpenOptions
         {
             AllowMultiple = true,
-            SuggestedStartLocation = await App.TopLevel.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Desktop)
+            SuggestedStartLocation = await App.TopLevel.StorageProvider.TryGetWellKnownFolderAsync(WellKnownFolder.Desktop),
+            Title = "Select directories containing images"
         };
 
         // If ImgPath had been set, open there instead. If not try OutPath and open there.
@@ -505,6 +505,48 @@ public class ProjectSelectionViewModel : ViewModelBase
                 break;
             default:
                 break;
+        }
+    }
+
+    public static FilePickerFileType JsonFileType { get; } = new("Json file")
+    {
+        Patterns = new[] { "*.json" }
+    };
+
+    public async void BrowseAndLoadProjectConfig()
+    {
+        // lol
+        if (CurrentAppState is null) { throw new Exception("Boom"); }
+
+        var options = new FilePickerOpenOptions
+        {
+            AllowMultiple = false,
+            SuggestedStartLocation = await App.TopLevel.StorageProvider.TryGetFolderFromPathAsync(CurrentAppState.ProjectConfigDirectory),
+            Title = "Select project configuration file",
+            FileTypeFilter = [JsonFileType]
+        };
+
+        var file = await App.TopLevel.StorageProvider.OpenFilePickerAsync(options);
+
+        if (file is null) { return; }
+
+        var loadedProj = new ProjectConfig();
+        try
+        {
+            loadedProj = GetProjectConfigFromJson(file[0].Path.AbsolutePath);
+        }
+        // handle bad json
+        catch (JsonException e)
+        {
+            return;
+        }
+
+        if (loadedProj is not null && TestProjectConfig(loadedProj))
+        {
+            ProjectNameText = loadedProj.ProjectName;
+            ImgPathText = SetDirectoryPathText(loadedProj.ImgDirectoryPaths);
+            OutPathText = SetDirectoryPathText(loadedProj.OutputDirectoryPaths);
+            didLoadRecentProject = true;
         }
     }
 
