@@ -1,8 +1,9 @@
-﻿using Avalonia.Media.Imaging;
+﻿using System.Diagnostics;
+using System.Text.Json.Serialization;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using ReactiveUI;
 using SkiaSharp;
-using System.Text.Json.Serialization;
 using static ImageSorter.Models.Enums;
 
 namespace ImageSorter.Models;
@@ -18,11 +19,8 @@ public class ImageDetails : ReactiveObject
     public bool ImageNotLoaded { get; set; } = false;
     public ReferenceViewIdentifier ReferenceViewID { get; set; }
 
-    // [JsonIgnore]
-    public int ImageWidth { get; set; }
-    // [JsonIgnore]
-    public int ImageHeight { get; set; }
-    // [JsonIgnore]
+    public long ImageWidth { get; set; }
+    public long ImageHeight { get; set; }
     public long ImageArea { get; set; }
 
     private string _filteredValue = "Unsorted";
@@ -93,11 +91,19 @@ public class ImageDetails : ReactiveObject
         this.FilePath = filePath;
         this.IsValid = true;
 
-        var skCodec = SKCodec.Create(filePath);
-
-        this.ImageHeight = skCodec.Info.Height;
-        this.ImageWidth = skCodec.Info.Width;
-        this.ImageArea = ImageHeight * ImageWidth;
+        // https://github.com/mono/SkiaSharp/issues/1551
+        using FileStream stream = new(filePath, FileMode.Open);
+        using var skCodec = SKCodec.Create(stream);
+        if (skCodec is not null)
+        {
+            this.ImageHeight = skCodec.Info.Height;
+            this.ImageWidth = skCodec.Info.Width;
+            this.ImageArea = ImageHeight * ImageWidth;
+        }
+        else
+        {
+            Debug.WriteLine($"Failed to create SKCodec for {filePath}. Image dimensions will be 0");
+        }
     }
 
     // This might not be needed anymore, at least not on project init
@@ -128,7 +134,7 @@ public class ImageDetails : ReactiveObject
         this.FilePath = filePath;
         this.IsValid = true;
 
-        var skCodec = SKCodec.Create(filePath); 
+        var skCodec = SKCodec.Create(filePath);
 
         this.ImageHeight = skCodec.Info.Height;
         this.ImageWidth = skCodec.Info.Width;

@@ -283,7 +283,7 @@ public class ProjectSelectionViewModel : ViewModelBase
             {
                 // fuck them other image types
                 var images = Directory.EnumerateFiles(inputPath).Where(x => x.EndsWith(".jpeg") || x.EndsWith(".png") || x.EndsWith(".jpg"));
-                if (images.Count() > 0)
+                if (images.Any())
                 {
                     foreach (var imagePath in images)
                     {
@@ -291,7 +291,6 @@ public class ProjectSelectionViewModel : ViewModelBase
                     }
                 }
             }
-
         }
         else
         {
