@@ -12,7 +12,6 @@ public partial class ImageOverviewView : ReactiveUserControl<ImageOverviewViewMo
         this.WhenActivated(disposables => { });
         AvaloniaXamlLoader.Load(this);
     }
-
     // These two handle toggling the SelectionModel Changed event
     // for the Flyout Listbox workaround
     public void FilterByFlyout_Opening(object sender, EventArgs eventArgs)

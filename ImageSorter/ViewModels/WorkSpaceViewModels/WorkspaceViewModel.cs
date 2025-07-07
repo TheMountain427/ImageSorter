@@ -414,7 +414,8 @@ public class WorkspaceViewModel : ViewModelBase
                                                              ImageClickCommand: imageClickCommand,
                                                              ChangeSortOrder: ReactiveCommand.Create<ImgOrderOption>(_ => this.ImageSortOrder = _),
                                                              ImageOrderOptions: this.ImageOrderOptions,
-                                                             ImageSortOrder: this.ImageSortOrder);
+                                                             ImageSortOrder: this.ImageSortOrder,
+                                                             ReferenceImages: ProjectConfig.ReferenceImages);
 
         var overlayVM = new OverlayViewModel(_aps, ViewModelToDisplay: sortPreviewVM,
                                                    CloseOverlay: CloseOverlayView,
@@ -438,7 +439,8 @@ public class WorkspaceViewModel : ViewModelBase
                                                              ImageClickCommand: imageClickCommand,
                                                              ChangeSortOrder: ReactiveCommand.Create<ImgOrderOption>(_ => this.ImageSortOrder = _),
                                                              ImageOrderOptions: this.ImageOrderOptions,
-                                                             ImageSortOrder: this.ImageSortOrder);
+                                                             ImageSortOrder: this.ImageSortOrder,
+                                                             ReferenceImages: ProjectConfig.ReferenceImages);
 
         var overlayVM = new OverlayViewModel(_aps, ViewModelToDisplay: sortPreviewVM,
                                                    CloseOverlay: CloseOverlayView,

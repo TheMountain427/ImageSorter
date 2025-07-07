@@ -1,12 +1,16 @@
-﻿using ImageSorter.Models;
-using ImageSorter.Models.Generators;
-using ReactiveUI;
+﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Windows.Input;
-using static ImageSorter.Models.Helpers;
-using Avalonia.Controls.Selection;
-using System.Diagnostics;
 using Avalonia.Controls;
+using Avalonia.Controls.Selection;
+using Avalonia.Input;
+using Avalonia.Threading;
+using ImageSorter.Models;
+using ImageSorter.Models.Generators;
+using ReactiveUI;
+using static ImageSorter.Models.Helpers;
 
 namespace ImageSorter.ViewModels;
 
@@ -19,6 +23,18 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
     public ProjectConfig ProjectConfig { get; }
 
     private IQueryable<ImageDetails> _sortedImageDetails { get; set; }
+
+    // For some reason, I made it so that I have to search this for filters...
+    private readonly ObservableCollection<ImageDetails> _referenceImages;
+
+    public ObservableCollection<string> CurrentFilterValues { get; } = new();
+
+    private bool _bulkSelectionActivated = false;
+    public bool BulkSelectionActivated
+    {
+        get => _bulkSelectionActivated;
+        set => this.RaiseAndSetIfChanged(ref _bulkSelectionActivated, value);
+    }
 
     public IEnumerable<ImageDetails> _previewImageDetails;
     public IEnumerable<ImageDetails> PreviewImageDetails
@@ -67,7 +83,7 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
     public ImgOrderOption ImageSortOrder
     {
         get { return _imageSortOrder; }
-        protected set{ this.RaiseAndSetIfChanged(ref _imageSortOrder, value); }
+        protected set { this.RaiseAndSetIfChanged(ref _imageSortOrder, value); }
     }
 
     public void ContinueSort()
@@ -183,21 +199,65 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
         var numItemsInRow = (int)Math.Floor(MaxViewWidth / 200);
         numItemsInRow = numItemsInRow == 0 ? 1 : numItemsInRow;
 
-        foreach (var row in ImageOverviewContainerGenerator.CreateImageRows(PreviewImageDetails, numItemsInRow == 0 ? 1 : numItemsInRow, img => { ImageClickCommand!.Execute(img.FileName); }))
+        var previewRows = ImageOverviewContainerGenerator.CreateImageRows(
+            PreviewImageDetails,
+            numItemsInRow == 0 ? 1 : numItemsInRow,
+            this.WhenAnyValue(x => x.BulkSelectionActivated),
+            img => { ImageClickCommand!.Execute(img.FileName); },
+            ReactiveCommand.Create<(Button btn, ImageDetails img, (int, int) pos)>(t => OnBulkImageButtonClicked(t.btn, t.img, t.pos))
+        );
+
+        foreach (var row in previewRows)
         {
             yield return row;
         }
     }
 
+    private HashSet<ImageDetails> BulkSelectedImages = new();
+
+    public void OnBulkFilterClicked(string filterName)
+    {
+        foreach (var image in BulkSelectedImages)
+        {
+            image.FilteredValue = filterName;
+        }
+
+        BulkSelectionActivated = false;
+        this.RaisePropertyChanged(nameof(PreviewImageContainers));
+    }
+
+    private void OnBulkImageButtonClicked(Button btn, ImageDetails img, (int Row, int IndexInRow) pos)
+    {
+        if (btn.Tag?.ToString() == "1")
+        {
+            BulkSelectedImages.Add(img);
+        }
+        else
+        {
+            BulkSelectedImages.Remove(img);
+        }
+    }
+
     public ImageOverviewViewModel(AppState CurrentAppState, ProjectConfig ProjectConfig, List<ImageDetails> SortedImageDetails,
                                   ICommand OnSuccessCommand, ICommand OnCancelCommand, ICommand? ImageClickCommand,
-                                  ICommand ChangeSortOrder, ImgOrderOptions ImageOrderOptions, ImgOrderOption ImageSortOrder) : base(CurrentAppState)
+                                  ICommand ChangeSortOrder, ImgOrderOptions ImageOrderOptions, ImgOrderOption ImageSortOrder,
+                                  ObservableCollection<ImageDetails> ReferenceImages) : base(CurrentAppState)
     {
         this.ProjectConfig = ProjectConfig;
         this.ContinueSortCommand = OnSuccessCommand;
         this.CancelSortCommand = OnCancelCommand;
         this.ImageOrderOptions = ImageOrderOptions;
         this.ImageSortOrder = ImageSortOrder;
+
+        _referenceImages = ReferenceImages;
+        _referenceImages.Select(x => x.FilteredValue).Distinct().ToList().ForEach(CurrentFilterValues.Add);
+        _referenceImages.CollectionChanged += (_, __) =>
+        {
+            CurrentFilterValues.Clear();
+            _referenceImages.Select(x => x.FilteredValue).Distinct().ToList().ForEach(CurrentFilterValues.Add);
+        };
+
+        this.WhenAnyValue(x => x.BulkSelectedImages).Subscribe(_ => BulkSelectedImages.Clear());
 
         this._sortedImageDetails = SortImageDetailsBy(SortedImageDetails, this.ImageSortOrder.OptionEnum).AsQueryable();
 
@@ -233,7 +293,6 @@ public class ImageOverviewViewModel : ViewModelBase, IActivatableViewModel
             // I guess I am supposed to actually put all of these here
             // Putting it here does not call it on ViewModel construction
             this.WhenAnyValue(x => x.ImageSortOrder).Subscribe(_ => UpdateImageListOrder());
-
         });
     }
 

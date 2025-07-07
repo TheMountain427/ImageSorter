@@ -1,18 +1,20 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl x:Class="ImageSorter.Views.ImageOverviewView"
+             xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ImageSorter.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="ImageSorter.Views.ImageOverviewView"
-			 x:DataType="vm:ImageOverviewViewModel">
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:DataType="vm:ImageOverviewViewModel"
+             mc:Ignorable="d">
 
 	<UserControl.Resources>
-		<!--Figure out how to call this from code with ReactiveUI-->
-		<!--https://docs.avaloniaui.net/docs/guides/graphics-and-animation/keyframe-animations#running-animation-from-the-code-behind-->
+		<!--  Figure out how to call this from code with ReactiveUI  -->
+		<!--  https://docs.avaloniaui.net/docs/guides/graphics-and-animation/keyframe-animations#running-animation-from-the-code-behind  -->
 		<Animation x:Key="Ani"
-                   x:SetterTargetType="Border"
-                   Duration="0:0:3">
+		           x:SetterTargetType="Border"
+		           Duration="0:0:3">
 			<KeyFrame Cue="0%">
 				<Setter Property="Opacity" Value="0.0"/>
 			</KeyFrame>
@@ -22,67 +24,89 @@
 		</Animation>
 	</UserControl.Resources>
 
-	<Grid Width="{ Binding MaxViewWidth }"
-		  Height="{ Binding MaxViewHeight }"
-		  RowDefinitions="Auto,*,Auto">
-		<DockPanel Background="#FF232323"
-				   VerticalAlignment="Top"
-				   ZIndex="3"
-				   Width="{ Binding $parent[Grid].Bounds.Width }">
-
-			<Button Content="Show images with filter value..."
-					DockPanel.Dock="Right"
-					HorizontalAlignment="Right"
-					Command="{ Binding ReselectListValues }"
-					BorderBrush="#3F3F3F">
-				<Button.Flyout>
-					<Flyout Placement="BottomEdgeAlignedRight"
-							Opening="FilterByFlyout_Opening"
-							Opened="FilterByFlyout_Opened">
-						<ListBox ItemsSource="{ Binding AvailableFilterValues }"
-								 SelectionMode="Multiple,Toggle"
-								 Selection="{ Binding FilterBy_SelectionModel }">
-							<ListBox.ItemTemplate>
-								<DataTemplate>
-									<TextBlock Text="{ Binding }"/>
-								</DataTemplate>
-							</ListBox.ItemTemplate>
-						</ListBox>
-					</Flyout>
-				</Button.Flyout>
-			</Button>
-
-
-			<ComboBox ItemsSource="{ Binding ImageOrderOptions.Options }"
-					  SelectedItem="{ Binding ImageSortOrder }"
-					  SelectedValueBinding="{ Binding }"
-					  DisplayMemberBinding="{ Binding OptionText }"
-					  x:CompileBindings="False"
-					  DockPanel.Dock="Right"
-					  HorizontalAlignment="Left"
-					  BorderBrush="#3F3F3F"/>
-		</DockPanel>
+	<Grid Width="{Binding MaxViewWidth}"
+	      Height="{Binding MaxViewHeight}"
+	      RowDefinitions="Auto,*,Auto">
+		<StackPanel HorizontalAlignment="Center"
+		            Background="#FF232323">
+			<DockPanel Width="{Binding $parent[Grid].Bounds.Width}"
+			           VerticalAlignment="Top"
+			           ZIndex="3">
+				<Button HorizontalAlignment="Right"
+				        BorderBrush="#3F3F3F"
+				        Command="{Binding ReselectListValues}"
+				        Content="Show images with filter value..."
+				        DockPanel.Dock="Right">
+					<Button.Flyout>
+						<Flyout Opened="FilterByFlyout_Opened"
+						        Opening="FilterByFlyout_Opening"
+						        Placement="BottomEdgeAlignedRight">
+							<ListBox ItemsSource="{Binding AvailableFilterValues}"
+							         Selection="{Binding FilterBy_SelectionModel}"
+							         SelectionMode="Multiple,Toggle">
+								<ListBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding}"/>
+									</DataTemplate>
+								</ListBox.ItemTemplate>
+							</ListBox>
+						</Flyout>
+					</Button.Flyout>
+				</Button>
+				<StackPanel DockPanel.Dock="Left"
+				            Orientation="Horizontal"
+				            Spacing="10">
+					<ComboBox HorizontalAlignment="Left"
+					          x:CompileBindings="False"
+					          BorderBrush="#3F3F3F"
+					          DisplayMemberBinding="{Binding OptionText}"
+					          ItemsSource="{Binding ImageOrderOptions.Options}"
+					          SelectedItem="{Binding ImageSortOrder}"
+					          SelectedValueBinding="{Binding}"/>
+					<CheckBox Content="Bulk Update Mode"
+					          IsChecked="{Binding BulkSelectionActivated}"/>
+				</StackPanel>
+			</DockPanel>
+			<StackPanel HorizontalAlignment="Center"
+			            Orientation="Horizontal"
+			            Spacing="5"
+			            ZIndex="3"
+						IsVisible="{Binding BulkSelectionActivated}">
+				<ItemsControl ItemsSource="{Binding CurrentFilterValues}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Button HorizontalAlignment="Center"
+							        Content="{Binding}"
+									Command="{Binding $parent[UserControl].DataContext.OnBulkFilterClicked}"
+									CommandParameter="{Binding}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</StackPanel>
+		</StackPanel>
 
 		<ScrollViewer Grid.Row="1">
 			<StackPanel>
-				<!-- The perview image datatemplate are now built in the viewmodel -->
-				<ItemsControl ItemsSource="{ Binding PreviewImageContainers }">
+				<!--  The perview image data template are now built in the view model  -->
+				<ItemsControl ItemsSource="{Binding PreviewImageContainers}">
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
-							<VirtualizingStackPanel HorizontalAlignment="Center"
-												    Width="{Binding $parent[Grid].Bounds.Width}"/>
+							<VirtualizingStackPanel Width="{Binding $parent[Grid].Bounds.Width}"
+							                        HorizontalAlignment="Center"/>
 						</ItemsPanelTemplate>
 					</ItemsControl.ItemsPanel>
 				</ItemsControl>
 			</StackPanel>
 		</ScrollViewer>
-		<StackPanel Orientation="Horizontal"
-					Spacing="5"
-					VerticalAlignment="Bottom"
-					HorizontalAlignment="Center"
-					Grid.Row="2">
-			<Button Content="Continue" Command="{ Binding ContinueSort }"/>
-			<Button Content="Cancel" Command="{ Binding CancelSort }"/>
+		<StackPanel Grid.Row="2"
+		            HorizontalAlignment="Center"
+		            VerticalAlignment="Bottom"
+		            Orientation="Horizontal"
+		            Spacing="5">
+			<Button Command="{Binding ContinueSort}"
+			        Content="Continue"/>
+			<Button Command="{Binding CancelSort}"
+			        Content="Cancel"/>
 		</StackPanel>
 	</Grid>
 </UserControl>

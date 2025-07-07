@@ -62,10 +62,7 @@ public class WorkspaceControlsViewModel : ViewModelBase
     private ImgOrderOption _imageSortOrder;
     public ImgOrderOption ImageSortOrder
     {
-        // I think I am supposed to be setting _imageSortOrder = <shit>
-        // not ImageSortOrder = <shit>. Oh well
         get { return _imageSortOrder; }
-        [MemberNotNull(nameof(_imageSortOrder))]
         set { this.RaiseAndSetIfChanged(ref _imageSortOrder!, value); }
     }
 
